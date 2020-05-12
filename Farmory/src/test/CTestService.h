@@ -1,0 +1,54 @@
+#ifndef _H_C_TEST_SERVICE_
+#define _H_C_TEST_SERVICE_
+
+#include <services/IService.h>
+#include <render/CShaderProgram.h>
+#include <render/CTexture2D.h>
+#include <render/CMesh.h>
+
+
+namespace maz
+{
+
+class CTestService
+    : public IService
+{
+public:
+    CTestService();
+    ~CTestService();
+
+    virtual bool Init();
+    virtual void End();
+    virtual bool IsOk() const;
+
+    virtual void Update();
+    void TestRender();
+
+private:
+
+    bool ShaderInit();
+    bool TextureInit();
+    bool MeshInit();
+    void TestRender1();
+    void TestRender2();
+    void TestRender3();
+
+private:
+    CMesh mRect;
+    CMesh mTris;
+    CMesh mCube;
+
+    CTexture2D mTexture0;
+    CTexture2D mTexture1;
+
+    float mMixValue;
+    float mFov;
+    CShaderProgram mShader1;
+    CShaderProgram mShader2;
+    CShaderProgram mShader3;
+    CShaderProgram mShader4;
+};
+
+} // maz
+
+#endif // !_H_C_TEST_SERVICE_
