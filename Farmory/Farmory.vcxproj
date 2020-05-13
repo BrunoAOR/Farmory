@@ -20,24 +20,23 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
-    <ProjectGuid>{CBB8200A-E389-4879-B89C-8891581B9AC5}</ProjectGuid>
+    <ProjectGuid>{2E86EE4F-F1F0-4A77-9839-47434CEB73BF}</ProjectGuid>
     <RootNamespace>Farmory</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>Farmory</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
-    <CharacterSet>MultiByte</CharacterSet>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>MultiByte</CharacterSet>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -159,62 +158,49 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\files\CFile.cpp" />
-    <ClCompile Include="src\maz\CGlfwHandler.cpp" />
-    <ClCompile Include="src\deprecated\CDelegateOld.inl">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="src\maz\mazApp.cpp" />
-    <ClCompile Include="src\render\CCamera.cpp" />
-    <ClCompile Include="src\services\CInputService.cpp" />
-    <ClCompile Include="src\render\CTexture2D.cpp" />
-    <ClCompile Include="src\render\CMesh.cpp" />
+    <ClInclude Include="src\deprecated\CDelegateOld.h" />
+    <ClInclude Include="src\external\stb_image.h" />
+    <ClInclude Include="src\files\CFile.h" />
+    <ClInclude Include="src\maz\CDelegate.h" />
+    <ClInclude Include="src\maz\CGlfwHandler.h" />
+    <ClInclude Include="src\maz\config.h" />
+    <ClInclude Include="src\maz\globals.h" />
+    <ClInclude Include="src\maz\math.h" />
+    <ClInclude Include="src\maz\mazApp.h" />
+    <ClInclude Include="src\maz\types.h" />
+    <ClInclude Include="src\render\CCamera.h" />
+    <ClInclude Include="src\render\CMesh.h" />
+    <ClInclude Include="src\render\CShaderProgram.h" />
+    <ClInclude Include="src\render\CTexture2D.h" />
+    <ClInclude Include="src\services\CInputService.h" />
+    <ClInclude Include="src\services\CRenderService.h" />
+    <ClInclude Include="src\services\CServicesManager.h" />
+    <ClInclude Include="src\services\CTimeService.h" />
+    <ClInclude Include="src\services\IService.h" />
+    <ClInclude Include="src\test\CTestService.h" />
+    <ClInclude Include="src\test\test.h" />
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="src\external\glad.c" />
     <ClCompile Include="src\external\stb_image.cpp" />
-    <ClCompile Include="src\maz\globals.cpp" />
+    <ClCompile Include="src\files\CFile.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\services\CRenderService.cpp" />
+    <ClCompile Include="src\maz\CGlfwHandler.cpp" />
+    <ClCompile Include="src\maz\globals.cpp" />
+    <ClCompile Include="src\maz\mazApp.cpp" />
+    <ClCompile Include="src\render\CCamera.cpp" />
+    <ClCompile Include="src\render\CMesh.cpp" />
     <ClCompile Include="src\render\CShaderProgram.cpp" />
+    <ClCompile Include="src\render\CTexture2D.cpp" />
+    <ClCompile Include="src\services\CInputService.cpp" />
+    <ClCompile Include="src\services\CRenderService.cpp" />
     <ClCompile Include="src\services\CServicesManager.cpp" />
     <ClCompile Include="src\services\CTimeService.cpp" />
     <ClCompile Include="src\test\CTestService.cpp" />
     <ClCompile Include="src\test\test.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\deprecated\CDelegateOld.h" />
-    <ClInclude Include="src\files\CFile.h" />
-    <ClInclude Include="src\maz\CGlfwHandler.h" />
-    <ClInclude Include="src\maz\math.h" />
-    <ClInclude Include="src\maz\mazApp.h" />
-    <ClInclude Include="src\render\CCamera.h" />
-    <ClInclude Include="src\services\CInputService.h" />
-    <ClInclude Include="src\maz\config.h" />
-    <ClInclude Include="src\services\CRenderService.h" />
-    <ClInclude Include="src\maz\CDelegate.h" />
-    <ClInclude Include="src\render\CShaderProgram.h" />
-    <ClInclude Include="src\render\CTexture2D.h" />
-    <ClInclude Include="src\render\CMesh.h" />
-    <ClInclude Include="src\external\stb_image.h" />
-    <ClInclude Include="src\maz\globals.h" />
-    <ClInclude Include="src\services\CServicesManager.h" />
-    <ClInclude Include="src\services\CTimeService.h" />
-    <ClInclude Include="src\services\IService.h" />
-    <ClInclude Include="src\test\CTestService.h" />
-    <ClInclude Include="src\maz\types.h" />
-    <ClInclude Include="src\test\test.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="data\alt.fs" />
-    <None Include="data\alt.vs" />
-    <None Include="data\basic.fs" />
-    <None Include="data\basic.vs" />
-    <None Include="data\default.fs" />
-    <None Include="data\default.vs" />
-    <None Include="data\texture.fs" />
-    <None Include="data\texture.vs" />
+    <None Include="src\deprecated\CDelegateOld.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
