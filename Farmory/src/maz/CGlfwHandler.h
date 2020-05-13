@@ -13,11 +13,12 @@ class CGlfwHandler
 {
 public:
 
-    using WindowResizedCallback = CDelegate< void, int, int >;
-    using KeyboardStateCallback = CDelegate< void, int, int, int, int >;
-    using MousePositionCallback = CDelegate< void, double, double >;
-    using MouseScrollCallback   = CDelegate< void, double, double >;
+    using FramebufferResizedCallback = CDelegate< void, int, int >;
+    using KeyboardStateCallback      = CDelegate< void, int, int, int, int >;
+    using MousePositionCallback      = CDelegate< void, double, double >;
+    using MouseScrollCallback        = CDelegate< void, double, double >;
 
+    // Lifecycle
     static bool StartUp();
     static void ShutDown();
 
@@ -26,10 +27,15 @@ public:
     static bool CreateGlWindow(int aWindowWidth, int aWindowHeight, const char* aWindowName);
     static GLFWwindow* GetWindow();
 
+    // Getters
+    static bool GetFramebufferSize(int& aOutWidth, int& aOutHeight);
+
+    // Setters
     static bool SetCursorMode(ECursorMode aCursorMode);
 
-    static bool RegisterWindowResizedCallback(WindowResizedCallback aCallback);
-    static bool UnregisterWindowResizedCallback(WindowResizedCallback aCallback);
+    // Callbacks
+    static bool RegisterFramebufferResizedCallback(FramebufferResizedCallback aCallback);
+    static bool UnregisterFramebufferResizedCallback(FramebufferResizedCallback aCallback);
 
     static bool RegisterKeyboardStateCallback(KeyboardStateCallback aCallback);
     static bool UnregisterKeyboardStateCallback(KeyboardStateCallback aCallback);
@@ -46,7 +52,7 @@ private:
 
     static void LogInfo();
     static void SetCallbacks();
-    static void OnWindowResized(GLFWwindow* aWindow, int aWidth, int aHeight);
+    static void OnFramebufferResized(GLFWwindow* aWindow, int aWidth, int aHeight);
     static void OnKeyboardState(GLFWwindow* aWindow, int aKey, int aScancode, int aAction, int aModifierBits);
     static void OnMousePosition(GLFWwindow* aWindow, double aXPos, double aYPos);
     static void OnMouseScroll  (GLFWwindow* aWindow, double aXOffset, double aYOffset);
@@ -57,10 +63,10 @@ private:
     static bool sOk;
     static GLFWwindow* sWindow;
     
-    static std::vector< WindowResizedCallback > sWindowResizedCallbacks;
-    static std::vector< KeyboardStateCallback > sKeyboardStateCallbacks;
-    static std::vector< MousePositionCallback > sMousePositionCallbacks;
-    static std::vector< MouseScrollCallback   > sMouseScrollCallbacks;
+    static std::vector< FramebufferResizedCallback > sWindowResizedCallbacks;
+    static std::vector< KeyboardStateCallback      > sKeyboardStateCallbacks;
+    static std::vector< MousePositionCallback      > sMousePositionCallbacks;
+    static std::vector< MouseScrollCallback        > sMouseScrollCallbacks;
 };
 
 

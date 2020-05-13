@@ -5,6 +5,7 @@
 #include <render/CShaderProgram.h>
 #include <render/CTexture2D.h>
 #include <render/CMesh.h>
+#include <render/CCamera.h>
 
 
 namespace maz
@@ -42,11 +43,14 @@ private:
     CTexture2D mTexture1;
 
     float mMixValue;
-    float mFov;
     CShaderProgram mShader1;
     CShaderProgram mShader2;
     CShaderProgram mShader3;
     CShaderProgram mShader4;
+
+    CCamera mCamera;
+    float mCameraYaw;
+    float mCameraPitch;
 };
 
 } // maz

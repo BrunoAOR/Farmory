@@ -8,10 +8,10 @@ namespace maz
 CGlfwHandler*   CGlfwHandler::sInstance = nullptr;
 bool            CGlfwHandler::sOk       = false;
 GLFWwindow*     CGlfwHandler::sWindow   = nullptr;
-std::vector< CGlfwHandler::WindowResizedCallback > CGlfwHandler::sWindowResizedCallbacks;
-std::vector< CGlfwHandler::KeyboardStateCallback > CGlfwHandler::sKeyboardStateCallbacks;
-std::vector< CGlfwHandler::MousePositionCallback > CGlfwHandler::sMousePositionCallbacks;
-std::vector< CGlfwHandler::MouseScrollCallback   > CGlfwHandler::sMouseScrollCallbacks;
+std::vector< CGlfwHandler::FramebufferResizedCallback > CGlfwHandler::sWindowResizedCallbacks;
+std::vector< CGlfwHandler::KeyboardStateCallback      > CGlfwHandler::sKeyboardStateCallbacks;
+std::vector< CGlfwHandler::MousePositionCallback      > CGlfwHandler::sMousePositionCallbacks;
+std::vector< CGlfwHandler::MouseScrollCallback        > CGlfwHandler::sMouseScrollCallbacks;
 
 
 CGlfwHandler::CGlfwHandler()
@@ -96,6 +96,16 @@ GLFWwindow* CGlfwHandler::GetWindow()
     return sWindow;
 }
 
+bool CGlfwHandler::GetFramebufferSize(int& aOutWidth, int& aOutHeight)
+{
+    if (sOk)
+    {
+        glfwGetFramebufferSize(sWindow, &aOutWidth, &aOutHeight);
+    }
+
+    return sOk;
+}
+
 
 bool CGlfwHandler::SetCursorMode(ECursorMode aCursorMode)
 {
@@ -126,7 +136,7 @@ bool CGlfwHandler::SetCursorMode(ECursorMode aCursorMode)
 
 
 
-bool CGlfwHandler::RegisterWindowResizedCallback(WindowResizedCallback aCallback)
+bool CGlfwHandler::RegisterFramebufferResizedCallback(FramebufferResizedCallback aCallback)
 {
     bool lFound = false;
     
@@ -143,7 +153,7 @@ bool CGlfwHandler::RegisterWindowResizedCallback(WindowResizedCallback aCallback
 }
 
 
-bool CGlfwHandler::UnregisterWindowResizedCallback(WindowResizedCallback aCallback)
+bool CGlfwHandler::UnregisterFramebufferResizedCallback(FramebufferResizedCallback aCallback)
 {
     bool lFound = false;
 
@@ -275,17 +285,17 @@ void CGlfwHandler::LogInfo()
 
 void CGlfwHandler::SetCallbacks()
 {
-    glfwSetFramebufferSizeCallback(sWindow, &CGlfwHandler::OnWindowResized);
+    glfwSetFramebufferSizeCallback(sWindow, &CGlfwHandler::OnFramebufferResized);
     glfwSetKeyCallback(sWindow, &CGlfwHandler::OnKeyboardState);
     glfwSetCursorPosCallback(sWindow, &CGlfwHandler::OnMousePosition);
     glfwSetScrollCallback(sWindow, &CGlfwHandler::OnMouseScroll);
 }
 
 
-void CGlfwHandler::OnWindowResized(GLFWwindow* aWindow, int aWidth, int aHeight)
+void CGlfwHandler::OnFramebufferResized(GLFWwindow* aWindow, int aWidth, int aHeight)
 {
     MAZ_UNUSED_VAR(aWindow);
-    MAZ_ASSERT(sWindow == aWindow, "[CGlfwHandler]::OnWindowResized - Callback received for a window other that the managed one!");
+    MAZ_ASSERT(sWindow == aWindow, "[CGlfwHandler]::OnFramebufferResized - Callback received for a window other that the managed one!");
 
     for (size_t i = 0, iCount = sWindowResizedCallbacks.size(); (i < iCount); ++i)
     {
@@ -299,7 +309,7 @@ void CGlfwHandler::OnKeyboardState(GLFWwindow* aWindow, int aKey, int aScancode,
     MAZ_UNUSED_VAR(aWindow);
     MAZ_ASSERT(sWindow == aWindow, "[CGlfwHandler]::OnKeyboardState - Callback received for a window other that the managed one!");
 
-    for (size_t i = 0, iCount = sWindowResizedCallbacks.size(); (i < iCount); ++i)
+    for (size_t i = 0, iCount = sKeyboardStateCallbacks.size(); (i < iCount); ++i)
     {
         sKeyboardStateCallbacks[i](aKey, aScancode, aAction, aModifierBits);
     }

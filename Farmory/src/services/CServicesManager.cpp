@@ -81,12 +81,12 @@ bool CServicesManager::Init()
 
 void CServicesManager::End()
 {
-    for (int i = mServices.size() - 1; i >= 0; --i)
+    for (int i = static_cast< int >(mServices.size()) - 1; i >= 0; --i)
     {
         mServices[i]->End();
     }
     
-    for (int i = mServices.size() - 1; i >= 0; --i)
+    for (int i = static_cast<int>(mServices.size()) - 1; i >= 0; --i)
     {
         MAZ_DELETE(mServices[i]);
     }

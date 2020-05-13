@@ -15,22 +15,30 @@ public:
     void End();
 
     // General
+    ECameraMode GetCameraMode() const;
+    const TVec3& GetPosition() const;
+    const TVec3& GetFront() const;
+    const TVec3& GetUp() const;
+    float GetNearPlaneDistance() const;
+    float GetFarPlaneDistance() const;
+
     void SetCameraMode(ECameraMode aCameraMode);
     void SetPosition(const TVec3& aPosition);
     bool SetLookAt(const TVec3& aFront, const TVec3& aUp);
     bool SetClippingPlanes(float aNearDistance, float aFarDistance);
 
     // Perspective
+    float GetFov() const;
     void SetFov(float aFov);
 
-    const float* GetViewMatrixPtr() const;
-    const float* GetProjMatrixPtr() const;
+    float* GetViewMatrixPtr();
+    float* GetProjMatrixPtr();
 
 private:
     void RebuildViewMatrix();
     void RebuildProjMatrix(ECameraMode aMode);
 
-    void OnWindowResized(int aWidth, int aHeight);
+    void OnFramebufferResized(int aWidth, int aHeight);
 
 private:
     ECameraMode mMode;
@@ -42,8 +50,8 @@ private:
     float mNear;
     float mFar;
     float mFov;
-    int   mWidth;
-    int   mHeight;
+    float mWidth;
+    float mHeight;
 };
 
 enum class ECameraMode : uint32

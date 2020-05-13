@@ -46,7 +46,7 @@ bool CRenderService::Init()
     }
 
     // Callback registering
-    lOk = lOk && CGlfwHandler::RegisterWindowResizedCallback(CGlfwHandler::WindowResizedCallback::Create< CRenderService, &CRenderService::OnWindowResized >(this));
+    lOk = lOk && CGlfwHandler::RegisterFramebufferResizedCallback(CGlfwHandler::FramebufferResizedCallback::Create< CRenderService, &CRenderService::OnFramebufferResized >(this));
 
     if (lOk)
     {
@@ -60,7 +60,7 @@ bool CRenderService::Init()
 
 void CRenderService::End()
 {
-    CGlfwHandler::UnregisterWindowResizedCallback(CGlfwHandler::WindowResizedCallback::Create< CRenderService, &CRenderService::OnWindowResized >(this));
+    CGlfwHandler::UnregisterFramebufferResizedCallback(CGlfwHandler::FramebufferResizedCallback::Create< CRenderService, &CRenderService::OnFramebufferResized >(this));
 }
 
 
@@ -82,7 +82,7 @@ void CRenderService::Update()
 }
 
 
-void CRenderService::OnWindowResized(int aWidth, int aHeight)
+void CRenderService::OnFramebufferResized(int aWidth, int aHeight)
 {
     glViewport(0, 0, aWidth, aHeight);
 }

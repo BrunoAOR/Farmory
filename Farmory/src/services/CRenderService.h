@@ -21,7 +21,7 @@ public:
     virtual void Update();
 
 private:
-    void OnWindowResized(int aWidth, int aHeight);
+    void OnFramebufferResized(int aWidth, int aHeight);
 
 private:
     GLFWwindow* mWindow;

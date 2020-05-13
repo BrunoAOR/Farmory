@@ -15,12 +15,8 @@
 namespace maz
 {
 
-glm::vec3 lCameraPos(0.0f, 0.0f, 3.0f);
-glm::vec3 lCameraFront(0.0f, 0.0f, -1.0f);
-glm::vec3 lCameraUp(0.0f, 1.0f, 0.0f);
 float lCameraYaw = -90.0f;
 float lCameraPitch = 0.0f;
-
 
 CTestService::CTestService() { ; }
 CTestService::~CTestService() { ; }
@@ -30,11 +26,20 @@ bool CTestService::Init()
 {
     bool lOk = true;
 
+    mCameraYaw = -90.0f;
+    mCameraPitch = 0.0f;
     lOk = lOk && ShaderInit();
     lOk = lOk && TextureInit();
     lOk = lOk && MeshInit();
 
-    //CGlfwHandler::SetCursorMode(ECursorMode::DISABLED);
+    CGlfwHandler::SetCursorMode(ECursorMode::DISABLED);
+
+    mCamera.Init();
+    mCamera.SetPosition(TVec3(0.0f, 0.0f, 3.0f));
+    mCamera.SetLookAt(TVec3(0.0f, 0.0f, -1.0f), TVec3(0.0f, 1.0f, 0.0f));
+    mCamera.SetCameraMode(ECameraMode::PERSPECTIVE);
+    mCamera.SetClippingPlanes(0.1f, 100.0f);
+    mCamera.SetFov(45.0f);
 
     return lOk;
 }
@@ -42,6 +47,8 @@ bool CTestService::Init()
 
 void CTestService::End()
 {
+    mCamera.End();
+
     mShader1.End();
     mShader2.End();
     mShader3.End();
@@ -105,7 +112,6 @@ bool CTestService::TextureInit()
 bool CTestService::MeshInit()
 {
     bool lOk = true;
-    mFov = 45.0f;
     lOk = lOk && mTris.InitTriangle(0, 0);
     lOk = lOk && mRect.InitRectangle(0, 0);
     lOk = lOk && mCube.InitCube();
@@ -265,15 +271,15 @@ void CTestService::TestRender3()
     // FOV
     if (lInputService->IsKeyDown(GLFW_KEY_RIGHT))
     {
-        mFov += 1.0f;
+        mCamera.SetFov(mCamera.GetFov() + 1.0f);
         //if (mFov > 89.0f) mFov = 89.0f;
-        MAZ_LOGGER("FOV up   to %f", mFov);
+        MAZ_LOGGER("FOV up   to %f", mCamera.GetFov());
     }
     else if (lInputService->IsKeyDown(GLFW_KEY_LEFT))
     {
-        mFov -= 1.0f;
+        mCamera.SetFov(mCamera.GetFov() - 1.0f);
         //if (mFov < 1.0f) mFov = 1.0f;
-        MAZ_LOGGER("FOV down to %f", mFov);
+        MAZ_LOGGER("FOV down to %f", mCamera.GetFov());
     }
 
     glm::vec3 lCubePositions[] = {
@@ -302,60 +308,46 @@ void CTestService::TestRender3()
     lCameraYaw   = (lCameraYaw < 0.0f) ? lCameraYaw + 360.0f : (lCameraYaw > 360.0f ? lCameraYaw - 360.0f : lCameraYaw);
     lCameraPitch = (lCameraPitch < -89.0f) ? -89.0f : (lCameraPitch > 89.0f ? 89.0f : lCameraPitch);
 
+    TVec3 lCameraFront;
     lCameraFront.x = cosf(glm::radians(lCameraYaw)) * cosf(glm::radians(lCameraPitch));
     lCameraFront.y = sinf(glm::radians(lCameraPitch));
     lCameraFront.z = sinf(glm::radians(lCameraYaw)) * cosf(glm::radians(lCameraPitch));
     lCameraFront = glm::normalize(lCameraFront);
 
     const float kFovSensitivity = 1.0f;
-    mFov -= kFovSensitivity * lInputService->GetMouseScrollDelta(EMouseAxis::Y_AXIS);
-    mFov = (mFov < 1.0f) ? 1.0f : (mFov > 89.0f ? 89.0f : mFov);
+    float lFov = mCamera.GetFov() - kFovSensitivity * lInputService->GetMouseScrollDelta(EMouseAxis::Y_AXIS);
+    lFov = (lFov < 1.0f) ? 1.0f : (lFov > 89.0f ? 89.0f : lFov);
+    mCamera.SetFov(lFov);
 
-
+    TVec3 lCamPos = mCamera.GetPosition();
     const float lCamSpeed = 2.5f;
     const float lCamDistance = lCamSpeed * lTimeService->GetDeltaTime();
     if (lInputService->IsKeyDown(GLFW_KEY_W))
     {
-        lCameraPos += lCamDistance * lCameraFront;
+        lCamPos += lCamDistance * lCameraFront;
     }
     else if (lInputService->IsKeyDown(GLFW_KEY_S))
     {
-        lCameraPos -= lCamDistance * lCameraFront;
+        lCamPos -= lCamDistance * lCameraFront;
     }
 
+    TVec3 lCameraUp(0.0f, 1.0f, 0.0f);
     if (lInputService->IsKeyDown(GLFW_KEY_A))
     {
         const glm::vec3 lCameraRight = glm::normalize(glm::cross(lCameraFront, lCameraUp));
-        lCameraPos -= lCamDistance * lCameraRight;
+        lCamPos -= lCamDistance * lCameraRight;
     }
     else if (lInputService->IsKeyDown(GLFW_KEY_D))
     {
         const glm::vec3 lCameraRight = glm::normalize(glm::cross(lCameraFront, lCameraUp));
-        lCameraPos += lCamDistance * lCameraRight;
+        lCamPos += lCamDistance * lCameraRight;
     }
 
-    /*
-    glm::vec3 lCameraTarget(0.0f, 0.0f, 0.0f);
-    glm::vec3 lCameraNegDirection = -(lCameraTarget - lCameraPos);
-
-    glm::vec3 lWorldUp(0.0f, 1.0f, 0.0f);
-    glm::vec3 lCameraRight = glm::normalize(glm::cross(lWorldUp, lCameraNegDirection));
-
-    glm::vec3 lCameraUp = glm::normalize(glm::cross(lCameraNegDirection, lCameraRight));
-    */
-
-    glm::mat4 lViewMatrix(1.0f);
-    lViewMatrix = glm::lookAt(lCameraPos, lCameraPos + lCameraFront, lCameraUp);
-    //const float lRadius = 10.0f;
-    //const float lCamX = lRadius * sinf(static_cast<float>(glfwGetTime()));
-    //const float lCamZ = lRadius * cosf(static_cast<float>(glfwGetTime()));
-    //lViewMatrix = glm::lookAt(glm::vec3(lCamX, 0.0f, lCamZ), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    mShader4.SetUniformMat4("aViewMatrix", glm::value_ptr(lViewMatrix));
-
-    glm::mat4 lProjectionMatrix(1.0f);
-    lProjectionMatrix = glm::perspective(glm::radians(mFov), 800.0f / 600.0f, 0.1f, 100.0f);
-
-    mShader4.SetUniformMat4("aProjectionMatrix", glm::value_ptr(lProjectionMatrix));
+    mCamera.SetPosition(lCamPos);
+    mCamera.SetLookAt(lCameraFront, lCameraUp);
+    
+    mShader4.SetUniformMat4("aViewMatrix"      , mCamera.GetViewMatrixPtr());
+    mShader4.SetUniformMat4("aProjectionMatrix", mCamera.GetProjMatrixPtr());
 
     mTexture0.BindTexture(0);
     mTexture1.BindTexture(1);
