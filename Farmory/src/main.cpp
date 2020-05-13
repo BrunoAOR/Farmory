@@ -1,11 +1,7 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
-#include <maz/mazApp.h>
 #include <maz/globals.h>
-#include <test//test.h>
-#include <maz/CGlfwHandler.h>
-#include <services/CServicesManager.h>
-#include <GLFW/glfw3.h>
+#include <maz/mazApp.h>
 
 
 #if defined(IS_X86)
