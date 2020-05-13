@@ -30,7 +30,7 @@ private:
     void RebuildViewMatrix();
     void RebuildProjMatrix(ECameraMode aMode);
 
-    void OnWindowResized(int aWidth, int aHeight);
+    void OnFramebufferResized(int aWidth, int aHeight);
 
 private:
     ECameraMode mMode;

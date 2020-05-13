@@ -26,7 +26,7 @@ bool CCamera::Init()
 {
     bool lOk = true;
 
-    lOk = lOk && CGlfwHandler::RegisterWindowResizedCallback(CGlfwHandler::WindowResizedCallback::Create< CCamera, &CCamera::OnWindowResized >(this));
+    lOk = lOk && CGlfwHandler::RegisterFramebufferResizedCallback(CGlfwHandler::FramebufferResizedCallback::Create< CCamera, &CCamera::OnFramebufferResized >(this));
     RebuildViewMatrix();
     RebuildProjMatrix(mMode);
 
@@ -35,7 +35,7 @@ bool CCamera::Init()
 
 void CCamera::End()
 {
-    CGlfwHandler::UnregisterWindowResizedCallback(CGlfwHandler::WindowResizedCallback::Create< CCamera, &CCamera::OnWindowResized >(this));
+    CGlfwHandler::UnregisterFramebufferResizedCallback(CGlfwHandler::FramebufferResizedCallback::Create< CCamera, &CCamera::OnFramebufferResized >(this));
 }
 
 
@@ -129,7 +129,7 @@ void CCamera::RebuildProjMatrix(ECameraMode aMode)
 }
 
 
-void CCamera::OnWindowResized(int aWidth, int aHeight)
+void CCamera::OnFramebufferResized(int aWidth, int aHeight)
 {
     mWidth = aWidth;
     mHeight = aHeight;
