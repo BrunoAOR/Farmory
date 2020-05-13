@@ -96,6 +96,16 @@ GLFWwindow* CGlfwHandler::GetWindow()
     return sWindow;
 }
 
+bool CGlfwHandler::GetFramebufferSize(int& aOutWidth, int& aOutHeight)
+{
+    if (sOk)
+    {
+        glfwGetFramebufferSize(sWindow, &aOutWidth, &aOutHeight);
+    }
+
+    return sOk;
+}
+
 
 bool CGlfwHandler::SetCursorMode(ECursorMode aCursorMode)
 {
@@ -299,7 +309,7 @@ void CGlfwHandler::OnKeyboardState(GLFWwindow* aWindow, int aKey, int aScancode,
     MAZ_UNUSED_VAR(aWindow);
     MAZ_ASSERT(sWindow == aWindow, "[CGlfwHandler]::OnKeyboardState - Callback received for a window other that the managed one!");
 
-    for (size_t i = 0, iCount = sWindowResizedCallbacks.size(); (i < iCount); ++i)
+    for (size_t i = 0, iCount = sKeyboardStateCallbacks.size(); (i < iCount); ++i)
     {
         sKeyboardStateCallbacks[i](aKey, aScancode, aAction, aModifierBits);
     }

@@ -18,6 +18,7 @@ public:
     using MousePositionCallback      = CDelegate< void, double, double >;
     using MouseScrollCallback        = CDelegate< void, double, double >;
 
+    // Lifecycle
     static bool StartUp();
     static void ShutDown();
 
@@ -26,8 +27,13 @@ public:
     static bool CreateGlWindow(int aWindowWidth, int aWindowHeight, const char* aWindowName);
     static GLFWwindow* GetWindow();
 
+    // Getters
+    static bool GetFramebufferSize(int& aOutWidth, int& aOutHeight);
+
+    // Setters
     static bool SetCursorMode(ECursorMode aCursorMode);
 
+    // Callbacks
     static bool RegisterFramebufferResizedCallback(FramebufferResizedCallback aCallback);
     static bool UnregisterFramebufferResizedCallback(FramebufferResizedCallback aCallback);
 
