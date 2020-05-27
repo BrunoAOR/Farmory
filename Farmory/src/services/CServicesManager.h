@@ -43,7 +43,7 @@ T* CServicesManager::GetService()
 {
     T* lService = nullptr;
 
-    for (size_t i = 0, iCount = mServices.size(); (i < iCount) && (nullptr == lService); ++i)
+    for (size_t i = 0, iMax = mServices.size(); (i < iMax) && (nullptr == lService); ++i)
     {
         lService = dynamic_cast< T* >(mServices[i]);
     }

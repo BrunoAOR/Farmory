@@ -159,6 +159,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\deprecated\CDelegateOld.h" />
+    <ClInclude Include="src\ecs\CComponent.h" />
+    <ClInclude Include="src\ecs\CComponentHandle.h" />
+    <ClInclude Include="src\ecs\CComponentManager.h" />
+    <ClInclude Include="src\ecs\CComponentManagerBase.h" />
+    <ClInclude Include="src\ecs\CEcsManager.h" />
+    <ClInclude Include="src\ecs\CEntityManager.h" />
+    <ClInclude Include="src\ecs\CSystem.h" />
+    <ClInclude Include="src\ecs\CEntityHandle.h" />
+    <ClInclude Include="src\ecs\TEntityId.h" />
     <ClInclude Include="src\external\stb_image.h" />
     <ClInclude Include="src\files\CFile.h" />
     <ClInclude Include="src\maz\CDelegate.h" />
@@ -181,6 +190,12 @@
     <ClInclude Include="src\test\test.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\ecs\CComponent.cpp" />
+    <ClCompile Include="src\ecs\CEcsManager.cpp" />
+    <ClCompile Include="src\ecs\CEntityManager.cpp" />
+    <ClCompile Include="src\ecs\CEntityHandle.cpp" />
+    <ClCompile Include="src\ecs\CSystem.cpp" />
+    <ClCompile Include="src\ecs\TEntityId.cpp" />
     <ClCompile Include="src\external\glad.c" />
     <ClCompile Include="src\external\stb_image.cpp" />
     <ClCompile Include="src\files\CFile.cpp" />

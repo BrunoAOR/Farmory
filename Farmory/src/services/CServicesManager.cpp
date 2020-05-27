@@ -71,7 +71,7 @@ bool CServicesManager::Init()
     mServices.push_back(MAZ_NEW(CRenderService));
     mServices.push_back(MAZ_NEW(CTestService));
 
-    for (size_t i = 0, iCount = mServices.size(); (i < iCount) && lOk; ++i)
+    for (size_t i = 0, iMax = mServices.size(); (i < iMax) && lOk; ++i)
     {
         lOk = mServices[i]->Init();
     }
@@ -99,7 +99,7 @@ bool CServicesManager::IsOk()
 {
     bool lOk = true;
 
-    for (size_t i = 0, iCount = mServices.size(); (i < iCount) && lOk; ++i)
+    for (size_t i = 0, iMax = mServices.size(); (i < iMax) && lOk; ++i)
     {
         lOk = mServices[i]->IsOk();
     }
@@ -110,7 +110,7 @@ bool CServicesManager::IsOk()
 
 void CServicesManager::Update()
 {
-    for (size_t i = 0, iCount = mServices.size(); (i < iCount); ++i)
+    for (size_t i = 0, iMax = mServices.size(); (i < iMax); ++i)
     {
         mServices[i]->Update();
     }

@@ -140,7 +140,7 @@ bool CGlfwHandler::RegisterFramebufferResizedCallback(FramebufferResizedCallback
 {
     bool lFound = false;
     
-    for (size_t i = 0, iCount = sWindowResizedCallbacks.size(); (i < iCount) && !lFound; ++i)
+    for (size_t i = 0, iMax = sWindowResizedCallbacks.size(); (i < iMax) && !lFound; ++i)
     {
         lFound = (sWindowResizedCallbacks[i] == aCallback);
     }
@@ -157,7 +157,7 @@ bool CGlfwHandler::UnregisterFramebufferResizedCallback(FramebufferResizedCallba
 {
     bool lFound = false;
 
-    for (size_t i = 0, iCount = sWindowResizedCallbacks.size(); (i < iCount) && !lFound; ++i)
+    for (size_t i = 0, iMax = sWindowResizedCallbacks.size(); (i < iMax) && !lFound; ++i)
     {
         lFound = (sWindowResizedCallbacks[i] == aCallback);
         if (lFound)
@@ -174,7 +174,7 @@ bool CGlfwHandler::RegisterKeyboardStateCallback(KeyboardStateCallback aCallback
 {
     bool lFound = false;
     
-    for (size_t i = 0, iCount = sKeyboardStateCallbacks.size(); (i < iCount) && !lFound; ++i)
+    for (size_t i = 0, iMax = sKeyboardStateCallbacks.size(); (i < iMax) && !lFound; ++i)
     {
         lFound = (sKeyboardStateCallbacks[i] == aCallback);
     }
@@ -191,7 +191,7 @@ bool CGlfwHandler::UnregisterKeyboardStateCallback(KeyboardStateCallback aCallba
 {
     bool lFound = false;
 
-    for (size_t i = 0, iCount = sKeyboardStateCallbacks.size(); (i < iCount) && !lFound; ++i)
+    for (size_t i = 0, iMax = sKeyboardStateCallbacks.size(); (i < iMax) && !lFound; ++i)
     {
         lFound = (sKeyboardStateCallbacks[i] == aCallback);
         if (lFound)
@@ -208,7 +208,7 @@ bool CGlfwHandler::RegisterMousePositionCallback(MousePositionCallback aCallback
 {
     bool lFound = false;
 
-    for (size_t i = 0, iCount = sMousePositionCallbacks.size(); (i < iCount) && !lFound; ++i)
+    for (size_t i = 0, iMax = sMousePositionCallbacks.size(); (i < iMax) && !lFound; ++i)
     {
         lFound = (sMousePositionCallbacks[i] == aCallback);
     }
@@ -225,7 +225,7 @@ bool CGlfwHandler::UnregisterMousePositionCallback(MousePositionCallback aCallba
 {
     bool lFound = false;
 
-    for (size_t i = 0, iCount = sMousePositionCallbacks.size(); (i < iCount) && !lFound; ++i)
+    for (size_t i = 0, iMax = sMousePositionCallbacks.size(); (i < iMax) && !lFound; ++i)
     {
         lFound = (sMousePositionCallbacks[i] == aCallback);
         if (lFound)
@@ -242,7 +242,7 @@ bool CGlfwHandler::RegisterMouseScrollallback(MouseScrollCallback aCallback)
 {
     bool lFound = false;
 
-    for (size_t i = 0, iCount = sMouseScrollCallbacks.size(); (i < iCount) && !lFound; ++i)
+    for (size_t i = 0, iMax = sMouseScrollCallbacks.size(); (i < iMax) && !lFound; ++i)
     {
         lFound = (sMouseScrollCallbacks[i] == aCallback);
     }
@@ -259,7 +259,7 @@ bool CGlfwHandler::UnregisterMouseScrollCallback(MouseScrollCallback aCallback)
 {
     bool lFound = false;
 
-    for (size_t i = 0, iCount = sMouseScrollCallbacks.size(); (i < iCount) && !lFound; ++i)
+    for (size_t i = 0, iMax = sMouseScrollCallbacks.size(); (i < iMax) && !lFound; ++i)
     {
         lFound = (sMouseScrollCallbacks[i] == aCallback);
         if (lFound)
@@ -297,7 +297,7 @@ void CGlfwHandler::OnFramebufferResized(GLFWwindow* aWindow, int aWidth, int aHe
     MAZ_UNUSED_VAR(aWindow);
     MAZ_ASSERT(sWindow == aWindow, "[CGlfwHandler]::OnFramebufferResized - Callback received for a window other that the managed one!");
 
-    for (size_t i = 0, iCount = sWindowResizedCallbacks.size(); (i < iCount); ++i)
+    for (size_t i = 0, iMax = sWindowResizedCallbacks.size(); (i < iMax); ++i)
     {
         sWindowResizedCallbacks[i](aWidth, aHeight);
     }
@@ -309,7 +309,7 @@ void CGlfwHandler::OnKeyboardState(GLFWwindow* aWindow, int aKey, int aScancode,
     MAZ_UNUSED_VAR(aWindow);
     MAZ_ASSERT(sWindow == aWindow, "[CGlfwHandler]::OnKeyboardState - Callback received for a window other that the managed one!");
 
-    for (size_t i = 0, iCount = sKeyboardStateCallbacks.size(); (i < iCount); ++i)
+    for (size_t i = 0, iMax = sKeyboardStateCallbacks.size(); (i < iMax); ++i)
     {
         sKeyboardStateCallbacks[i](aKey, aScancode, aAction, aModifierBits);
     }
@@ -321,7 +321,7 @@ void CGlfwHandler::OnMousePosition(GLFWwindow* aWindow, double aXPos, double aYP
     MAZ_UNUSED_VAR(aWindow);
     MAZ_ASSERT(sWindow == aWindow, "[CGlfwHandler]::OnMousePosition - Callback received for a window other that the managed one!");
 
-    for (size_t i = 0, iCount = sMousePositionCallbacks.size(); (i < iCount); ++i)
+    for (size_t i = 0, iMax = sMousePositionCallbacks.size(); (i < iMax); ++i)
     {
         sMousePositionCallbacks[i](aXPos, aYPos);
     }
@@ -333,7 +333,7 @@ void CGlfwHandler::OnMouseScroll(GLFWwindow* aWindow, double aXOffset, double aY
     MAZ_UNUSED_VAR(aWindow);
     MAZ_ASSERT(sWindow == aWindow, "[CGlfwHandler]::OnMouseScroll - Callback received for a window other that the managed one!");
 
-    for (size_t i = 0, iCount = sMouseScrollCallbacks.size(); (i < iCount); ++i)
+    for (size_t i = 0, iMax = sMouseScrollCallbacks.size(); (i < iMax); ++i)
     {
         sMouseScrollCallbacks[i](aXOffset, aYOffset);
     }
