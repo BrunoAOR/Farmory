@@ -73,7 +73,9 @@ bool CServicesManager::Init()
     mServices.push_back(MAZ_NEW(CInputService));
     mServices.push_back(MAZ_NEW(CRenderService));
     mServices.push_back(MAZ_NEW(CTestService));
+#ifdef EDITOR
     mServices.push_back(MAZ_NEW(CImGuiService));
+#endif
 
     for (size_t i = 0, iCount = mServices.size(); (i < iCount) && lOk; ++i)
     {

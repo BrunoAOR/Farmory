@@ -84,26 +84,39 @@ void CImGuiService::PreUpdate()
 
 void CImGuiService::Update()
 {
-    static bool showDemoWindow = false;
+    static bool lShowDemoWindow = false;
+    static bool lShowOpenGlWindow = false;
     float lMainMenuBarHeight;
 
     if (ImGui::BeginMainMenuBar())
     {
         lMainMenuBarHeight = ImGui::GetWindowHeight();
+        
         if (ImGui::BeginMenu("Main"))
         {
-            ImGui::MenuItem("Show demo window", nullptr, &showDemoWindow);
+            ImGui::MenuItem("Show demo window", nullptr, &lShowDemoWindow);
             ImGui::Separator();
 
+            ImGui::EndMenu();
+        }
+
+        if (ImGui::BeginMenu("Configuration"))
+        {
+            ImGui::MenuItem("OpenGL", nullptr, &lShowOpenGlWindow);
             ImGui::EndMenu();
         }
 
         ImGui::EndMainMenuBar();
     }
 
-    if (showDemoWindow)
+    if (lShowDemoWindow)
     {
-        ImGui::ShowDemoWindow(&showDemoWindow);
+        ImGui::ShowDemoWindow(&lShowDemoWindow);
+    }
+
+    if (lShowOpenGlWindow)
+    {
+        //ShowOpenGLWindow(lMainMenuBarHeight, &lShowOpenGlWindow);
     }
 
     ImGui::Render();
