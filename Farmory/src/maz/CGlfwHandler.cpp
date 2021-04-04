@@ -283,6 +283,7 @@ void CGlfwHandler::LogInfo()
     MAZ_LOGGER("[CGlfwHandler]::LogInfo - Max Vertex Attributes Count: %d\n", lMaxVertexAttribs);
 }
 
+
 void CGlfwHandler::SetCallbacks()
 {
     glfwSetFramebufferSizeCallback(sWindow, &CGlfwHandler::OnFramebufferResized);

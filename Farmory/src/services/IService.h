@@ -14,7 +14,9 @@ public:
     virtual void End() = 0;
     virtual bool IsOk() const = 0;
 
-    virtual void Update() = 0;
+    virtual void PreUpdate() {};
+    virtual void Update() {};
+    virtual void PostUpdate() {};
 };
 
 } // maz

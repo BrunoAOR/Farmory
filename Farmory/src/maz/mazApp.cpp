@@ -26,7 +26,9 @@ int MazMain()
     while (lOk && !glfwWindowShouldClose(CGlfwHandler::GetWindow()) && !maz::global::gShouldClose)
     {
         glfwPollEvents();
+        Services::GetManager()->PreUpdate();
         Services::GetManager()->Update();
+        Services::GetManager()->PostUpdate();
     }
 
     Services::Shutdown();

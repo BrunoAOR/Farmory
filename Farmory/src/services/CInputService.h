@@ -20,12 +20,11 @@ public:
     CInputService();
     virtual ~CInputService();
 
-    virtual bool Init();
-    virtual void End();
+    virtual bool Init() override;
+    virtual void End() override;
+    virtual bool IsOk() const override;
 
-    virtual bool IsOk() const;
-
-    virtual void Update();
+    virtual void PreUpdate() override;
 
     // Information queries
     bool IsKeyDown(int aKey) const;

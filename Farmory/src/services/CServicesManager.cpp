@@ -6,6 +6,7 @@
 #include <services/CInputService.h>
 #include <test/CTestService.h>
 #include <services/CRenderService.h>
+#include <services/CImGuiService.h>
 
 
 namespace maz
@@ -53,8 +54,10 @@ CServicesManager* GetManager()
 
 } // Services
 
+
 CServicesManager::CServicesManager() { ; }
 CServicesManager::~CServicesManager() { ; }
+
 
 bool CServicesManager::Init()
 {
@@ -70,6 +73,7 @@ bool CServicesManager::Init()
     mServices.push_back(MAZ_NEW(CInputService));
     mServices.push_back(MAZ_NEW(CRenderService));
     mServices.push_back(MAZ_NEW(CTestService));
+    mServices.push_back(MAZ_NEW(CImGuiService));
 
     for (size_t i = 0, iCount = mServices.size(); (i < iCount) && lOk; ++i)
     {
@@ -78,6 +82,7 @@ bool CServicesManager::Init()
 
     return lOk;
 }
+
 
 void CServicesManager::End()
 {
@@ -108,11 +113,29 @@ bool CServicesManager::IsOk()
 }
 
 
+void CServicesManager::PreUpdate()
+{
+    for (size_t i = 0, iCount = mServices.size(); (i < iCount); ++i)
+    {
+        mServices[i]->PreUpdate();
+    }
+}
+
+
 void CServicesManager::Update()
 {
     for (size_t i = 0, iCount = mServices.size(); (i < iCount); ++i)
     {
         mServices[i]->Update();
+    }
+}
+
+
+void CServicesManager::PostUpdate()
+{
+    for (size_t i = 0, iCount = mServices.size(); (i < iCount); ++i)
+    {
+        mServices[i]->PostUpdate();
     }
 }
 

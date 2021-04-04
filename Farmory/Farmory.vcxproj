@@ -159,6 +159,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\deprecated\CDelegateOld.h" />
+    <ClInclude Include="src\external\ImGui\imgui_impl_glfw.h" />
+    <ClInclude Include="src\external\ImGui\imgui_impl_opengl3.h" />
+    <ClInclude Include="src\external\ImGui\imconfig.h" />
+    <ClInclude Include="src\external\ImGui\imgui.h" />
+    <ClInclude Include="src\external\ImGui\imgui_internal.h" />
+    <ClInclude Include="src\external\ImGui\imstb_rectpack.h" />
+    <ClInclude Include="src\external\ImGui\imstb_textedit.h" />
+    <ClInclude Include="src\external\ImGui\imstb_truetype.h" />
     <ClInclude Include="src\external\stb_image.h" />
     <ClInclude Include="src\files\CFile.h" />
     <ClInclude Include="src\maz\CDelegate.h" />
@@ -176,12 +184,20 @@
     <ClInclude Include="src\services\CRenderService.h" />
     <ClInclude Include="src\services\CServicesManager.h" />
     <ClInclude Include="src\services\CTimeService.h" />
+    <ClInclude Include="src\services\CImGuiService.h" />
     <ClInclude Include="src\services\IService.h" />
     <ClInclude Include="src\test\CTestService.h" />
     <ClInclude Include="src\test\test.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\external\glad.c" />
+    <ClCompile Include="src\external\ImGui\imgui_impl_glfw.cpp" />
+    <ClCompile Include="src\external\ImGui\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="src\external\ImGui\imgui.cpp" />
+    <ClCompile Include="src\external\ImGui\imgui_demo.cpp" />
+    <ClCompile Include="src\external\ImGui\imgui_draw.cpp" />
+    <ClCompile Include="src\external\ImGui\imgui_tables.cpp" />
+    <ClCompile Include="src\external\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="src\external\stb_image.cpp" />
     <ClCompile Include="src\files\CFile.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -196,6 +212,7 @@
     <ClCompile Include="src\services\CRenderService.cpp" />
     <ClCompile Include="src\services\CServicesManager.cpp" />
     <ClCompile Include="src\services\CTimeService.cpp" />
+    <ClCompile Include="src\services\CImGuiService.cpp" />
     <ClCompile Include="src\test\CTestService.cpp" />
     <ClCompile Include="src\test\test.cpp" />
   </ItemGroup>

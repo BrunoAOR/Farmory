@@ -14,11 +14,11 @@ public:
     CTimeService();
     virtual ~CTimeService();
 
-    virtual bool Init();
-    virtual void End();
-    virtual bool IsOk() const;
+    virtual bool Init() override;
+    virtual void End() override;
+    virtual bool IsOk() const override;
 
-    virtual void Update();
+    virtual void PreUpdate() override;
 
     float GetDeltaTime() const;
 
