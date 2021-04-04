@@ -28,7 +28,9 @@ public:
 
     bool IsOk();
     
+    void PreUpdate();
     void Update();
+    void PostUpdate();
 
     template< typename T >
     T* GetService();

@@ -40,7 +40,7 @@ bool CTimeService::IsOk() const
 }
 
 
-void CTimeService::Update()
+void CTimeService::PreUpdate()
 {
     const float lCurrentFrameTime = static_cast< float >(glfwGetTime());
     mDeltaTime = lCurrentFrameTime - mLastFrameTime;

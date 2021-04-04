@@ -45,7 +45,7 @@ bool CInputService::IsOk() const
 }
 
 
-void CInputService::Update()
+void CInputService::PreUpdate()
 {
     UpdateMouseAxis(mMouseInfo.mXAxis);
     UpdateMouseAxis(mMouseInfo.mYAxis);

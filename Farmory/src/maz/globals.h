@@ -42,6 +42,7 @@
 #define MAZ_ERROR(format, ...) ((void)0);
 #endif // DEBUG
 
+#define EDITOR
 
 namespace maz
 {

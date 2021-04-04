@@ -18,8 +18,16 @@ namespace maz
 float lCameraYaw = -90.0f;
 float lCameraPitch = 0.0f;
 
-CTestService::CTestService() { ; }
-CTestService::~CTestService() { ; }
+CTestService::CTestService()
+{ 
+    MAZ_LOGGER("CTestService::CTestService called");
+}
+
+
+CTestService::~CTestService()
+{
+    MAZ_LOGGER("CTestService::~CTestService called");
+}
 
 
 bool CTestService::Init()
@@ -32,7 +40,7 @@ bool CTestService::Init()
     lOk = lOk && TextureInit();
     lOk = lOk && MeshInit();
 
-    CGlfwHandler::SetCursorMode(ECursorMode::DISABLED);
+    CGlfwHandler::SetCursorMode(ECursorMode::NORMAL);
 
     mCamera.Init();
     mCamera.SetPosition(TVec3(0.0f, 0.0f, 3.0f));
