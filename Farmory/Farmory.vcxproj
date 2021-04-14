@@ -179,7 +179,7 @@
     <ClInclude Include="src\maz\mazApp.h" />
     <ClInclude Include="src\maz\CReference.h" />
     <ClInclude Include="src\maz\CReferenceBase.h" />
-    <ClInclude Include="src\maz\CReferenceOwner.h" />
+    <ClInclude Include="src\maz\CReferenceMaster.h" />
     <ClInclude Include="src\maz\types.h" />
     <ClInclude Include="src\render\CCamera.h" />
     <ClInclude Include="src\render\CMesh.h" />

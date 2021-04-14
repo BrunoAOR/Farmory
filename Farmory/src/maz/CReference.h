@@ -17,7 +17,7 @@ class CReference
 	template<typename U>
 	friend class CReference;
 	template<typename U, bool MEMORY_OWNER>
-	friend class CReferenceOwner;
+	friend class CReferenceMaster;
 
 public:
 	CReference();

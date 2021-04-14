@@ -129,7 +129,7 @@
     <ClInclude Include="src\maz\CReferenceBase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\maz\CReferenceOwner.h">
+    <ClInclude Include="src\maz\CReferenceMaster.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\scenes\CTransformComponent.h">

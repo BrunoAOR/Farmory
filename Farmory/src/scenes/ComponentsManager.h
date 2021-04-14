@@ -4,7 +4,7 @@
 #include <maz/globals.h>
 #include <scenes/EComponentType.h>
 #include <array>
-#include <maz/CReferenceOwner.h>
+#include <maz/CReferenceMaster.h>
 
 namespace maz
 {
@@ -32,7 +32,7 @@ private:
         {
             for (size_t i = 0, iCount = mComponents.size(); i < iCount; ++i)
             {
-                mComponents[i] = std::move(CReferenceOwner<COMPONENT_CLASS>());
+                mComponents[i] = std::move(CReferenceHolder<COMPONENT_CLASS>());
             }
             std::memset(mComponentsBuffer, 0, sizeof(COMPONENT_CLASS) * kMaxComponentsPerType);
             mComponentsBufferUseFlag.fill(false);
@@ -54,7 +54,7 @@ private:
             MAZ_ASSERT(index != kInvalidComponentIndex, "[CComponentManager]::AddComponent - Failed to find an available slot for component!");
             if (index != kInvalidComponentIndex)
             {
-                mComponents[index] = CReferenceOwner<COMPONENT_CLASS, false>(MAZ_PLACEMENT_NEW(&(mComponentsBuffer[sizeof(COMPONENT_CLASS) * index]), COMPONENT_CLASS, aOwner));
+                mComponents[index] = CReferenceHolder<COMPONENT_CLASS>(MAZ_PLACEMENT_NEW(&(mComponentsBuffer[sizeof(COMPONENT_CLASS) * index]), COMPONENT_CLASS, aOwner));
             }
 
             return index;
@@ -67,7 +67,7 @@ private:
 
             if (lOk)
             {
-                mComponents[aComponentIndex].~CReferenceOwner<COMPONENT_CLASS, false>();
+                mComponents[aComponentIndex].~CReferenceHolder<COMPONENT_CLASS>();
                 mComponentsBufferUseFlag[aComponentIndex] = false;
             }
 
@@ -82,7 +82,7 @@ private:
         }
 
     private:
-        std::array<CReferenceOwner<COMPONENT_CLASS, false>, kMaxComponentsPerType> mComponents;
+        std::array<CReferenceHolder<COMPONENT_CLASS>, kMaxComponentsPerType> mComponents;
         uint8 mComponentsBuffer[sizeof(COMPONENT_CLASS) * kMaxComponentsPerType];
         std::array<bool, kMaxComponentsPerType> mComponentsBufferUseFlag;
     };

@@ -17,7 +17,7 @@ namespace maz
 class CReferenceBase
 {
 	template<typename T, bool MEMORY_OWNER>
-	friend class CReferenceOwner;
+	friend class CReferenceMaster;
 	friend bool operator== (const CReferenceBase& lhs, const CReferenceBase& rhs);
 
 public:
