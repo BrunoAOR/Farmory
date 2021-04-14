@@ -236,4 +236,7 @@
       <Filter>Header Files</Filter>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="Natvis\Reference.natvis" />
+  </ItemGroup>
 </Project>

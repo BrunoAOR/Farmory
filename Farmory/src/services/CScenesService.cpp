@@ -25,6 +25,7 @@ bool CScenesService::Init()
     const bool isSame = (transform1 == transform2);
     bool isValid1 = (bool)transform1;
     bool isValid2 = (bool)transform2;
+    transform2 = CReference<CTransformComponent>();
     gameObject->RemoveComponent<CTransformComponent>();
     isValid1 = (bool)transform1;
     isValid2 = (bool)transform2;
@@ -36,7 +37,8 @@ bool CScenesService::Init()
     MAZ_UNUSED_VAR(isValid1);
     MAZ_UNUSED_VAR(isValid2);
 
-    MAZ_ASSERT(transform1, "Invalid transform");
+    MAZ_ASSERT(!transform1, "Transform should be invalid at this point");
+    MAZ_ASSERT(!transform2, "Transform should be invalid at this point");
 
 
 
