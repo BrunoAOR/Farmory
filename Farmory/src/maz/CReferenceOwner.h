@@ -8,6 +8,9 @@
 #include "CReferenceBase.h"
 
 
+namespace maz
+{
+
 template<typename T, bool MEMORY_OWNER = true>
 class CReferenceOwner final
 	: public CReference<T>
@@ -158,5 +161,6 @@ void CReferenceOwner<T, MEMORY_OWNER>::DeleteReferences()
 	this->m_dataPtr = nullptr;
 }
 
+} // maz
 
 #endif // !_H_C_REFERENCE_OWNER_

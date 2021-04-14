@@ -7,6 +7,9 @@
 #include "globals.h"
 
 
+namespace maz
+{
+
 template<typename T>
 class CReference
 	: public CReferenceBase
@@ -165,5 +168,6 @@ T* CReference<T>::operator->()
 	return static_cast<T*>(m_dataPtr);
 }
 
+} // maz
 
 #endif // !_H_C_REFERENCE_

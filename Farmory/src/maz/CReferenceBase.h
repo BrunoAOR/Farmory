@@ -11,6 +11,9 @@
 
 #include <list>
 
+namespace maz
+{
+
 class CReferenceBase
 {
 	template<typename T, bool MEMORY_OWNER>
@@ -39,5 +42,6 @@ protected:
 bool operator==(const CReferenceBase& lhs, const CReferenceBase& rhs);
 bool operator!=(const CReferenceBase& lhs, const CReferenceBase& rhs);
 
+} // maz
 
 #endif // !_H_C_REFERENCE_BASE_

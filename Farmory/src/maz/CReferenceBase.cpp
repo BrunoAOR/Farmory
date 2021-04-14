@@ -3,6 +3,9 @@
 #include <assert.h>
 
 
+namespace maz
+{
+
 bool operator==(const CReferenceBase& lhs, const CReferenceBase& rhs)
 {
 	return (lhs.m_referencesList && rhs.m_referencesList && lhs.m_referencesList == rhs.m_referencesList);
@@ -63,3 +66,5 @@ void CReferenceBase::reset()
 		m_dataPtr = nullptr;
 	}
 }
+
+} // maz
