@@ -236,7 +236,7 @@
     <None Include="src\deprecated\CDelegateOld.inl" />
   </ItemGroup>
   <ItemGroup>
-    <Natvis Include="Natvis\Reference.natvis" />
+    <Natvis Include="Natvis\CReference.natvis" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

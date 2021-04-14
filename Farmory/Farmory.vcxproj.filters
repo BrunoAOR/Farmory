@@ -237,6 +237,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Natvis Include="Natvis\Reference.natvis" />
+    <Natvis Include="Natvis\CReference.natvis" />
   </ItemGroup>
 </Project>
