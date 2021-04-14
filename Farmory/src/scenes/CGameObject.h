@@ -65,6 +65,10 @@ inline bool CGameObject::RemoveComponent()
     if (lOk)
     {
         lOk = mComponentsManager.RemoveComponent<COMPONENT_CLASS>(componentIndex);
+        if (lOk)
+        {
+            mComponents[EnumToNumber(COMPONENT_CLASS::GetType())] = kInvalidComponentIndex;
+        }
     }
 
     return lOk;
