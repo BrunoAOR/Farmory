@@ -46,7 +46,7 @@ CReferenceOwner<T, MEMORY_OWNER>::CReferenceOwner()
 
 template<typename T, bool MEMORY_OWNER>
 CReferenceOwner<T, MEMORY_OWNER>::CReferenceOwner(T* dataPtr)
-	: CReference<T>(new std::list<CReferenceBase*>(), static_cast<void*>(dataPtr))
+	: CReference<T>(MAZ_NEW(std::list<CReferenceBase*>), static_cast<void*>(dataPtr))
 {
 	REFERENCE_LOG("[CReferenceOwner]::CReferenceOwner - params constructor");
 }
