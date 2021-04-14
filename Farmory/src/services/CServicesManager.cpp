@@ -4,10 +4,11 @@
 //Services
 #include <services/CTimeService.h>
 #include <services/CInputService.h>
-#include <test/CTestService.h>
+#include <services/CScenesService.h>
 #include <services/CRenderService.h>
+#include <test/CTestService.h>
 #include <services/CImGuiService.h>
-
+#include <scenes/ComponentsManager.h>
 
 namespace maz
 {
@@ -71,6 +72,7 @@ bool CServicesManager::Init()
 
     mServices.push_back(MAZ_NEW(CTimeService));
     mServices.push_back(MAZ_NEW(CInputService));
+    mServices.push_back(MAZ_NEW(CScenesService));
     mServices.push_back(MAZ_NEW(CRenderService));
     mServices.push_back(MAZ_NEW(CTestService));
 #ifdef EDITOR

@@ -173,6 +173,7 @@
     <ClInclude Include="src\maz\CFixedSizeString.h" />
     <ClInclude Include="src\maz\CGlfwHandler.h" />
     <ClInclude Include="src\maz\config.h" />
+    <ClInclude Include="src\maz\constants.h" />
     <ClInclude Include="src\maz\globals.h" />
     <ClInclude Include="src\maz\math.h" />
     <ClInclude Include="src\maz\mazApp.h" />
@@ -184,8 +185,14 @@
     <ClInclude Include="src\render\CMesh.h" />
     <ClInclude Include="src\render\CShaderProgram.h" />
     <ClInclude Include="src\render\CTexture2D.h" />
+    <ClInclude Include="src\scenes\CGameObject.h" />
+    <ClInclude Include="src\scenes\ComponentsManager.h" />
+    <ClInclude Include="src\scenes\CTransformComponent.h" />
+    <ClInclude Include="src\scenes\EComponentType.h" />
+    <ClInclude Include="src\scenes\IComponent.h" />
     <ClInclude Include="src\services\CInputService.h" />
     <ClInclude Include="src\services\CRenderService.h" />
+    <ClInclude Include="src\services\CScenesService.h" />
     <ClInclude Include="src\services\CServicesManager.h" />
     <ClInclude Include="src\services\CTimeService.h" />
     <ClInclude Include="src\services\CImGuiService.h" />
@@ -213,8 +220,12 @@
     <ClCompile Include="src\render\CMesh.cpp" />
     <ClCompile Include="src\render\CShaderProgram.cpp" />
     <ClCompile Include="src\render\CTexture2D.cpp" />
+    <ClCompile Include="src\scenes\CGameObject.cpp" />
+    <ClCompile Include="src\scenes\CTransformComponent.cpp" />
+    <ClCompile Include="src\scenes\IComponent.cpp" />
     <ClCompile Include="src\services\CInputService.cpp" />
     <ClCompile Include="src\services\CRenderService.cpp" />
+    <ClCompile Include="src\services\CScenesService.cpp" />
     <ClCompile Include="src\services\CServicesManager.cpp" />
     <ClCompile Include="src\services\CTimeService.cpp" />
     <ClCompile Include="src\services\CImGuiService.cpp" />
