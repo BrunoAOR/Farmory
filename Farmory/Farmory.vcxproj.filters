@@ -105,6 +105,9 @@
     <ClInclude Include="src\external\ImGui\imgui_impl_opengl3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\maz\CFixedSizeString.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\maz\CGlfwHandler.cpp">

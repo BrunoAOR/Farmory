@@ -29,6 +29,18 @@ inline bool IsZero(const TVec3& aVec)
     return (IsApproxEq(aVec.x, 0) && IsApproxEq(aVec.y, 0) && IsApproxEq(aVec.z, 0));
 }
 
+template<typename T>
+inline T Min(T aLhs, T aRhs)
+{
+    return ((aLhs < aRhs) ? aLhs : aRhs);
+}
+
+template<typename T>
+inline T Max(T aLhs, T aRhs)
+{
+    return ((aLhs > aRhs) ? aLhs : aRhs);
+}
+
 } // maz
 
 #endif // !_H_MATH_
