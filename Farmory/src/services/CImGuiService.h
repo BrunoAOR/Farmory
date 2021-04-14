@@ -4,7 +4,6 @@
 #include <services/IService.h>
 
 
-struct GLFWwindow;
 namespace maz
 {
 class CImGuiService
