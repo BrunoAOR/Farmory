@@ -18,18 +18,25 @@ bool CScenesService::Init()
     CComponentsManager componentsManager;
     componentsManager.RegisterComponent<CTransformComponent>();
     CGameObject* gameObject = MAZ_NEW(CGameObject, componentsManager, nullptr, "Timmy");
-    CReference<CTransformComponent> transform = gameObject->AddComponent<CTransformComponent>();
+    CReference<CTransformComponent> transform1 = gameObject->AddComponent<CTransformComponent>();
     const bool hasIt = gameObject->HasComponent<CTransformComponent>();
     CReference<CTransformComponent> transform2 = gameObject->GetComponent<CTransformComponent>();
-    CTransformComponent* transformPtr = transform.get();
-    const bool isSame = (transform == transform2);
+    CTransformComponent* transformPtr = transform1.get();
+    const bool isSame = (transform1 == transform2);
+    bool isValid1 = (bool)transform1;
+    bool isValid2 = (bool)transform2;
+    gameObject->RemoveComponent<CTransformComponent>();
+    isValid1 = (bool)transform1;
+    isValid2 = (bool)transform2;
 
 
     MAZ_UNUSED_VAR(hasIt);
     MAZ_UNUSED_VAR(transformPtr);
     MAZ_UNUSED_VAR(isSame);
+    MAZ_UNUSED_VAR(isValid1);
+    MAZ_UNUSED_VAR(isValid2);
 
-    MAZ_ASSERT(transform, "Invalid transform");
+    MAZ_ASSERT(transform1, "Invalid transform");
 
 
 

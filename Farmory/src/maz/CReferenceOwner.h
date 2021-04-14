@@ -8,7 +8,7 @@
 #include "CReferenceBase.h"
 
 
-template<typename T>
+template<typename T, bool MEMORY_OWNER = true>
 class CReferenceOwner final
 	: public CReference<T>
 {
@@ -23,42 +23,42 @@ public:
 	CReferenceOwner& operator=(const CReferenceOwner& source) = delete;
 	CReferenceOwner& operator=(CReferenceOwner&& source);
 
-	int getRefCount() const;
-	CReference<T> getReference() const;
+	int GetRefCount() const;
+	CReference<T> GetReference() const;
 	template<typename U>
-	CReference<U> getStaticCastedReference() const;
+	CReference<U> GetStaticCastedReference() const;
 	template<typename U>
-	CReference<U> getDynamicCastedReference() const;
-	void deleteReferences();
+	CReference<U> GetDynamicCastedReference() const;
+	void DeleteReferences();
 };
 
 
-template<typename T>
-CReferenceOwner<T>::CReferenceOwner()
+template<typename T, bool MEMORY_OWNER>
+CReferenceOwner<T, MEMORY_OWNER>::CReferenceOwner()
 	: CReference<T>()
 {
 	REFERENCE_LOG("[CReferenceOwner]::CReferenceOwner - default constructor");
 }
 
 
-template<typename T>
-CReferenceOwner<T>::CReferenceOwner(T* dataPtr)
+template<typename T, bool MEMORY_OWNER>
+CReferenceOwner<T, MEMORY_OWNER>::CReferenceOwner(T* dataPtr)
 	: CReference<T>(new std::list<CReferenceBase*>(), static_cast<void*>(dataPtr))
 {
 	REFERENCE_LOG("[CReferenceOwner]::CReferenceOwner - params constructor");
 }
 
 
-template<typename T>
-CReferenceOwner<T>::~CReferenceOwner()
+template<typename T, bool MEMORY_OWNER>
+CReferenceOwner<T, MEMORY_OWNER>::~CReferenceOwner()
 {
 	REFERENCE_LOG("[CReferenceOwner]::~CReferenceOwner - destructor");
-	this->deleteReferences();
+	this->DeleteReferences();
 }
 
 
-template<typename T>
-CReferenceOwner<T>::CReferenceOwner(CReferenceOwner&& source)
+template<typename T, bool MEMORY_OWNER>
+CReferenceOwner<T, MEMORY_OWNER>::CReferenceOwner(CReferenceOwner&& source)
 	: CReference<T>(source.m_referencesList, source.m_dataPtr)
 {
 	REFERENCE_LOG("[CReferenceOwner]::CReferenceOwner - move constructor");
@@ -66,29 +66,30 @@ CReferenceOwner<T>::CReferenceOwner(CReferenceOwner&& source)
 }
 
 
-template<typename T>
+template<typename T, bool MEMORY_OWNER>
 template<typename U>
-CReferenceOwner<T>::CReferenceOwner(CReferenceOwner<U>&& source)
+CReferenceOwner<T, MEMORY_OWNER>::CReferenceOwner(CReferenceOwner<U>&& source)
 	: CReference<T>(source.m_referencesList, source.m_dataPtr)
 {
 	REFERENCE_LOG("[CReferenceOwner]::CReferenceOwner - generalized move constructor");
 	// This is only added to cause a compile-time error in case no implicit conversion exists to convert a U* into a T*
 	T* ptr = source.get();
+	MAZ_UNUSED_VAR(ptr);
 
 	// This, however IS important
 	source.reset();
 }
 
 
-template<typename T>
-CReferenceOwner<T>& CReferenceOwner<T>::operator=(CReferenceOwner&& source)
+template<typename T, bool MEMORY_OWNER>
+CReferenceOwner<T, MEMORY_OWNER>& CReferenceOwner<T, MEMORY_OWNER>::operator=(CReferenceOwner&& source)
 {
 	REFERENCE_LOG("[CReferenceOwner]::operator= - move assignment");
 	if (&source == this)
 	{
 		return *this;
 	}
-	this->deleteReferences();
+	this->DeleteReferences();
 
 	this->m_referencesList = source.m_referencesList;
 	this->m_dataPtr = source.m_dataPtr;
@@ -99,38 +100,38 @@ CReferenceOwner<T>& CReferenceOwner<T>::operator=(CReferenceOwner&& source)
 }
 
 
-template<typename T>
-int CReferenceOwner<T>::getRefCount() const
+template<typename T, bool MEMORY_OWNER>
+int CReferenceOwner<T, MEMORY_OWNER>::GetRefCount() const
 {
 	return this->m_referencesList != nullptr ? this->m_referencesList->size() : 0;
 }
 
 
-template<typename T>
-CReference<T> CReferenceOwner<T>::getReference() const
+template<typename T, bool MEMORY_OWNER>
+CReference<T> CReferenceOwner<T, MEMORY_OWNER>::GetReference() const
 {
 	return CReference<T>(this->m_referencesList, this->m_dataPtr);
 }
 
 
-template<typename T>
+template<typename T, bool MEMORY_OWNER>
 template<typename U>
-CReference<U> CReferenceOwner<T>::getStaticCastedReference() const
+CReference<U> CReferenceOwner<T, MEMORY_OWNER>::GetStaticCastedReference() const
 {
 	return this->static_reference_cast<U>();
 }
 
 
-template<typename T>
+template<typename T, bool MEMORY_OWNER>
 template<typename U>
-CReference<U> CReferenceOwner<T>::getDynamicCastedReference() const
+CReference<U> CReferenceOwner<T, MEMORY_OWNER>::GetDynamicCastedReference() const
 {
 	return this->dynamic_reference_cast<U>();
 }
 
 
-template<typename T>
-void CReferenceOwner<T>::deleteReferences()
+template<typename T, bool MEMORY_OWNER>
+void CReferenceOwner<T, MEMORY_OWNER>::DeleteReferences()
 {
 	if (this->m_dataPtr == nullptr || this->m_referencesList == nullptr)
 	{
@@ -138,7 +139,10 @@ void CReferenceOwner<T>::deleteReferences()
 		return;
 	}
 
-	delete static_cast<T*>(this->m_dataPtr);
+	if constexpr (MEMORY_OWNER)
+	{
+		delete static_cast<T*>(this->m_dataPtr);
+	}
 
 	for (auto& ref : *(this->m_referencesList))
 	{
@@ -151,6 +155,7 @@ void CReferenceOwner<T>::deleteReferences()
 	
 	delete this->m_referencesList;
 	this->m_referencesList = nullptr;
+	this->m_dataPtr = nullptr;
 }
 
 

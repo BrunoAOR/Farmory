@@ -13,7 +13,7 @@ class CReference
 {
 	template<typename U>
 	friend class CReference;
-	template<typename U>
+	template<typename U, bool MEMORY_OWNER>
 	friend class CReferenceOwner;
 
 public:

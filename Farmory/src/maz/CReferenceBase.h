@@ -13,7 +13,7 @@
 
 class CReferenceBase
 {
-	template<typename T>
+	template<typename T, bool MEMORY_OWNER>
 	friend class CReferenceOwner;
 	friend bool operator== (const CReferenceBase& lhs, const CReferenceBase& rhs);
 

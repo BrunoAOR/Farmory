@@ -20,6 +20,8 @@ public:
     template<typename COMPONENT_CLASS>
     CReference<COMPONENT_CLASS> AddComponent();
     template<typename COMPONENT_CLASS>
+    bool RemoveComponent();
+    template<typename COMPONENT_CLASS>
     bool HasComponent();
     template<typename COMPONENT_CLASS>
     CReference<COMPONENT_CLASS> GetComponent();
@@ -51,6 +53,21 @@ inline CReference<COMPONENT_CLASS> CGameObject::AddComponent()
     }
 
     return component;
+}
+
+
+template<typename COMPONENT_CLASS>
+inline bool CGameObject::RemoveComponent()
+{
+    bool lOk = true;
+    const uint16 componentIndex = mComponents[EnumToNumber(COMPONENT_CLASS::GetType())];
+    lOk = (componentIndex != kInvalidComponentIndex);
+    if (lOk)
+    {
+        lOk = mComponentsManager.RemoveComponent<COMPONENT_CLASS>(componentIndex);
+    }
+
+    return lOk;
 }
 
 

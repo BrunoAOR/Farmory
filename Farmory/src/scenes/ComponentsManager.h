@@ -38,6 +38,7 @@ private:
             mComponentsBufferUseFlag.fill(false);
         }
 
+
         uint16 AddComponent(CGameObject& aOwner)
         {
             CReference<COMPONENT_CLASS> component;
@@ -53,20 +54,35 @@ private:
             MAZ_ASSERT(index != kInvalidComponentIndex, "[CComponentManager]::AddComponent - Failed to find an available slot for component!");
             if (index != kInvalidComponentIndex)
             {
-                mComponents[index] = CReferenceOwner(MAZ_PLACEMENT_NEW(&(mComponentsBuffer[sizeof(COMPONENT_CLASS) * index]), COMPONENT_CLASS, aOwner));
+                mComponents[index] = CReferenceOwner<COMPONENT_CLASS, false>(MAZ_PLACEMENT_NEW(&(mComponentsBuffer[sizeof(COMPONENT_CLASS) * index]), COMPONENT_CLASS, aOwner));
             }
 
             return index;
         }
 
+
+        bool RemoveComponent(uint16 aComponentIndex)
+        {
+            bool lOk = mComponentsBufferUseFlag[aComponentIndex];
+
+            if (lOk)
+            {
+                mComponents[aComponentIndex].~CReferenceOwner<COMPONENT_CLASS, false>();
+                mComponentsBufferUseFlag[aComponentIndex] = false;
+            }
+
+            return lOk;
+        }
+
+
         CReference<COMPONENT_CLASS> GetComponent(uint16 aIndex)
         {
             MAZ_ASSERT(mComponentsBufferUseFlag[aIndex], "[CComponentManager]::GetComponent - Attempting to retrieve uninitialized component at index %hu!", aIndex);
-            return mComponents[aIndex].getReference();
+            return mComponents[aIndex].GetReference();
         }
 
     private:
-        std::array<CReferenceOwner<COMPONENT_CLASS>, kMaxComponentsPerType> mComponents;
+        std::array<CReferenceOwner<COMPONENT_CLASS, false>, kMaxComponentsPerType> mComponents;
         uint8 mComponentsBuffer[sizeof(COMPONENT_CLASS) * kMaxComponentsPerType];
         std::array<bool, kMaxComponentsPerType> mComponentsBufferUseFlag;
     };
@@ -86,6 +102,7 @@ public:
         return true;
     }
 
+
     template<typename COMPONENT_CLASS>
     uint16 AddComponent(CGameObject& aOwner)
     {
@@ -93,6 +110,14 @@ public:
             , "[CComponentsManager]::AddComponent - Component of the desired type have not been registered!");
         return static_cast<CComponentManager<COMPONENT_CLASS>*>(mComponentManagers[EnumToNumber(COMPONENT_CLASS::GetType())])->AddComponent(aOwner);
     }
+
+
+    template<typename COMPONENT_CLASS>
+    bool RemoveComponent(const uint16 aComponentIndex)
+    {
+        return static_cast<CComponentManager<COMPONENT_CLASS>*>(mComponentManagers[EnumToNumber(COMPONENT_CLASS::GetType())])->RemoveComponent(aComponentIndex);
+    }
+
 
     template<typename COMPONENT_CLASS>
     CReference<COMPONENT_CLASS> GetComponent(const uint16 aComponentIndex)
