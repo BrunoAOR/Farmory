@@ -68,6 +68,7 @@ private:
             if (lOk)
             {
                 mComponents[aComponentIndex].~CReferenceHolder<COMPONENT_CLASS>();
+                reinterpret_cast<COMPONENT_CLASS*>(&(mComponentsBuffer[sizeof(COMPONENT_CLASS) * aComponentIndex]))->~COMPONENT_CLASS();
                 mComponentsBufferUseFlag[aComponentIndex] = false;
             }
 
