@@ -186,6 +186,7 @@
     <ClInclude Include="src\render\CShaderProgram.h" />
     <ClInclude Include="src\render\CTexture2D.h" />
     <ClInclude Include="src\scenes\CGameObject.h" />
+    <ClInclude Include="src\scenes\CGameObjectsManager.h" />
     <ClInclude Include="src\scenes\ComponentsManager.h" />
     <ClInclude Include="src\scenes\CTransformComponent.h" />
     <ClInclude Include="src\scenes\EComponentType.h" />
@@ -221,6 +222,7 @@
     <ClCompile Include="src\render\CShaderProgram.cpp" />
     <ClCompile Include="src\render\CTexture2D.cpp" />
     <ClCompile Include="src\scenes\CGameObject.cpp" />
+    <ClCompile Include="src\scenes\CGameObjectsManager.cpp" />
     <ClCompile Include="src\scenes\CTransformComponent.cpp" />
     <ClCompile Include="src\scenes\IComponent.cpp" />
     <ClCompile Include="src\services\CInputService.cpp" />

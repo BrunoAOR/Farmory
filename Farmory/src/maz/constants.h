@@ -6,8 +6,10 @@
 namespace maz
 {
 
-const uint16 kMaxComponentTypes = 255u;
-const uint8 kMaxComponentsPerType = 255u;
+const uint16 kMaxGameObjects = 1024u;
+const uint16 kInvalidGameObjectId = MAX_UINT16;
+const uint16 kMaxComponentTypes = 256u;
+const uint16 kMaxComponentsPerType = 1024u;
 const uint16 kInvalidComponentIndex = MAX_UINT16;
 
 } // maz

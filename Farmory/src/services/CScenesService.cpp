@@ -2,6 +2,7 @@
 #include "CScenesService.h"
 
 #include <scenes/ComponentsManager.h>
+#include <scenes/CGameObjectsManager.h>
 #include <scenes/CGameObject.h>
 #include <scenes/CTransformComponent.h>
 
@@ -15,9 +16,20 @@ bool CScenesService::Init()
 {
     bool lOk = true;
 
+    // TODO
+    /*
+        - Init and close methods for CComponentsManager and CGameObjectsManager
+        - On Close methods, clear the buffers and Reset ReferenceHolders
+        - When destroying a CGameObject, remove its Components from CComponentsManager
+
+        - Make Add/Remove of components be effective when a new Update method is called in CComponentsManager (potentially also on the CGameObject itself?)
+        - Make Create/Destroy of gameobjects be effective when a new Update method is called in CGameObjectsManager
+    */
+    
     CComponentsManager componentsManager;
+    CGameObjectsManager gameObjectsManager(componentsManager);
     componentsManager.RegisterComponent<CTransformComponent>();
-    CGameObject* gameObject = MAZ_NEW(CGameObject, componentsManager, nullptr, "Timmy");
+    CReference<CGameObject> gameObject = gameObjectsManager.CreateGameObject(nullptr, "Timmy");
     CReference<CTransformComponent> transform1 = gameObject->AddComponent<CTransformComponent>();
     const bool hasIt = gameObject->HasComponent<CTransformComponent>();
     CReference<CTransformComponent> transform2 = gameObject->GetComponent<CTransformComponent>();

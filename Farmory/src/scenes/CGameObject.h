@@ -13,10 +13,12 @@ namespace maz
 {
 class CGameObject final
 {
-public:
-    CGameObject(CComponentsManager& aComponentsManager, CGameObject* aParent, const CFixedString32& aName);
+private:
+    friend class CGameObjectsManager;
+    CGameObject(uint16 aId, CComponentsManager& aComponentsManager, CGameObject* aParent, const CFixedString32& aName);
     ~CGameObject();
 
+public:
     template<typename COMPONENT_CLASS>
     CReference<COMPONENT_CLASS> AddComponent();
     template<typename COMPONENT_CLASS>
@@ -27,12 +29,14 @@ public:
     CReference<COMPONENT_CLASS> GetComponent();
 
 private:
+    uint16_t mId;
+    CComponentsManager& mComponentsManager;
+
     CGameObject* mParent;
     CGameObject* mNextSibling;
     CGameObject* mFirstChild;
     uint16 mNumChildren;
 
-    CComponentsManager& mComponentsManager;
 
     CFixedString32 mName;
 
