@@ -1,7 +1,7 @@
 #include <maz/globals.h>
 #include "CScenesService.h"
 
-#include <scenes/ComponentsManager.h>
+#include <scenes/CComponentsManager.h>
 #include <scenes/CGameObjectsManager.h>
 #include <scenes/CGameObject.h>
 #include <scenes/CTransformComponent.h>

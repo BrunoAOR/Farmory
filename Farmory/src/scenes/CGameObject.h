@@ -7,7 +7,7 @@
 #include <scenes/EComponentType.h>
 #include <scenes/IComponent.h>
 #include <array>
-#include <scenes/ComponentsManager.h>
+#include <scenes/CComponentsManager.h>
 
 namespace maz
 {

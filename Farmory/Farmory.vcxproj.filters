@@ -117,7 +117,7 @@
     <ClInclude Include="src\scenes\IComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\scenes\ComponentsManager.h">
+    <ClInclude Include="src\scenes\CComponentsManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\maz\constants.h">
@@ -239,7 +239,7 @@
     <ClCompile Include="src\scenes\CGameObjectsManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\scenes\ComponentsManager.cpp">
+    <ClCompile Include="src\scenes\CComponentsManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
