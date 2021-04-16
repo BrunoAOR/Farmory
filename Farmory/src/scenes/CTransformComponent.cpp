@@ -3,7 +3,7 @@
 namespace maz
 {
 
-CTransformComponent::CTransformComponent(CGameObject& aOwner)
+CTransformComponent::CTransformComponent(CReference<CGameObject>& aOwner)
     : IComponent(aOwner)
 {
     a = 1.0f;

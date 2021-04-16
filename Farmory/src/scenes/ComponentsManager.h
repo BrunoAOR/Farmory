@@ -13,12 +13,18 @@ class CGameObject;
 class CComponentsManager
 {
 private:
+    template<typename COMPONENT_CLASS>
+    friend class CComponentManager;
+    void updateComponentIdForGameObject(CReference<CGameObject> aGameObject, EComponentType aComponentType, uint16 aId);
+
     class CComponentManagerBase
     {
     public:
         CComponentManagerBase(EComponentType aComponentType) : mComponentType(aComponentType) {}
+        virtual ~CComponentManagerBase() {}
         EComponentType GetType() const { return mComponentType; }
-
+        virtual void RefreshComponents(CComponentsManager* aComponentsManager) = 0;
+            
     private:
         const EComponentType mComponentType;
     };
@@ -26,6 +32,15 @@ private:
     template<typename COMPONENT_CLASS>
     class CComponentManager : public CComponentManagerBase
     {
+    private:
+        enum class EComponentUseFlags : uint8
+        {
+            NONE        = 0,
+            IN_USE      = 1 << 0,
+            JUST_ADDED  = 1 << 1,
+            TO_REMOVE   = 1 << 2
+        };
+
     public:
         CComponentManager(EComponentType aComponentType)
             : CComponentManagerBase(aComponentType)
@@ -35,19 +50,45 @@ private:
                 mComponents[i] = std::move(CReferenceHolder<COMPONENT_CLASS>());
             }
             std::memset(mComponentsBuffer, 0, sizeof(COMPONENT_CLASS) * kMaxComponentsPerType);
-            mComponentsBufferUseFlag.fill(false);
+            mComponentsBufferUseFlags.fill(EComponentUseFlags::NONE);
         }
 
 
-        uint16 AddComponent(CGameObject& aOwner)
+        virtual void RefreshComponents(CComponentsManager* aComponentsManager) final
+        {
+            for (uint16 i = 0, iCount = static_cast<uint16>(mComponents.size()); i < iCount; ++i)
+            {
+                if (IsFlagSet(mComponentsBufferUseFlags[i], EComponentUseFlags::IN_USE))
+                {
+                    if (IsFlagSet(mComponentsBufferUseFlags[i], EComponentUseFlags::JUST_ADDED))
+                    {
+                        ResetFlag(mComponentsBufferUseFlags[i], EComponentUseFlags::JUST_ADDED);
+                        MAZ_ASSERT(!IsFlagSet(mComponentsBufferUseFlags[i], EComponentUseFlags::TO_REMOVE), "[CComponentManager]::RefreshComponents - A component has both the JUST_ADDED and the TO_REMOVE flags. This should not happen!");
+                        aComponentsManager->updateComponentIdForGameObject(mComponents[i]->GetOwner(), COMPONENT_CLASS::GetType(), i);
+                    }
+                    else if (IsFlagSet(mComponentsBufferUseFlags[i], EComponentUseFlags::TO_REMOVE))
+                    {
+                        ResetFlag(mComponentsBufferUseFlags[i], EComponentUseFlags::TO_REMOVE);
+                        aComponentsManager->updateComponentIdForGameObject(mComponents[i]->GetOwner(), COMPONENT_CLASS::GetType(), kInvalidComponentIndex);
+                        mComponents[i].~CReferenceHolder<COMPONENT_CLASS>();
+                        reinterpret_cast<COMPONENT_CLASS*>(&(mComponentsBuffer[sizeof(COMPONENT_CLASS) * i]))->~COMPONENT_CLASS();
+                        ResetFlag(mComponentsBufferUseFlags[i], EComponentUseFlags::IN_USE);
+                    }
+                }
+            }
+        }
+
+
+        CReference<COMPONENT_CLASS> AddComponent(CReference<CGameObject>& aOwner)
         {
             CReference<COMPONENT_CLASS> component;
             uint16 index = kInvalidComponentIndex;
-            for (size_t i = 0, iCount = mComponentsBufferUseFlag.size(); (i < iCount) && (index == kInvalidComponentIndex); ++i)
+            for (size_t i = 0, iCount = mComponentsBufferUseFlags.size(); (i < iCount) && (index == kInvalidComponentIndex); ++i)
             {
-                if (!mComponentsBufferUseFlag[i])
+                if (!IsFlagSet(mComponentsBufferUseFlags[i], EComponentUseFlags::IN_USE))
                 {
-                    mComponentsBufferUseFlag[i] = true;
+                    SetFlag(mComponentsBufferUseFlags[i], EComponentUseFlags::IN_USE);
+                    SetFlag(mComponentsBufferUseFlags[i], EComponentUseFlags::JUST_ADDED);
                     index = static_cast<uint16>(i);
                 }
             }
@@ -55,21 +96,21 @@ private:
             if (index != kInvalidComponentIndex)
             {
                 mComponents[index] = CReferenceHolder<COMPONENT_CLASS>(MAZ_PLACEMENT_NEW(&(mComponentsBuffer[sizeof(COMPONENT_CLASS) * index]), COMPONENT_CLASS, aOwner));
+                component = mComponents[index].GetReference();
             }
 
-            return index;
+            return component;
         }
 
 
         bool RemoveComponent(uint16 aComponentIndex)
         {
-            bool lOk = mComponentsBufferUseFlag[aComponentIndex];
+            bool lOk = IsFlagSet(mComponentsBufferUseFlags[aComponentIndex], EComponentUseFlags::IN_USE);
 
             if (lOk)
             {
-                mComponents[aComponentIndex].~CReferenceHolder<COMPONENT_CLASS>();
-                reinterpret_cast<COMPONENT_CLASS*>(&(mComponentsBuffer[sizeof(COMPONENT_CLASS) * aComponentIndex]))->~COMPONENT_CLASS();
-                mComponentsBufferUseFlag[aComponentIndex] = false;
+                MAZ_ASSERT(!IsFlagSet(mComponentsBufferUseFlags[aComponentIndex], EComponentUseFlags::JUST_ADDED), "[CComponentManager]::RemoveComponent - Attempting to remove a component that has been added in this frame and not yet commited!");
+                SetFlag(mComponentsBufferUseFlags[aComponentIndex], EComponentUseFlags::TO_REMOVE);
             }
 
             return lOk;
@@ -78,21 +119,20 @@ private:
 
         CReference<COMPONENT_CLASS> GetComponent(uint16 aIndex)
         {
-            MAZ_ASSERT(mComponentsBufferUseFlag[aIndex], "[CComponentManager]::GetComponent - Attempting to retrieve uninitialized component at index %hu!", aIndex);
+            MAZ_ASSERT(IsFlagSet(mComponentsBufferUseFlags[aIndex], EComponentUseFlags::IN_USE), "[CComponentManager]::GetComponent - Attempting to retrieve uninitialized component at index %hu!", aIndex);
             return mComponents[aIndex].GetReference();
         }
 
     private:
         std::array<CReferenceHolder<COMPONENT_CLASS>, kMaxComponentsPerType> mComponents;
         uint8 mComponentsBuffer[sizeof(COMPONENT_CLASS) * kMaxComponentsPerType];
-        std::array<bool, kMaxComponentsPerType> mComponentsBufferUseFlag;
+        std::array<EComponentUseFlags, kMaxComponentsPerType> mComponentsBufferUseFlags;
     };
 
 public:
-    CComponentsManager()
-    {
-        mComponentManagers.fill(nullptr);
-    }
+    CComponentsManager();
+    void RefreshComponents();
+
 
     template<typename COMPONENT_CLASS>
     bool RegisterComponent()
@@ -105,7 +145,7 @@ public:
 
 
     template<typename COMPONENT_CLASS>
-    uint16 AddComponent(CGameObject& aOwner)
+    CReference< COMPONENT_CLASS> AddComponent(CReference<CGameObject>& aOwner)
     {
         MAZ_ASSERT(mComponentManagers[EnumToNumber(COMPONENT_CLASS::GetType())] != nullptr
             , "[CComponentsManager]::AddComponent - Component of the desired type have not been registered!");
@@ -116,6 +156,8 @@ public:
     template<typename COMPONENT_CLASS>
     bool RemoveComponent(const uint16 aComponentIndex)
     {
+        MAZ_ASSERT(mComponentManagers[EnumToNumber(COMPONENT_CLASS::GetType())] != nullptr
+            , "[CComponentsManager]::RemoveComponent - Component of the desired type have not been registered!");
         return static_cast<CComponentManager<COMPONENT_CLASS>*>(mComponentManagers[EnumToNumber(COMPONENT_CLASS::GetType())])->RemoveComponent(aComponentIndex);
     }
 
@@ -123,6 +165,8 @@ public:
     template<typename COMPONENT_CLASS>
     CReference<COMPONENT_CLASS> GetComponent(const uint16 aComponentIndex)
     {
+        MAZ_ASSERT(mComponentManagers[EnumToNumber(COMPONENT_CLASS::GetType())] != nullptr
+            , "[CComponentsManager]::GetComponent - Component of the desired type have not been registered!");
         return static_cast<CComponentManager<COMPONENT_CLASS>*>(mComponentManagers[EnumToNumber(COMPONENT_CLASS::GetType())])->GetComponent(aComponentIndex);
     }
 

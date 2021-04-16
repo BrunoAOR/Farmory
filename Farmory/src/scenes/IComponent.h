@@ -1,6 +1,8 @@
 #ifndef _H_I_COMPONENT_
 #define _H_I_COMPONENT_
 
+#include<maz/CReference.h>
+
 
 namespace maz
 {
@@ -9,13 +11,13 @@ class CGameObject;
 class IComponent
 {
 public:
-    IComponent(CGameObject& aOwner);
+    IComponent(CReference<CGameObject>& aOwner);
 
-    const CGameObject& GetOwner() const;
-    CGameObject& GetOwner();
+    const CReference<CGameObject> GetOwner() const;
+    CReference<CGameObject> GetOwner();
 
 private:
-    CGameObject& mOwner;
+    CReference<CGameObject> mOwner;
 };
 
 } // maz

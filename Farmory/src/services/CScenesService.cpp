@@ -22,29 +22,34 @@ bool CScenesService::Init()
         - On Close methods, clear the buffers and Reset ReferenceHolders
         - When destroying a CGameObject, remove its Components from CComponentsManager
 
-        - Make Add/Remove of components be effective when a new Update method is called in CComponentsManager (potentially also on the CGameObject itself?)
         - Make Create/Destroy of gameobjects be effective when a new Update method is called in CGameObjectsManager
     */
     
-    CComponentsManager componentsManager;
-    CGameObjectsManager gameObjectsManager(componentsManager);
-    componentsManager.RegisterComponent<CTransformComponent>();
-    CReference<CGameObject> gameObject = gameObjectsManager.CreateGameObject(nullptr, "Timmy");
+    CComponentsManager* componentsManager = MAZ_NEW(CComponentsManager);
+    CGameObjectsManager* gameObjectsManager = MAZ_NEW(CGameObjectsManager, *componentsManager);
+    componentsManager->RegisterComponent<CTransformComponent>();
+    CReference<CGameObject> gameObject = gameObjectsManager->CreateGameObject(nullptr, "Timmy");
     CReference<CTransformComponent> transform1 = gameObject->AddComponent<CTransformComponent>();
-    const bool hasIt = gameObject->HasComponent<CTransformComponent>();
+    bool hasIt = gameObject->HasComponent<CTransformComponent>();
     CReference<CTransformComponent> transform2 = gameObject->GetComponent<CTransformComponent>();
-    CTransformComponent* transformPtr = transform1.get();
-    const bool isSame = (transform1 == transform2);
+    bool isSame = (transform1 == transform2);
     bool isValid1 = (bool)transform1;
     bool isValid2 = (bool)transform2;
+    componentsManager->RefreshComponents();
+    hasIt = gameObject->HasComponent<CTransformComponent>();
+    transform2 = gameObject->GetComponent<CTransformComponent>();
+    isSame = (transform1 == transform2);
     transform2 = CReference<CTransformComponent>();
+    isValid1 = (bool)transform1;
+    isValid2 = (bool)transform2;
     gameObject->RemoveComponent<CTransformComponent>();
     isValid1 = (bool)transform1;
     isValid2 = (bool)transform2;
-
+    componentsManager->RefreshComponents();
+    isValid1 = (bool)transform1;
+    isValid2 = (bool)transform2;
 
     MAZ_UNUSED_VAR(hasIt);
-    MAZ_UNUSED_VAR(transformPtr);
     MAZ_UNUSED_VAR(isSame);
     MAZ_UNUSED_VAR(isValid1);
     MAZ_UNUSED_VAR(isValid2);

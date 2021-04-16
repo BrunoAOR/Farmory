@@ -15,8 +15,11 @@ class CGameObject final
 {
 private:
     friend class CGameObjectsManager;
+    friend class CComponentsManager;
+
     CGameObject(uint16 aId, CComponentsManager& aComponentsManager, CGameObject* aParent, const CFixedString32& aName);
     ~CGameObject();
+    void updateComponentId(EComponentType aComponentType, uint16 aId);
 
 public:
     template<typename COMPONENT_CLASS>
@@ -31,6 +34,7 @@ public:
 private:
     uint16_t mId;
     CComponentsManager& mComponentsManager;
+    CReference<CGameObject> mThis;
 
     CGameObject* mParent;
     CGameObject* mNextSibling;
@@ -50,10 +54,9 @@ inline CReference<COMPONENT_CLASS> CGameObject::AddComponent()
     CReference<COMPONENT_CLASS> component;
     if (mComponents[EnumToNumber(COMPONENT_CLASS::GetType())] == kInvalidComponentIndex)
     {
-        const uint16 componentIndex = mComponentsManager.AddComponent<COMPONENT_CLASS>(*this);
-        MAZ_ASSERT(componentIndex != kInvalidComponentIndex, "[CGameObject]::AddComponent - Failed to add component of desired type!");
-        mComponents[EnumToNumber(COMPONENT_CLASS::GetType())] = componentIndex;
-        component = mComponentsManager.GetComponent<COMPONENT_CLASS>(componentIndex);
+        component = mComponentsManager.AddComponent<COMPONENT_CLASS>(mThis);
+        MAZ_ASSERT(component, "[CGameObject]::AddComponent - Failed to add component of desired type!");
+        // Even though the component has been created, its ID is NOT added to the gameObject until the ComponentsManager is updated
     }
 
     return component;
@@ -66,14 +69,8 @@ inline bool CGameObject::RemoveComponent()
     bool lOk = true;
     const uint16 componentIndex = mComponents[EnumToNumber(COMPONENT_CLASS::GetType())];
     lOk = (componentIndex != kInvalidComponentIndex);
-    if (lOk)
-    {
-        lOk = mComponentsManager.RemoveComponent<COMPONENT_CLASS>(componentIndex);
-        if (lOk)
-        {
-            mComponents[EnumToNumber(COMPONENT_CLASS::GetType())] = kInvalidComponentIndex;
-        }
-    }
+    lOk = lOk && mComponentsManager.RemoveComponent<COMPONENT_CLASS>(componentIndex);
+    // Even though the component has been flagged for removal (if it was present), its ID is NOT cleared from the gameObject until the ComponentsManager is updated
 
     return lOk;
 }

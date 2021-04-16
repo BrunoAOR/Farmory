@@ -24,5 +24,11 @@ CGameObject::~CGameObject()
 {}
 
 
+void CGameObject::updateComponentId(EComponentType aComponentType, uint16 aId)
+{
+    mComponents[EnumToNumber(aComponentType)] = aId;
+}
+
+
 
 } // maz

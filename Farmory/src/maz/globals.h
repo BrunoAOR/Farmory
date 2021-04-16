@@ -5,6 +5,7 @@
 #include <maz/types.h>
 #include <maz/math.h>
 #include <maz/constants.h>
+#include <maz/enumHelpers.h>
 #include <assert.h>
 
 
@@ -53,14 +54,6 @@
 #define MAZ_ASSERT(expression, format, ...) ((void)0);
 #define MAZ_ERROR(format, ...) ((void)0);
 #endif // DEBUG
-
-
-#define MAZ_ENUM_COUNT(enum_type) (static_cast<std::underlying_type_t<enum_type>>(enum_type::_Count))
-template<typename ENUM_TYPE>
-std::underlying_type_t<ENUM_TYPE> EnumToNumber(ENUM_TYPE aEnumValue)
-{
-    return static_cast< std::underlying_type_t<ENUM_TYPE>>(aEnumValue);
-}
 
 
 #define EDITOR

@@ -15,6 +15,7 @@ CGameObjectsManager::CGameObjectsManager(CComponentsManager& aComponentsManager)
     mGameObjectsBufferUseFlag.fill(false);
 }
 
+
 CReference<CGameObject> CGameObjectsManager::CreateGameObject(CGameObject* aParent, const CFixedString32& aName)
 {
     CReference<CGameObject> lGameObject;
@@ -32,6 +33,7 @@ CReference<CGameObject> CGameObjectsManager::CreateGameObject(CGameObject* aPare
     {
         mGameObjects[index] = CReferenceHolder<CGameObject>(MAZ_PLACEMENT_NEW(&(mGameObjectsBuffer[sizeof(CGameObject) * index]), CGameObject, index, mComponentsManager, aParent, aName));
         lGameObject = mGameObjects[index].GetReference();
+        lGameObject->mThis = lGameObject;
     }
 
     return lGameObject;

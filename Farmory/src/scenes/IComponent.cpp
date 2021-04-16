@@ -4,18 +4,18 @@
 namespace maz
 {
 
-IComponent::IComponent(CGameObject& aOwner)
+IComponent::IComponent(CReference<CGameObject>& aOwner)
     : mOwner(aOwner)
 {}
 
 
-const CGameObject& IComponent::GetOwner() const
+const CReference<CGameObject> IComponent::GetOwner() const
 {
     return mOwner;
 }
 
 
-CGameObject& IComponent::GetOwner()
+CReference<CGameObject> IComponent::GetOwner()
 {
     return mOwner;
 }

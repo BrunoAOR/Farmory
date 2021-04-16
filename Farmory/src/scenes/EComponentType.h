@@ -10,9 +10,8 @@ namespace maz
 enum class EComponentType : uint8_t
 {
     Transform,
-    potat,
 
-    _Count
+    _Max = Transform
 };
 
 } // maz
