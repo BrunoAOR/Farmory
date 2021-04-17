@@ -27,7 +27,7 @@
 #endif // DEBUG
 
 
-#ifdef MAZ_LOG_VEBOSE
+#ifdef MAZ_LOG_VERBOSE
 #define MAZ_LOGGER_VERBOSE(format, ...) maz::Logger(__FILE__, __LINE__, format, __VA_ARGS__);
 #define MAZ_LOGGER_VERBOSE_IF(expression, format, ...) if(expression) { maz::Logger(__FILE__, __LINE__, format, __VA_ARGS__); }
 #else
