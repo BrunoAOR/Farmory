@@ -83,6 +83,7 @@ bool CGlfwHandler::CreateGlWindow(int aWindowWidth, int aWindowHeight, const cha
         if (sOk)
         {
             glEnable(GL_DEPTH_TEST);
+            glfwSwapInterval(0); // VSync, 1 == on, 0 == off
             LogInfo();
             SetCallbacks();
         }
@@ -133,7 +134,6 @@ bool CGlfwHandler::SetCursorMode(ECursorMode aCursorMode)
 
     return lOk;
 }
-
 
 
 bool CGlfwHandler::RegisterFramebufferResizedCallback(FramebufferResizedCallback aCallback)
