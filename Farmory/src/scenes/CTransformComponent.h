@@ -13,6 +13,7 @@ class CTransformComponent
 {
 public:
     CTransformComponent(CReference<CGameObject>& aOwner);
+    ~CTransformComponent();
 
     static constexpr EComponentType GetType()
     {

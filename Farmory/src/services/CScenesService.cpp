@@ -49,6 +49,8 @@ bool CScenesService::Init()
     isValid1 = (bool)transform1;
     isValid2 = (bool)transform2;
 
+    gameObjectsManager->DestroyGameOjbect(gameObject->GetId());
+
     MAZ_UNUSED_VAR(hasIt);
     MAZ_UNUSED_VAR(isSame);
     MAZ_UNUSED_VAR(isValid1);

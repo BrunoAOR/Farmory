@@ -1,3 +1,4 @@
+#define MAZ_LOG_VERBOSE
 #include "CGameObject.h"
 
 
@@ -13,6 +14,7 @@ CGameObject::CGameObject(uint16 aId, CComponentsManager& aComponentsManager, CGa
     , mNumChildren(0)
     , mName(aName)
 {
+    MAZ_LOGGER_VERBOSE("CGameObject::CGameObject called");
     for (size_t i = 0, iCount = mComponents.max_size(); i < iCount; ++i)
     {
         mComponents[i] = kInvalidComponentIndex;
@@ -21,12 +23,18 @@ CGameObject::CGameObject(uint16 aId, CComponentsManager& aComponentsManager, CGa
 
 
 CGameObject::~CGameObject()
-{}
-
+{
+    MAZ_LOGGER_VERBOSE("CGameObject::~CGameObject called");
+}
 
 void CGameObject::updateComponentId(EComponentType aComponentType, uint16 aId)
 {
     mComponents[EnumToNumber(aComponentType)] = aId;
+}
+
+uint16 CGameObject::GetId() const
+{
+    return mId;
 }
 
 

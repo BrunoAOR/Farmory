@@ -22,12 +22,14 @@ private:
     void updateComponentId(EComponentType aComponentType, uint16 aId);
 
 public:
+    uint16 GetId() const;
+
     template<typename COMPONENT_CLASS>
     CReference<COMPONENT_CLASS> AddComponent();
     template<typename COMPONENT_CLASS>
     bool RemoveComponent();
     template<typename COMPONENT_CLASS>
-    bool HasComponent();
+    bool HasComponent() const;
     template<typename COMPONENT_CLASS>
     CReference<COMPONENT_CLASS> GetComponent();
 
@@ -77,7 +79,7 @@ inline bool CGameObject::RemoveComponent()
 
 
 template<typename COMPONENT_CLASS>
-inline bool CGameObject::HasComponent()
+inline bool CGameObject::HasComponent() const
 {
     return (mComponents[EnumToNumber(COMPONENT_CLASS::GetType())] != kInvalidComponentIndex);
 }

@@ -12,6 +12,7 @@ class IComponent
 {
 public:
     IComponent(CReference<CGameObject>& aOwner);
+    ~IComponent();
 
     const CReference<CGameObject> GetOwner() const;
     CReference<CGameObject> GetOwner();

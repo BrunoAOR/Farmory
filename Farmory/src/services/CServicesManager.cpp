@@ -8,7 +8,7 @@
 #include <services/CRenderService.h>
 #include <test/CTestService.h>
 #include <services/CImGuiService.h>
-#include <scenes/ComponentsManager.h>
+
 
 namespace maz
 {
