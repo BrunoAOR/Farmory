@@ -12,10 +12,8 @@ namespace maz
 CScenesService::CScenesService() { ; }
 CScenesService::~CScenesService() { ; }
 
-bool CScenesService::Init()
+void test()
 {
-    bool lOk = true;
-
     // TODO
     /*
         - Init and close methods for CComponentsManager and CGameObjectsManager
@@ -24,7 +22,7 @@ bool CScenesService::Init()
 
         - Make Create/Destroy of gameobjects be effective when a new Update method is called in CGameObjectsManager
     */
-    
+
     CComponentsManager* componentsManager = MAZ_NEW(CComponentsManager);
     CGameObjectsManager* gameObjectsManager = MAZ_NEW(CGameObjectsManager, *componentsManager);
     componentsManager->RegisterComponent<CTransformComponent>();
@@ -59,6 +57,16 @@ bool CScenesService::Init()
     MAZ_ASSERT(!transform1, "Transform should be invalid at this point");
     MAZ_ASSERT(!transform2, "Transform should be invalid at this point");
 
+    MAZ_DELETE(gameObjectsManager);
+    MAZ_DELETE(componentsManager);
+}
+
+bool CScenesService::Init()
+{
+    bool lOk = true;
+
+    
+    test();
 
 
     return lOk;

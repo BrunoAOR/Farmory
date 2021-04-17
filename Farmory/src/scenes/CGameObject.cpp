@@ -27,10 +27,12 @@ CGameObject::~CGameObject()
     MAZ_LOGGER_VERBOSE("CGameObject::~CGameObject called");
 }
 
+
 void CGameObject::updateComponentId(EComponentType aComponentType, uint16 aId)
 {
     mComponents[EnumToNumber(aComponentType)] = aId;
 }
+
 
 uint16 CGameObject::GetId() const
 {
