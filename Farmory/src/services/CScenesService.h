@@ -2,10 +2,13 @@
 #define _H_C_SCENES_SERVICE_
 
 #include <services/IService.h>
+#include <scenes/CComponentsManager.h>
+#include <scenes/CGameObjectsManager.h>
 
 
 namespace maz
 {
+
 class CScenesService
     : public IService
 {
@@ -20,6 +23,10 @@ public:
     virtual void PreUpdate() override;
     virtual void Update() override;
     virtual void PostUpdate() override;
+
+private:
+    CComponentsManager mComponentsManager;
+    CGameObjectsManager mGameObjectsManager;
 };
 
 } // maz

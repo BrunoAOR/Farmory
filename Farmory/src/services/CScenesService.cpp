@@ -9,7 +9,12 @@
 namespace maz
 {
 
-CScenesService::CScenesService() { ; }
+CScenesService::CScenesService()
+    : mComponentsManager()
+    , mGameObjectsManager(mComponentsManager)
+{ ; }
+
+
 CScenesService::~CScenesService() { ; }
 
 void test()
@@ -57,6 +62,8 @@ void test()
     MAZ_ASSERT(!transform1, "Transform should be invalid at this point");
     MAZ_ASSERT(!transform2, "Transform should be invalid at this point");
 
+    gameObjectsManager->Shutdown();
+    componentsManager->Shutdown();
     MAZ_DELETE(gameObjectsManager);
     MAZ_DELETE(componentsManager);
 }
@@ -64,6 +71,8 @@ void test()
 bool CScenesService::Init()
 {
     bool lOk = true;
+
+    mComponentsManager.RegisterComponent<CTransformComponent>();
 
     
     test();
@@ -75,7 +84,8 @@ bool CScenesService::Init()
 
 void CScenesService::End()
 {
-
+    mGameObjectsManager.Shutdown();
+    mComponentsManager.Shutdown();
 }
 
 
@@ -90,7 +100,12 @@ void CScenesService::PreUpdate()
 
 
 void CScenesService::Update()
-{}
+{
+    // Update Scene loading
+    mGameObjectsManager.RefreshGameObjects();
+    mComponentsManager.RefreshComponents();
+    // Update SystemsManager
+}
 
 
 void CScenesService::PostUpdate()

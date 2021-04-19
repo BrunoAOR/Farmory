@@ -14,17 +14,24 @@ CGameObject::CGameObject(uint16 aId, CComponentsManager& aComponentsManager, CGa
     , mNumChildren(0)
     , mName(aName)
 {
-    MAZ_LOGGER_VERBOSE("CGameObject::CGameObject called");
-    for (size_t i = 0, iCount = mComponents.max_size(); i < iCount; ++i)
+    MAZ_LOGGER_VERBOSE("CGameObject::CGameObject - called");
+    for (uint16 i = 0, iCount = static_cast<uint16>(mComponents.max_size()); i < iCount; ++i)
     {
-        mComponents[i] = kInvalidComponentIndex;
+        mComponents[i] = kInvalidComponentId;
     }
 }
 
 
 CGameObject::~CGameObject()
 {
-    MAZ_LOGGER_VERBOSE("CGameObject::~CGameObject called");
+    MAZ_LOGGER_VERBOSE("CGameObject::~CGameObject - called");
+#ifdef DEBUG
+    // Verify no components are left in GameObject
+    for (uint16 i = 0, iCount = static_cast<uint16>(mComponents.max_size()); i < iCount; ++i)
+    {
+        MAZ_ASSERT(mComponents[i] == kInvalidComponentId, "CGameObject::~CGameObject - Component of type %hu has not been removed from GameObject with id %hu", i, GetId());
+    }
+#endif // DEBUG
 }
 
 
@@ -39,6 +46,15 @@ uint16 CGameObject::GetId() const
     return mId;
 }
 
+bool CGameObject::RemoveComponent(EComponentType aComponentType)
+{
+    bool lOk = true;
+    const uint16 componentId = mComponents[EnumToNumber(aComponentType)];
+    lOk = (componentId != kInvalidComponentId);
+    lOk = lOk && mComponentsManager.RemoveComponent(aComponentType, componentId);
+    // Even though the component has been flagged for removal (if it was present), its ID is NOT cleared from the gameObject until the ComponentsManager is updated
 
+    return lOk;
+}
 
 } // maz

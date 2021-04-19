@@ -16,6 +16,30 @@ CGameObjectsManager::CGameObjectsManager(CComponentsManager& aComponentsManager)
 }
 
 
+void CGameObjectsManager::Shutdown()
+{
+    for (uint16 i = 0, iCount = static_cast<uint16>(mGameObjectsBufferUseFlag.size()); (i < iCount); ++i)
+    {
+        if (mGameObjectsBufferUseFlag[i])
+        {
+            DestroyGameOjbect(i);
+        }
+    }
+}
+
+void CGameObjectsManager::RefreshGameObjects()
+{
+    for (size_t i = 0, iCount = mGameObjectsBufferUseFlag.size(); (i < iCount); ++i)
+    {
+        if (mGameObjectsBufferUseFlag[i])
+        {
+            MAZ_ASSERT(false, "[CGameObjectsManager]::RefreshGameObjects - NOT IMPLEMENTED!");
+            ///index = static_cast<uint16>(i);
+        }
+    }
+}
+
+
 CReference<CGameObject> CGameObjectsManager::CreateGameObject(CGameObject* aParent, const CFixedString32& aName)
 {
     CReference<CGameObject> lGameObject;
@@ -45,6 +69,10 @@ bool CGameObjectsManager::DestroyGameOjbect(uint16 aGameObjectId)
 
     if (lOk)
     {
+        for (uint16 componentId = 0; componentId < MAZ_ENUM_COUNT(EComponentType); ++componentId)
+        {
+            mGameObjects[aGameObjectId]->RemoveComponent(static_cast<EComponentType>(componentId));
+        }
         mGameObjects[aGameObjectId].~CReferenceHolder<CGameObject>();
         reinterpret_cast<CGameObject*>(&(mGameObjectsBuffer[sizeof(CGameObject) * aGameObjectId]))->~CGameObject();
         mGameObjectsBufferUseFlag[aGameObjectId] = false;

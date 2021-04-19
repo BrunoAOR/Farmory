@@ -1,5 +1,6 @@
 #ifndef _H_C_COMPONENTS_MANAGER_
 #define _H_C_COMPONENTS_MANAGER_
+#define MAZ_LOG_VERBOSE
 
 #include <maz/globals.h>
 #include <scenes/EComponentType.h>
@@ -20,11 +21,14 @@ private:
     class CComponentManagerBase
     {
     public:
-        CComponentManagerBase(EComponentType aComponentType) : mComponentType(aComponentType) {}
-        virtual ~CComponentManagerBase() {}
+        CComponentManagerBase(EComponentType aComponentType) : mComponentType(aComponentType) { MAZ_LOGGER_VERBOSE("CComponentManagerBase::CComponentManagerBase - called"); }
+        virtual ~CComponentManagerBase() { MAZ_LOGGER_VERBOSE("CComponentManagerBase::~CComponentManagerBase - called"); }
         EComponentType GetType() const { return mComponentType; }
+        
+        virtual void Shutdown(CComponentsManager* aComponentsManager) = 0;
         virtual void RefreshComponents(CComponentsManager* aComponentsManager) = 0;
-            
+        virtual bool RemoveComponent(const uint16 aComponentIndex) = 0;
+
     private:
         const EComponentType mComponentType;
     };
@@ -45,12 +49,34 @@ private:
         CComponentManager(EComponentType aComponentType)
             : CComponentManagerBase(aComponentType)
         {
+            MAZ_LOGGER_VERBOSE("ComponentManager::ComponentManager - called | ComponentType: %hhu", EnumToNumber(GetType()));
             for (size_t i = 0, iCount = mComponents.size(); i < iCount; ++i)
             {
                 mComponents[i] = std::move(CReferenceHolder<COMPONENT_CLASS>());
             }
             std::memset(mComponentsBuffer, 0, sizeof(COMPONENT_CLASS) * kMaxComponentsPerType);
             mComponentsBufferUseFlags.fill(EComponentUseFlags::NONE);
+        }
+
+
+        ~CComponentManager()
+        {
+            MAZ_LOGGER_VERBOSE("ComponentManager::~ComponentManager - called | ComponentType: %hhu", EnumToNumber(GetType()));
+        }
+
+
+        void Shutdown(CComponentsManager* aComponentsManager)
+        {
+            for (uint16 i = 0, iCount = static_cast<uint16>(mComponents.size()); i < iCount; ++i)
+            {
+                if (IsFlagSet(mComponentsBufferUseFlags[i], EComponentUseFlags::IN_USE))
+                {
+                    aComponentsManager->updateComponentIdForGameObject(mComponents[i]->GetOwner(), COMPONENT_CLASS::GetType(), kInvalidComponentId);
+                    mComponents[i].~CReferenceHolder<COMPONENT_CLASS>();
+                    reinterpret_cast<COMPONENT_CLASS*>(&(mComponentsBuffer[sizeof(COMPONENT_CLASS) * i]))->~COMPONENT_CLASS();
+                    mComponentsBufferUseFlags[i] = EComponentUseFlags::NONE;
+                }
+            }
         }
 
 
@@ -69,7 +95,7 @@ private:
                     else if (IsFlagSet(mComponentsBufferUseFlags[i], EComponentUseFlags::TO_REMOVE))
                     {
                         ResetFlag(mComponentsBufferUseFlags[i], EComponentUseFlags::TO_REMOVE);
-                        aComponentsManager->updateComponentIdForGameObject(mComponents[i]->GetOwner(), COMPONENT_CLASS::GetType(), kInvalidComponentIndex);
+                        aComponentsManager->updateComponentIdForGameObject(mComponents[i]->GetOwner(), COMPONENT_CLASS::GetType(), kInvalidComponentId);
                         mComponents[i].~CReferenceHolder<COMPONENT_CLASS>();
                         reinterpret_cast<COMPONENT_CLASS*>(&(mComponentsBuffer[sizeof(COMPONENT_CLASS) * i]))->~COMPONENT_CLASS();
                         ResetFlag(mComponentsBufferUseFlags[i], EComponentUseFlags::IN_USE);
@@ -82,8 +108,8 @@ private:
         CReference<COMPONENT_CLASS> AddComponent(CReference<CGameObject>& aOwner)
         {
             CReference<COMPONENT_CLASS> component;
-            uint16 index = kInvalidComponentIndex;
-            for (size_t i = 0, iCount = mComponentsBufferUseFlags.size(); (i < iCount) && (index == kInvalidComponentIndex); ++i)
+            uint16 index = kInvalidComponentId;
+            for (size_t i = 0, iCount = mComponentsBufferUseFlags.size(); (i < iCount) && (index == kInvalidComponentId); ++i)
             {
                 if (!IsFlagSet(mComponentsBufferUseFlags[i], EComponentUseFlags::IN_USE))
                 {
@@ -92,8 +118,8 @@ private:
                     index = static_cast<uint16>(i);
                 }
             }
-            MAZ_ASSERT(index != kInvalidComponentIndex, "[CComponentManager]::AddComponent - Failed to find an available slot for component!");
-            if (index != kInvalidComponentIndex)
+            MAZ_ASSERT(index != kInvalidComponentId, "[CComponentManager]::AddComponent - Failed to find an available slot for component!");
+            if (index != kInvalidComponentId)
             {
                 mComponents[index] = CReferenceHolder<COMPONENT_CLASS>(MAZ_PLACEMENT_NEW(&(mComponentsBuffer[sizeof(COMPONENT_CLASS) * index]), COMPONENT_CLASS, aOwner));
                 component = mComponents[index].GetReference();
@@ -103,7 +129,7 @@ private:
         }
 
 
-        bool RemoveComponent(uint16 aComponentIndex)
+        bool RemoveComponent(const uint16 aComponentIndex)
         {
             bool lOk = IsFlagSet(mComponentsBufferUseFlags[aComponentIndex], EComponentUseFlags::IN_USE);
 
@@ -117,7 +143,7 @@ private:
         }
 
 
-        CReference<COMPONENT_CLASS> GetComponent(uint16 aIndex)
+        CReference<COMPONENT_CLASS> GetComponent(const uint16 aIndex)
         {
             MAZ_ASSERT(IsFlagSet(mComponentsBufferUseFlags[aIndex], EComponentUseFlags::IN_USE), "[CComponentManager]::GetComponent - Attempting to retrieve uninitialized component at index %hu!", aIndex);
             return mComponents[aIndex].GetReference();
@@ -131,8 +157,9 @@ private:
 
 public:
     CComponentsManager();
+    void Shutdown();
     void RefreshComponents();
-
+    bool RemoveComponent(EComponentType aComponentType, const uint16 aComponentIndex);
 
     template<typename COMPONENT_CLASS>
     bool RegisterComponent()

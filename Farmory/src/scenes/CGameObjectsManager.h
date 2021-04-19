@@ -14,6 +14,8 @@ class CGameObjectsManager
 public:
     CGameObjectsManager(CComponentsManager& aComponentsManager);
 
+    void Shutdown();
+    void RefreshGameObjects();
     CReference<CGameObject> CreateGameObject(CGameObject* aParent, const CFixedString32& aName);
     bool DestroyGameOjbect(uint16 aGameObjectId);
 

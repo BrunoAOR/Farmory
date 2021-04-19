@@ -28,6 +28,7 @@ public:
     CReference<COMPONENT_CLASS> AddComponent();
     template<typename COMPONENT_CLASS>
     bool RemoveComponent();
+    bool RemoveComponent(EComponentType aComponentType);
     template<typename COMPONENT_CLASS>
     bool HasComponent() const;
     template<typename COMPONENT_CLASS>
@@ -54,7 +55,7 @@ template<typename COMPONENT_CLASS>
 inline CReference<COMPONENT_CLASS> CGameObject::AddComponent()
 {
     CReference<COMPONENT_CLASS> component;
-    if (mComponents[EnumToNumber(COMPONENT_CLASS::GetType())] == kInvalidComponentIndex)
+    if (mComponents[EnumToNumber(COMPONENT_CLASS::GetType())] == kInvalidComponentId)
     {
         component = mComponentsManager.AddComponent<COMPONENT_CLASS>(mThis);
         MAZ_ASSERT(component, "[CGameObject]::AddComponent - Failed to add component of desired type!");
@@ -69,9 +70,9 @@ template<typename COMPONENT_CLASS>
 inline bool CGameObject::RemoveComponent()
 {
     bool lOk = true;
-    const uint16 componentIndex = mComponents[EnumToNumber(COMPONENT_CLASS::GetType())];
-    lOk = (componentIndex != kInvalidComponentIndex);
-    lOk = lOk && mComponentsManager.RemoveComponent<COMPONENT_CLASS>(componentIndex);
+    const uint16 componentId = mComponents[EnumToNumber(COMPONENT_CLASS::GetType())];
+    lOk = (componentId != kInvalidComponentId);
+    lOk = lOk && mComponentsManager.RemoveComponent<COMPONENT_CLASS>(componentId);
     // Even though the component has been flagged for removal (if it was present), its ID is NOT cleared from the gameObject until the ComponentsManager is updated
 
     return lOk;
@@ -81,7 +82,7 @@ inline bool CGameObject::RemoveComponent()
 template<typename COMPONENT_CLASS>
 inline bool CGameObject::HasComponent() const
 {
-    return (mComponents[EnumToNumber(COMPONENT_CLASS::GetType())] != kInvalidComponentIndex);
+    return (mComponents[EnumToNumber(COMPONENT_CLASS::GetType())] != kInvalidComponentId);
 }
 
 
@@ -90,7 +91,7 @@ inline CReference<COMPONENT_CLASS> CGameObject::GetComponent()
 {
     CReference<COMPONENT_CLASS> component;
     const uint16 componentIndex = mComponents[EnumToNumber(COMPONENT_CLASS::GetType())];
-    if (componentIndex != kInvalidComponentIndex)
+    if (componentIndex != kInvalidComponentId)
     {
         component = mComponentsManager.GetComponent<COMPONENT_CLASS>(componentIndex);
     }
