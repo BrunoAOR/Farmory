@@ -59,7 +59,6 @@ private:
 
 
 private:
-    static CGlfwHandler* sInstance;
     static bool sOk;
     static GLFWwindow* sWindow;
     

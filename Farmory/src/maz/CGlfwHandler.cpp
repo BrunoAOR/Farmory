@@ -5,7 +5,6 @@
 
 namespace maz
 {
-CGlfwHandler*   CGlfwHandler::sInstance = nullptr;
 bool            CGlfwHandler::sOk       = false;
 GLFWwindow*     CGlfwHandler::sWindow   = nullptr;
 std::vector< CGlfwHandler::FramebufferResizedCallback > CGlfwHandler::sWindowResizedCallbacks;
