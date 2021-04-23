@@ -10,8 +10,10 @@ namespace maz
 enum class EComponentType : uint8_t
 {
     Transform,
+    TestCompA,
+    TestCompB,
 
-    _Max = Transform
+    _Max = TestCompB
 };
 
 } // maz

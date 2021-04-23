@@ -105,48 +105,46 @@ private:
         }
 
 
-        CReference<COMPONENT_CLASS> AddComponent(CReference<CGameObject>& aOwner)
+        uint16 AddComponent(CReference<CGameObject>& aOwner)
         {
-            CReference<COMPONENT_CLASS> component;
-            uint16 index = kInvalidComponentId;
-            for (size_t i = 0, iCount = mComponentsBufferUseFlags.size(); (i < iCount) && (index == kInvalidComponentId); ++i)
+            uint16 componentId = kInvalidComponentId;
+            for (size_t i = 0, iCount = mComponentsBufferUseFlags.size(); (i < iCount) && (componentId == kInvalidComponentId); ++i)
             {
                 if (!IsFlagSet(mComponentsBufferUseFlags[i], EComponentUseFlags::IN_USE))
                 {
                     SetFlag(mComponentsBufferUseFlags[i], EComponentUseFlags::IN_USE);
                     SetFlag(mComponentsBufferUseFlags[i], EComponentUseFlags::JUST_ADDED);
-                    index = static_cast<uint16>(i);
+                    componentId = static_cast<uint16>(i);
                 }
             }
-            MAZ_ASSERT(index != kInvalidComponentId, "[CComponentManager]::AddComponent - Failed to find an available slot for component!");
-            if (index != kInvalidComponentId)
+            MAZ_ASSERT(componentId != kInvalidComponentId, "[CComponentManager]::AddComponent - Failed to find an available slot for component!");
+            if (componentId != kInvalidComponentId)
             {
-                mComponents[index] = CReferenceHolder<COMPONENT_CLASS>(MAZ_PLACEMENT_NEW(&(mComponentsBuffer[sizeof(COMPONENT_CLASS) * index]), COMPONENT_CLASS, aOwner));
-                component = mComponents[index].GetReference();
+                mComponents[componentId] = CReferenceHolder<COMPONENT_CLASS>(MAZ_PLACEMENT_NEW(&(mComponentsBuffer[sizeof(COMPONENT_CLASS) * componentId]), COMPONENT_CLASS, aOwner));
             }
 
-            return component;
+            return componentId;
         }
 
 
-        bool RemoveComponent(const uint16 aComponentIndex)
+        bool RemoveComponent(const uint16 aComponentId)
         {
-            bool lOk = IsFlagSet(mComponentsBufferUseFlags[aComponentIndex], EComponentUseFlags::IN_USE);
+            bool lOk = IsFlagSet(mComponentsBufferUseFlags[aComponentId], EComponentUseFlags::IN_USE);
 
             if (lOk)
             {
-                MAZ_ASSERT(!IsFlagSet(mComponentsBufferUseFlags[aComponentIndex], EComponentUseFlags::JUST_ADDED), "[CComponentManager]::RemoveComponent - Attempting to remove a component that has been added in this frame and not yet commited!");
-                SetFlag(mComponentsBufferUseFlags[aComponentIndex], EComponentUseFlags::TO_REMOVE);
+                MAZ_ASSERT(!IsFlagSet(mComponentsBufferUseFlags[aComponentId], EComponentUseFlags::JUST_ADDED), "[CComponentManager]::RemoveComponent - Attempting to remove a component that has been added in this frame and not yet commited!");
+                SetFlag(mComponentsBufferUseFlags[aComponentId], EComponentUseFlags::TO_REMOVE);
             }
 
             return lOk;
         }
 
 
-        CReference<COMPONENT_CLASS> GetComponent(const uint16 aIndex)
+        CReference<COMPONENT_CLASS> GetComponent(const uint16 aComponentId)
         {
-            MAZ_ASSERT(IsFlagSet(mComponentsBufferUseFlags[aIndex], EComponentUseFlags::IN_USE), "[CComponentManager]::GetComponent - Attempting to retrieve uninitialized component at index %hu!", aIndex);
-            return mComponents[aIndex].GetReference();
+            MAZ_ASSERT(IsFlagSet(mComponentsBufferUseFlags[aComponentId], EComponentUseFlags::IN_USE), "[CComponentManager]::GetComponent - Attempting to retrieve uninitialized component at index %hu!", aComponentId);
+            return mComponents[aComponentId].GetReference();
         }
 
     private:
@@ -172,7 +170,7 @@ public:
 
 
     template<typename COMPONENT_CLASS>
-    CReference< COMPONENT_CLASS> AddComponent(CReference<CGameObject>& aOwner)
+    uint16 AddComponent(CReference<CGameObject>& aOwner)
     {
         MAZ_ASSERT(mComponentManagers[EnumToNumber(COMPONENT_CLASS::GetType())] != nullptr
             , "[CComponentsManager]::AddComponent - Component of the desired type have not been registered!");
@@ -181,11 +179,11 @@ public:
 
 
     template<typename COMPONENT_CLASS>
-    bool RemoveComponent(const uint16 aComponentIndex)
+    bool RemoveComponent(const uint16 aComponentId)
     {
         MAZ_ASSERT(mComponentManagers[EnumToNumber(COMPONENT_CLASS::GetType())] != nullptr
             , "[CComponentsManager]::RemoveComponent - Component of the desired type have not been registered!");
-        return static_cast<CComponentManager<COMPONENT_CLASS>*>(mComponentManagers[EnumToNumber(COMPONENT_CLASS::GetType())])->RemoveComponent(aComponentIndex);
+        return static_cast<CComponentManager<COMPONENT_CLASS>*>(mComponentManagers[EnumToNumber(COMPONENT_CLASS::GetType())])->RemoveComponent(aComponentId);
     }
 
 

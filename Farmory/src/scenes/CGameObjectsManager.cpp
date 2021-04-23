@@ -11,7 +11,7 @@ CGameObjectsManager::CGameObjectsManager(CComponentsManager& aComponentsManager)
     {
         mGameObjects[i] = std::move(CReferenceHolder<CGameObject>());
     }
-    std::memset(mGameObjectsBuffer, 0, sizeof(CGameObject) * kMaxGameObjects);
+    std::memset(mGameObjectsBuffer, 0, sizeof(CGameObject) * kMaxGameObjectsCount);
     mGameObjectsBufferUseFlag.fill(false);
 }
 
@@ -34,7 +34,7 @@ void CGameObjectsManager::RefreshGameObjects()
         if (mGameObjectsBufferUseFlag[i])
         {
             MAZ_ASSERT(false, "[CGameObjectsManager]::RefreshGameObjects - NOT IMPLEMENTED!");
-            ///index = static_cast<uint16>(i);
+            TODO; //IMPLEMENT CGameObjectsManager::RefreshGameObjects;
         }
     }
 }

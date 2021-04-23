@@ -1,10 +1,11 @@
 #include <maz/globals.h>
 #include "CScenesService.h"
 
-#include <scenes/CComponentsManager.h>
-#include <scenes/CGameObjectsManager.h>
 #include <scenes/CGameObject.h>
 #include <scenes/CTransformComponent.h>
+#include <scenes/test/CTestSystems.h>
+#include <scenes/CTransformComponent.h>
+#include <scenes/test/CTestComponents.h>
 
 namespace maz
 {
@@ -19,15 +20,6 @@ CScenesService::~CScenesService() { ; }
 
 void test()
 {
-    // TODO
-    /*
-        - Init and close methods for CComponentsManager and CGameObjectsManager
-        - On Close methods, clear the buffers and Reset ReferenceHolders
-        - When destroying a CGameObject, remove its Components from CComponentsManager
-
-        - Make Create/Destroy of gameobjects be effective when a new Update method is called in CGameObjectsManager
-    */
-
     CComponentsManager* componentsManager = MAZ_NEW(CComponentsManager);
     CGameObjectsManager* gameObjectsManager = MAZ_NEW(CGameObjectsManager, *componentsManager);
     componentsManager->RegisterComponent<CTransformComponent>();
@@ -71,12 +63,14 @@ void test()
 bool CScenesService::Init()
 {
     bool lOk = true;
-
-    mComponentsManager.RegisterComponent<CTransformComponent>();
-
-    
     test();
 
+    lOk = lOk && mComponentsManager.RegisterComponent<CTransformComponent>();
+    lOk = lOk && mComponentsManager.RegisterComponent<CTestComponentA>();
+    lOk = lOk && mComponentsManager.RegisterComponent<CTestComponentB>();
+    lOk = lOk && mSystemsManager.RegisterSystem<CSystemTransformA>();
+    lOk = lOk && mSystemsManager.RegisterSystem<CSystemTransformB>();
+    MAZ_ASSERT(lOk, "WTF?!");
 
     return lOk;
 }
@@ -86,6 +80,7 @@ void CScenesService::End()
 {
     mGameObjectsManager.Shutdown();
     mComponentsManager.Shutdown();
+    mSystemsManager.Shutdown();
 }
 
 
@@ -104,7 +99,7 @@ void CScenesService::Update()
     // Update Scene loading
     mGameObjectsManager.RefreshGameObjects();
     mComponentsManager.RefreshComponents();
-    // Update SystemsManager
+    mSystemsManager.RefreshSystems();
 }
 
 

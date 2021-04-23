@@ -4,6 +4,7 @@
 #include <services/IService.h>
 #include <scenes/CComponentsManager.h>
 #include <scenes/CGameObjectsManager.h>
+#include <scenes/CSystemsManager.h>
 
 
 namespace maz
@@ -27,6 +28,7 @@ public:
 private:
     CComponentsManager mComponentsManager;
     CGameObjectsManager mGameObjectsManager;
+    CSystemsManager mSystemsManager;
 };
 
 } // maz

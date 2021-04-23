@@ -162,7 +162,7 @@ void CReferenceMaster<T, MEMORY_OWNER>::DeleteReferences()
 }
 
 template<typename T>
-using CReferenceOwner = CReferenceMaster<T, false>;
+using CReferenceOwner = CReferenceMaster<T, true>;
 template<typename T>
 using CReferenceHolder = CReferenceMaster<T, false>;
 

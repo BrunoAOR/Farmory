@@ -8,6 +8,7 @@ namespace maz
 CGameObject::CGameObject(uint16 aId, CComponentsManager& aComponentsManager, CGameObject* aParent, const CFixedString32& aName)
     : mId(aId)
     , mComponentsManager(aComponentsManager)
+    , mIsSignatureDirty(false)
     , mParent(aParent)
     , mNextSibling(nullptr)
     , mFirstChild(nullptr)
@@ -38,6 +39,15 @@ CGameObject::~CGameObject()
 void CGameObject::updateComponentId(EComponentType aComponentType, uint16 aId)
 {
     mComponents[EnumToNumber(aComponentType)] = aId;
+    if (aId != kInvalidComponentId)
+    {
+        mSignature.AddComponent(aComponentType);
+    }
+    else
+    {
+        mSignature.RemoveComponent(aComponentType);
+    }
+    mIsSignatureDirty = true;
 }
 
 
@@ -45,6 +55,13 @@ uint16 CGameObject::GetId() const
 {
     return mId;
 }
+
+
+const CFixedString32 CGameObject::GetName() const
+{
+    return mName;
+}
+
 
 bool CGameObject::RemoveComponent(EComponentType aComponentType)
 {

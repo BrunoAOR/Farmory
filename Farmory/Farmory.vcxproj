@@ -189,9 +189,14 @@
     <ClInclude Include="src\scenes\CGameObject.h" />
     <ClInclude Include="src\scenes\CGameObjectsManager.h" />
     <ClInclude Include="src\scenes\CComponentsManager.h" />
+    <ClInclude Include="src\scenes\CSystemsManager.h" />
+    <ClInclude Include="src\scenes\test\CTestSystems.h" />
+    <ClInclude Include="src\scenes\test\CTestComponents.h" />
     <ClInclude Include="src\scenes\CTransformComponent.h" />
     <ClInclude Include="src\scenes\EComponentType.h" />
     <ClInclude Include="src\scenes\IComponent.h" />
+    <ClInclude Include="src\scenes\ISystem.h" />
+    <ClInclude Include="src\scenes\SComponentsSignature.h" />
     <ClInclude Include="src\services\CInputService.h" />
     <ClInclude Include="src\services\CRenderService.h" />
     <ClInclude Include="src\services\CScenesService.h" />
@@ -225,8 +230,12 @@
     <ClCompile Include="src\scenes\CGameObject.cpp" />
     <ClCompile Include="src\scenes\CGameObjectsManager.cpp" />
     <ClCompile Include="src\scenes\CComponentsManager.cpp" />
+    <ClCompile Include="src\scenes\CSystemsManager.cpp" />
     <ClCompile Include="src\scenes\CTransformComponent.cpp" />
     <ClCompile Include="src\scenes\IComponent.cpp" />
+    <ClCompile Include="src\scenes\ISystem.cpp" />
+    <ClCompile Include="src\scenes\SComponentsSignature.cpp" />
+    <ClCompile Include="src\scenes\test\CTestSystems.cpp" />
     <ClCompile Include="src\services\CInputService.cpp" />
     <ClCompile Include="src\services\CRenderService.cpp" />
     <ClCompile Include="src\services\CScenesService.cpp" />

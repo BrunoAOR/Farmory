@@ -8,6 +8,7 @@
 #include <scenes/IComponent.h>
 #include <array>
 #include <scenes/CComponentsManager.h>
+#include <scenes/SComponentsSignature.h>
 
 namespace maz
 {
@@ -23,6 +24,7 @@ private:
 
 public:
     uint16 GetId() const;
+    const CFixedString32 GetName() const;
 
     template<typename COMPONENT_CLASS>
     CReference<COMPONENT_CLASS> AddComponent();
@@ -38,6 +40,9 @@ private:
     uint16_t mId;
     CComponentsManager& mComponentsManager;
     CReference<CGameObject> mThis;
+
+    SComponentsSignature mSignature;
+    bool mIsSignatureDirty;
 
     CGameObject* mParent;
     CGameObject* mNextSibling;
@@ -57,9 +62,12 @@ inline CReference<COMPONENT_CLASS> CGameObject::AddComponent()
     CReference<COMPONENT_CLASS> component;
     if (mComponents[EnumToNumber(COMPONENT_CLASS::GetType())] == kInvalidComponentId)
     {
-        component = mComponentsManager.AddComponent<COMPONENT_CLASS>(mThis);
-        MAZ_ASSERT(component, "[CGameObject]::AddComponent - Failed to add component of desired type!");
-        // Even though the component has been created, its ID is NOT added to the gameObject until the ComponentsManager is updated
+        const uint16 newComponentId = mComponentsManager.AddComponent<COMPONENT_CLASS>(mThis);
+        MAZ_ASSERT(newComponentId != kInvalidComponentId, "[CGameObject]::AddComponent - Failed to add component of desired type!");
+        // Even though the component has been created and we store its ID, the GameObject signature is NOT modified until the ComponentsManager is updated.
+        // This means that any systems that would now include this GameObject, will only do so in the next frame.
+        mComponents[EnumToNumber(COMPONENT_CLASS::GetType())] = newComponentId;
+        component = mComponentsManager.GetComponent<COMPONENT_CLASS>(newComponentId);
     }
 
     return component;
