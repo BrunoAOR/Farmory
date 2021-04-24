@@ -6,36 +6,49 @@ namespace maz
 
 CGameObjectsManager::CGameObjectsManager(CComponentsManager& aComponentsManager)
     : mComponentsManager(aComponentsManager)
-{
-    for (size_t i = 0, iCount = mGameObjects.size(); i < iCount; ++i)
-    {
-        mGameObjects[i] = std::move(CReferenceHolder<CGameObject>());
-    }
-    std::memset(mGameObjectsBuffer, 0, sizeof(CGameObject) * kMaxGameObjectsCount);
-    mGameObjectsBufferUseFlag.fill(false);
-}
+{}
 
 
 void CGameObjectsManager::Shutdown()
 {
-    for (uint16 i = 0, iCount = static_cast<uint16>(mGameObjectsBufferUseFlag.size()); (i < iCount); ++i)
+    typename CGameObjectsBuffer::CBufferIterator iterator = mGameObjectsBuffer.GetIterator(CGameObjectsBuffer::EIteratorFlags::NONE);
+
+    while (iterator)
     {
-        if (mGameObjectsBufferUseFlag[i])
+        // Remove all components
+        for (uint16 componentId = 0; componentId < MAZ_ENUM_COUNT(EComponentType); ++componentId)
         {
-            DestroyGameOjbect(i);
+            iterator.Get()->RemoveComponent(static_cast<EComponentType>(componentId));
         }
+        ++iterator;
     }
+    mGameObjectsBuffer.Clear();
 }
+
 
 void CGameObjectsManager::RefreshGameObjects()
 {
-    for (size_t i = 0, iCount = mGameObjectsBufferUseFlag.size(); (i < iCount); ++i)
+    typename CGameObjectsBuffer::CBufferIterator iterator = mGameObjectsBuffer.GetIterator(static_cast<CGameObjectsBuffer::EIteratorFlags>(CGameObjectsBuffer::EIteratorFlags::PROCESS_ADD_PENDING | CGameObjectsBuffer::EIteratorFlags::PROCESS_REMOVE_PENDING));
+
+    while (iterator)
     {
-        if (mGameObjectsBufferUseFlag[i])
+        if (iterator.HasIteratorFlag(CGameObjectsBuffer::EIteratorFlags::PROCESS_ADD_PENDING))
         {
-            MAZ_ASSERT(false, "[CGameObjectsManager]::RefreshGameObjects - NOT IMPLEMENTED!");
-            TODO; //IMPLEMENT CGameObjectsManager::RefreshGameObjects;
+            // Nothing to do here other than clearing the flag
+            iterator.ClearIteratorFlag(CGameObjectsBuffer::EIteratorFlags::PROCESS_ADD_PENDING);
         }
+        else if (iterator.HasIteratorFlag(CGameObjectsBuffer::EIteratorFlags::PROCESS_REMOVE_PENDING))
+        {
+            // Remove all components
+            for (uint16 componentId = 0; componentId < MAZ_ENUM_COUNT(EComponentType); ++componentId)
+            {
+                iterator.Get()->RemoveComponent(static_cast<EComponentType>(componentId));
+            }
+            bool removed = iterator.RemoveElement();
+            MAZ_ASSERT(removed, "CGameObjectsManager::RefreshGameObjects - Failed to remove Gameobject with id %hhu that was flagged for removal!", iterator.GetId());
+            iterator.ClearIteratorFlag(CGameObjectsBuffer::EIteratorFlags::PROCESS_REMOVE_PENDING);
+        }
+        ++iterator;
     }
 }
 
@@ -43,42 +56,22 @@ void CGameObjectsManager::RefreshGameObjects()
 CReference<CGameObject> CGameObjectsManager::CreateGameObject(CGameObject* aParent, const CFixedString32& aName)
 {
     CReference<CGameObject> lGameObject;
-    uint16 index = kInvalidGameObjectId;
-    for (size_t i = 0, iCount = mGameObjectsBufferUseFlag.size(); (i < iCount) && (index == kInvalidGameObjectId); ++i)
+    const uint16 gameObjectId = mGameObjectsBuffer.GetNextAvailableId();
+    if (gameObjectId != kInvalidElementId)
     {
-        if (!mGameObjectsBufferUseFlag[i])
-        {
-            mGameObjectsBufferUseFlag[i] = true;
-            index = static_cast<uint16>(i);
-        }
-    }
-    MAZ_ASSERT(index != kInvalidGameObjectId, "[CGameObjectsManager]::CreateGameObject - Failed to find an available slot for GameObject!");
-    if (index != kInvalidGameObjectId)
-    {
-        mGameObjects[index] = CReferenceHolder<CGameObject>(MAZ_PLACEMENT_NEW(&(mGameObjectsBuffer[sizeof(CGameObject) * index]), CGameObject, index, mComponentsManager, aParent, aName));
-        lGameObject = mGameObjects[index].GetReference();
+        const uint16 actualGameObjectId = mGameObjectsBuffer.AddElement(gameObjectId, mComponentsManager, aParent, aName);
+        MAZ_ASSERT(gameObjectId == actualGameObjectId, "CGameObjectsManager::CreateGameObject - The next available id in the GameObjectsBuffer does not match the actual id used for the creation of the gameobject!");
+        lGameObject = mGameObjectsBuffer.GetElement(actualGameObjectId);
         lGameObject->mThis = lGameObject;
     }
 
     return lGameObject;
 }
 
-bool CGameObjectsManager::DestroyGameOjbect(uint16 aGameObjectId)
+
+bool CGameObjectsManager::RequestDestroyGameObject(const uint16 aGameObjectId)
 {
-    bool lOk = mGameObjectsBufferUseFlag[aGameObjectId];
-
-    if (lOk)
-    {
-        for (uint16 componentId = 0; componentId < MAZ_ENUM_COUNT(EComponentType); ++componentId)
-        {
-            mGameObjects[aGameObjectId]->RemoveComponent(static_cast<EComponentType>(componentId));
-        }
-        mGameObjects[aGameObjectId].~CReferenceHolder<CGameObject>();
-        reinterpret_cast<CGameObject*>(&(mGameObjectsBuffer[sizeof(CGameObject) * aGameObjectId]))->~CGameObject();
-        mGameObjectsBufferUseFlag[aGameObjectId] = false;
-    }
-
-    return lOk;
+    return mGameObjectsBuffer.FlagElementForRemoval(aGameObjectId);
 }
 
 } // maz

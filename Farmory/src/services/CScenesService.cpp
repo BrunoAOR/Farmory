@@ -24,6 +24,7 @@ void test()
     CGameObjectsManager* gameObjectsManager = MAZ_NEW(CGameObjectsManager, *componentsManager);
     componentsManager->RegisterComponent<CTransformComponent>();
     CReference<CGameObject> gameObject = gameObjectsManager->CreateGameObject(nullptr, "Timmy");
+    gameObjectsManager->RefreshGameObjects();
     CReference<CTransformComponent> transform1 = gameObject->AddComponent<CTransformComponent>();
     bool hasIt = gameObject->HasComponent<CTransformComponent>();
     CReference<CTransformComponent> transform2 = gameObject->GetComponent<CTransformComponent>();
@@ -44,7 +45,8 @@ void test()
     isValid1 = (bool)transform1;
     isValid2 = (bool)transform2;
 
-    gameObjectsManager->DestroyGameOjbect(gameObject->GetId());
+    gameObjectsManager->RequestDestroyGameObject(gameObject->GetId());
+    gameObjectsManager->RefreshGameObjects();
 
     MAZ_UNUSED_VAR(hasIt);
     MAZ_UNUSED_VAR(isSame);
@@ -68,8 +70,8 @@ bool CScenesService::Init()
     lOk = lOk && mComponentsManager.RegisterComponent<CTransformComponent>();
     lOk = lOk && mComponentsManager.RegisterComponent<CTestComponentA>();
     lOk = lOk && mComponentsManager.RegisterComponent<CTestComponentB>();
-    lOk = lOk && mSystemsManager.RegisterSystem<CSystemTransformA>();
-    lOk = lOk && mSystemsManager.RegisterSystem<CSystemTransformB>();
+    //lOk = lOk && mSystemsManager.RegisterSystem<CSystemTransformA>();
+    //lOk = lOk && mSystemsManager.RegisterSystem<CSystemTransformB>();
     MAZ_ASSERT(lOk, "WTF?!");
 
     return lOk;
@@ -80,7 +82,7 @@ void CScenesService::End()
 {
     mGameObjectsManager.Shutdown();
     mComponentsManager.Shutdown();
-    mSystemsManager.Shutdown();
+    //mSystemsManager.Shutdown();
 }
 
 
@@ -99,7 +101,7 @@ void CScenesService::Update()
     // Update Scene loading
     mGameObjectsManager.RefreshGameObjects();
     mComponentsManager.RefreshComponents();
-    mSystemsManager.RefreshSystems();
+    //mSystemsManager.RefreshSystems();
 }
 
 

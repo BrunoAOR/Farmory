@@ -17,12 +17,13 @@ class CGameObject final
 private:
     friend class CGameObjectsManager;
     friend class CComponentsManager;
-
-    CGameObject(uint16 aId, CComponentsManager& aComponentsManager, CGameObject* aParent, const CFixedString32& aName);
-    ~CGameObject();
+    
     void updateComponentId(EComponentType aComponentType, uint16 aId);
 
 public:
+    CGameObject(uint16 aId, CComponentsManager& aComponentsManager, CGameObject* aParent, const CFixedString32& aName);
+    ~CGameObject();
+
     uint16 GetId() const;
     const CFixedString32 GetName() const;
 

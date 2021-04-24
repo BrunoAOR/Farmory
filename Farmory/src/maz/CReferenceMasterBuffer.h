@@ -1,5 +1,6 @@
 #ifndef _H_C_REFERENCE_MASTER_BUFFER_
 #define _H_C_REFERENCE_MASTER_BUFFER_
+#define MAZ_LOG_VERBOSE
 
 #include <maz/globals.h>
 #include <maz/CReferenceMaster.h>
@@ -16,8 +17,9 @@ class CReferenceMasterBuffer
 public:
     CReferenceMasterBuffer();
     void Clear();
+    uint16 GetNextAvailableId();
     template<typename ... ConstructionArgs>
-    uint16 AddElement(ConstructionArgs ... aArgs);
+    uint16 AddElement(ConstructionArgs&& ... aArgs);
     bool FlagElementForRemoval(const uint16 aElementId);
     bool RemoveFlaggedElement(const uint16 aElementId);
     CReference<T> GetElement(const uint16 aElementId);
@@ -103,23 +105,38 @@ inline void CReferenceMasterBuffer<T, MEMORY_OWNER, BUFFER_SIZE>::Clear()
 
 
 template<typename T, bool MEMORY_OWNER, uint16 BUFFER_SIZE>
-template<typename ...ConstructionArgs>
-inline uint16 CReferenceMasterBuffer<T, MEMORY_OWNER, BUFFER_SIZE>::AddElement(ConstructionArgs ...aArgs)
+inline uint16 CReferenceMasterBuffer<T, MEMORY_OWNER, BUFFER_SIZE>::GetNextAvailableId()
 {
     uint16 elementId = kInvalidElementId;
-    for (size_t i = 0, iCount = mBufferUseFlags.size(); (i < iCount) && (elementId == kInvalidElementId); ++i)
+    for (uint16 i = 0, iCount = static_cast<uint16>(mBufferUseFlags.size()); (i < iCount) && (elementId == kInvalidElementId); ++i)
+    {
+        if (!IsFlagSet(mBufferUseFlags[i], EBufferUseFlags::IN_USE))
+        {
+            elementId = i;
+        }
+    }
+    return elementId;
+}
+
+
+template<typename T, bool MEMORY_OWNER, uint16 BUFFER_SIZE>
+template<typename ...ConstructionArgs>
+inline uint16 CReferenceMasterBuffer<T, MEMORY_OWNER, BUFFER_SIZE>::AddElement(ConstructionArgs&& ...aArgs)
+{
+    uint16 elementId = kInvalidElementId;
+    for (uint16 i = 0, iCount = static_cast<uint16>(mBufferUseFlags.size()); (i < iCount) && (elementId == kInvalidElementId); ++i)
     {
         if (!IsFlagSet(mBufferUseFlags[i], EBufferUseFlags::IN_USE))
         {
             SetFlag(mBufferUseFlags[i], EBufferUseFlags::IN_USE);
             SetFlag(mBufferUseFlags[i], EBufferUseFlags::JUST_ADDED);
-            elementId = static_cast<uint16>(i);
+            elementId = i;
         }
     }
     MAZ_ASSERT(elementId != kInvalidElementId, "CReferenceMasterBuffer::AddElement - Failed to find an available slot for element!");
     if (elementId != kInvalidElementId)
     {
-        mElements[elementId] = CReferenceMaster<T, MEMORY_OWNER>(MAZ_PLACEMENT_NEW(&(mBuffer[sizeof(T) * elementId]), T, aArgs...));
+        mElements[elementId] = CReferenceMaster<T, MEMORY_OWNER>(MAZ_PLACEMENT_NEW(&(mBuffer[sizeof(T) * elementId]), T, std::forward<ConstructionArgs>(aArgs) ...));
     }
 
     return elementId;

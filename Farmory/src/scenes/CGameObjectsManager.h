@@ -3,7 +3,7 @@
 
 #include <maz/globals.h>
 #include <array>
-#include <maz/CReferenceMaster.h>
+#include <maz/CReferenceMasterBuffer.h>
 #include <scenes/CGameObject.h>
 
 namespace maz
@@ -18,15 +18,13 @@ public:
     void Shutdown();
     void RefreshGameObjects();
     CReference<CGameObject> CreateGameObject(CGameObject* aParent, const CFixedString32& aName);
-    bool DestroyGameOjbect(uint16 aGameObjectId);
+    bool RequestDestroyGameObject(const uint16 aGameObjectId);
 
 
 private:
     CComponentsManager& mComponentsManager;
-
-    std::array<CReferenceHolder<CGameObject>, kMaxGameObjectsCount> mGameObjects;
-    uint8 mGameObjectsBuffer[sizeof(CGameObject) * kMaxGameObjectsCount];
-    std::array<bool, kMaxGameObjectsCount> mGameObjectsBufferUseFlag;
+    using CGameObjectsBuffer = CReferenceHolderBuffer<CGameObject, kMaxGameObjectsCount>;
+    CGameObjectsBuffer mGameObjectsBuffer;
 };
 
 } // maz
