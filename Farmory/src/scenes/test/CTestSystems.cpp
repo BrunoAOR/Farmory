@@ -22,7 +22,10 @@ void CSystemTransformA::Update()
     MAZ_LOGGER("CSystemTransformA::Update - START. Has %u GameObjects", mGameObjects.size());
     for (CReference<CGameObject>& gameObject : mGameObjects)
     {
-        MAZ_LOGGER("CSystemTransformA::Update - Sees GameOjbect named '%s'", gameObject->GetName().c_str());
+        if (gameObject)
+        {
+            MAZ_LOGGER("CSystemTransformA::Update - Sees GameOjbect named '%s'", gameObject->GetName().c_str());
+        }
     }
     MAZ_LOGGER("CSystemTransformA::Update - END");
 }
@@ -43,7 +46,10 @@ void CSystemTransformB::Update()
     MAZ_LOGGER("CSystemTransformB::Update - START. Has %u GameObjects", mGameObjects.size());
     for (CReference<CGameObject>& gameObject : mGameObjects)
     {
-        MAZ_LOGGER("CSystemTransformB::Update - Sees GameOjbect named '%s'", gameObject->GetName().c_str());
+        if (gameObject)
+        {
+            MAZ_LOGGER("CSystemTransformB::Update - Sees GameOjbect named '%s'", gameObject->GetName().c_str());
+        }
     }
     MAZ_LOGGER("CSystemTransformB::Update - END");
 }

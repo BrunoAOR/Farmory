@@ -32,6 +32,7 @@ inline bool CSystemsManager::RegisterSystem()
 {
     MAZ_ASSERT(mSystemsCount < kMaxSystemsCount - 1, "CSystemsManager::RegisterSystem - Attempting to Register a system but the maximum amount of systems (%u) has been reached", kMaxSystemsCount);
     mSystems[mSystemsCount] = MAZ_NEW(SYSTEM);
+    ++mSystemsCount;
     return true;
 }
 

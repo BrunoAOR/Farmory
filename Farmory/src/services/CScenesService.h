@@ -28,7 +28,7 @@ public:
 private:
     CComponentsManager mComponentsManager;
     CGameObjectsManager mGameObjectsManager;
-    //CSystemsManager mSystemsManager;
+    CSystemsManager mSystemsManager;
 };
 
 } // maz

@@ -70,8 +70,8 @@ bool CScenesService::Init()
     lOk = lOk && mComponentsManager.RegisterComponent<CTransformComponent>();
     lOk = lOk && mComponentsManager.RegisterComponent<CTestComponentA>();
     lOk = lOk && mComponentsManager.RegisterComponent<CTestComponentB>();
-    //lOk = lOk && mSystemsManager.RegisterSystem<CSystemTransformA>();
-    //lOk = lOk && mSystemsManager.RegisterSystem<CSystemTransformB>();
+    lOk = lOk && mSystemsManager.RegisterSystem<CSystemTransformA>();
+    lOk = lOk && mSystemsManager.RegisterSystem<CSystemTransformB>();
     MAZ_ASSERT(lOk, "WTF?!");
 
     return lOk;
@@ -82,7 +82,7 @@ void CScenesService::End()
 {
     mGameObjectsManager.Shutdown();
     mComponentsManager.Shutdown();
-    //mSystemsManager.Shutdown();
+    mSystemsManager.Shutdown();
 }
 
 
@@ -101,7 +101,7 @@ void CScenesService::Update()
     // Update Scene loading
     mGameObjectsManager.RefreshGameObjects();
     mComponentsManager.RefreshComponents();
-    //mSystemsManager.RefreshSystems();
+    mSystemsManager.RefreshSystems();
 }
 
 

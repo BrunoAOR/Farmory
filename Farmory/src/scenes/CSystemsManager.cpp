@@ -35,15 +35,15 @@ void CSystemsManager::Shutdown()
 
 void CSystemsManager::RefreshSystems()
 {
-    //TODO;
+    TODO;
     // I should be adding and removing gameobjects from the systems here based on wether the gameobjects signatures match the systems signature
     // This is something that can't be done by each system at the ISystem level through a non-virtual ISystem::Refresh call, because systems only know about their current GameObjects.
     // The CSystemManager will probably need access to the CGameObjectsManager to access the full list of GameObjects and go through them one by one checking if they match systems.
     // To speed things up, GameObjects should have a flag indicating if their component list has changed in this frame (set by CComponentsManager perhaps?)
 
-    for (ISystem* system : mSystems)
+    for (uint16 i = 0; i < mSystemsCount; ++i)
     {
-        system->Update();
+        mSystems[i]->Update();
     }
 }
 
