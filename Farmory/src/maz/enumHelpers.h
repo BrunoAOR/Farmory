@@ -14,7 +14,14 @@ constexpr std::underlying_type_t<ENUM_TYPE> EnumToNumber(ENUM_TYPE aEnumValue)
 template<typename FLAG_ENUM_TYPE>
 bool IsFlagSet(FLAG_ENUM_TYPE& aInOutFlags, FLAG_ENUM_TYPE aFlagToCheck)
 {
-    return  ((EnumToNumber(aInOutFlags) & EnumToNumber(aFlagToCheck)) == EnumToNumber(aFlagToCheck));
+    return ((EnumToNumber(aInOutFlags) & EnumToNumber(aFlagToCheck)) == EnumToNumber(aFlagToCheck));
+}
+
+
+template<typename FLAG_ENUM_TYPE>
+bool IsAnyFlagSet(FLAG_ENUM_TYPE& aInOutFlags, FLAG_ENUM_TYPE aFlagToCheck)
+{
+    return ((EnumToNumber(aInOutFlags) & EnumToNumber(aFlagToCheck)) != 0);
 }
 
 
@@ -26,7 +33,7 @@ void SetFlag(FLAG_ENUM_TYPE& aInOutFlags, FLAG_ENUM_TYPE aFlagToSet)
 
 
 template<typename FLAG_ENUM_TYPE>
-void ResetFlag(FLAG_ENUM_TYPE& aInOutFlags, FLAG_ENUM_TYPE aFlagToReset)
+void ClearFlag(FLAG_ENUM_TYPE& aInOutFlags, FLAG_ENUM_TYPE aFlagToReset)
 {
     aInOutFlags = static_cast<FLAG_ENUM_TYPE>(EnumToNumber(aInOutFlags) & (~EnumToNumber(aFlagToReset)));
 }

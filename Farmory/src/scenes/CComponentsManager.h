@@ -5,7 +5,7 @@
 #include <maz/globals.h>
 #include <scenes/EComponentType.h>
 #include <array>
-#include <maz/CReferenceMaster.h>
+#include <maz/CReferenceMasterBuffer.h>
 
 namespace maz
 {
@@ -36,6 +36,8 @@ private:
     template<typename COMPONENT_CLASS>
     class CComponentManager : public CComponentManagerBase
     {
+        using CComponentBuffer = CReferenceHolderBuffer<COMPONENT_CLASS, kMaxComponentsPerType>;
+
     private:
         enum class EComponentUseFlags : uint8
         {
@@ -50,12 +52,6 @@ private:
             : CComponentManagerBase(aComponentType)
         {
             MAZ_LOGGER_VERBOSE("ComponentManager::ComponentManager - called | ComponentType: %hhu", EnumToNumber(GetType()));
-            for (size_t i = 0, iCount = mComponents.size(); i < iCount; ++i)
-            {
-                mComponents[i] = std::move(CReferenceHolder<COMPONENT_CLASS>());
-            }
-            std::memset(mComponentsBuffer, 0, sizeof(COMPONENT_CLASS) * kMaxComponentsPerType);
-            mComponentsBufferUseFlags.fill(EComponentUseFlags::NONE);
         }
 
 
@@ -67,90 +63,62 @@ private:
 
         void Shutdown(CComponentsManager* aComponentsManager)
         {
-            for (uint16 i = 0, iCount = static_cast<uint16>(mComponents.size()); i < iCount; ++i)
+            typename CComponentBuffer::CBufferIterator iterator = mComponentsBuffer.GetIterator(CComponentBuffer::EIteratorFlags::NONE);
+
+            while (iterator)
             {
-                if (IsFlagSet(mComponentsBufferUseFlags[i], EComponentUseFlags::IN_USE))
-                {
-                    aComponentsManager->updateComponentIdForGameObject(mComponents[i]->GetOwner(), COMPONENT_CLASS::GetType(), kInvalidComponentId);
-                    mComponents[i].~CReferenceHolder<COMPONENT_CLASS>();
-                    reinterpret_cast<COMPONENT_CLASS*>(&(mComponentsBuffer[sizeof(COMPONENT_CLASS) * i]))->~COMPONENT_CLASS();
-                    mComponentsBufferUseFlags[i] = EComponentUseFlags::NONE;
-                }
+                aComponentsManager->updateComponentIdForGameObject(iterator.Get()->GetOwner(), COMPONENT_CLASS::GetType(), kInvalidComponentId);
+                ++iterator;
             }
+            mComponentsBuffer.Clear();
         }
 
 
         virtual void RefreshComponents(CComponentsManager* aComponentsManager) final
         {
-            for (uint16 i = 0, iCount = static_cast<uint16>(mComponents.size()); i < iCount; ++i)
+            typename CComponentBuffer::CBufferIterator iterator = mComponentsBuffer.GetIterator(static_cast<CComponentBuffer::EIteratorFlags>(CComponentBuffer::EIteratorFlags::PROCESS_ADD_PENDING | CComponentBuffer::EIteratorFlags::PROCESS_REMOVE_PENDING));
+
+            while (iterator)
             {
-                if (IsFlagSet(mComponentsBufferUseFlags[i], EComponentUseFlags::IN_USE))
+                if (iterator.HasIteratorFlag(CComponentBuffer::EIteratorFlags::PROCESS_ADD_PENDING))
                 {
-                    if (IsFlagSet(mComponentsBufferUseFlags[i], EComponentUseFlags::JUST_ADDED))
-                    {
-                        ResetFlag(mComponentsBufferUseFlags[i], EComponentUseFlags::JUST_ADDED);
-                        MAZ_ASSERT(!IsFlagSet(mComponentsBufferUseFlags[i], EComponentUseFlags::TO_REMOVE), "[CComponentManager]::RefreshComponents - A component has both the JUST_ADDED and the TO_REMOVE flags. This should not happen!");
-                        aComponentsManager->updateComponentIdForGameObject(mComponents[i]->GetOwner(), COMPONENT_CLASS::GetType(), i);
-                    }
-                    else if (IsFlagSet(mComponentsBufferUseFlags[i], EComponentUseFlags::TO_REMOVE))
-                    {
-                        ResetFlag(mComponentsBufferUseFlags[i], EComponentUseFlags::TO_REMOVE);
-                        aComponentsManager->updateComponentIdForGameObject(mComponents[i]->GetOwner(), COMPONENT_CLASS::GetType(), kInvalidComponentId);
-                        mComponents[i].~CReferenceHolder<COMPONENT_CLASS>();
-                        reinterpret_cast<COMPONENT_CLASS*>(&(mComponentsBuffer[sizeof(COMPONENT_CLASS) * i]))->~COMPONENT_CLASS();
-                        ResetFlag(mComponentsBufferUseFlags[i], EComponentUseFlags::IN_USE);
-                    }
+                    aComponentsManager->updateComponentIdForGameObject(iterator.Get()->GetOwner(), COMPONENT_CLASS::GetType(), iterator.GetId());
+                    iterator.ClearIteratorFlag(CComponentBuffer::EIteratorFlags::PROCESS_ADD_PENDING);
                 }
+                else if (iterator.HasIteratorFlag(CComponentBuffer::EIteratorFlags::PROCESS_REMOVE_PENDING))
+                {
+                    aComponentsManager->updateComponentIdForGameObject(iterator.Get()->GetOwner(), COMPONENT_CLASS::GetType(), kInvalidComponentId);
+                    bool removed = iterator.RemoveElement();
+                    MAZ_ASSERT(removed, "CComponentManager::RefreshComponents - Failed to remove component of type %hhu with id %hhu that was flagged for removal!", EnumToNumber(COMPONENT_CLASS::GetType()), iterator.GetId());
+                    iterator.ClearIteratorFlag(CComponentBuffer::EIteratorFlags::PROCESS_REMOVE_PENDING);
+                }
+                ++iterator;
             }
         }
 
 
         uint16 AddComponent(CReference<CGameObject>& aOwner)
         {
-            uint16 componentId = kInvalidComponentId;
-            for (size_t i = 0, iCount = mComponentsBufferUseFlags.size(); (i < iCount) && (componentId == kInvalidComponentId); ++i)
-            {
-                if (!IsFlagSet(mComponentsBufferUseFlags[i], EComponentUseFlags::IN_USE))
-                {
-                    SetFlag(mComponentsBufferUseFlags[i], EComponentUseFlags::IN_USE);
-                    SetFlag(mComponentsBufferUseFlags[i], EComponentUseFlags::JUST_ADDED);
-                    componentId = static_cast<uint16>(i);
-                }
-            }
-            MAZ_ASSERT(componentId != kInvalidComponentId, "[CComponentManager]::AddComponent - Failed to find an available slot for component!");
-            if (componentId != kInvalidComponentId)
-            {
-                mComponents[componentId] = CReferenceHolder<COMPONENT_CLASS>(MAZ_PLACEMENT_NEW(&(mComponentsBuffer[sizeof(COMPONENT_CLASS) * componentId]), COMPONENT_CLASS, aOwner));
-            }
-
-            return componentId;
+            return mComponentsBuffer.AddElement(aOwner);
         }
 
 
         bool RemoveComponent(const uint16 aComponentId)
         {
-            bool lOk = IsFlagSet(mComponentsBufferUseFlags[aComponentId], EComponentUseFlags::IN_USE);
-
-            if (lOk)
-            {
-                MAZ_ASSERT(!IsFlagSet(mComponentsBufferUseFlags[aComponentId], EComponentUseFlags::JUST_ADDED), "[CComponentManager]::RemoveComponent - Attempting to remove a component that has been added in this frame and not yet commited!");
-                SetFlag(mComponentsBufferUseFlags[aComponentId], EComponentUseFlags::TO_REMOVE);
-            }
-
-            return lOk;
+            return mComponentsBuffer.FlagElementForRemoval(aComponentId);
         }
 
 
         CReference<COMPONENT_CLASS> GetComponent(const uint16 aComponentId)
         {
-            MAZ_ASSERT(IsFlagSet(mComponentsBufferUseFlags[aComponentId], EComponentUseFlags::IN_USE), "[CComponentManager]::GetComponent - Attempting to retrieve uninitialized component at index %hu!", aComponentId);
-            return mComponents[aComponentId].GetReference();
+            return mComponentsBuffer.GetElement(aComponentId);
         }
 
     private:
-        std::array<CReferenceHolder<COMPONENT_CLASS>, kMaxComponentsPerType> mComponents;
-        uint8 mComponentsBuffer[sizeof(COMPONENT_CLASS) * kMaxComponentsPerType];
-        std::array<EComponentUseFlags, kMaxComponentsPerType> mComponentsBufferUseFlags;
+        CComponentBuffer mComponentsBuffer;
+        //std::array<CReferenceHolder<COMPONENT_CLASS>, kMaxComponentsPerType> mComponents;
+        //uint8 mComponentsBuffer[sizeof(COMPONENT_CLASS) * kMaxComponentsPerType];
+        //std::array<EComponentUseFlags, kMaxComponentsPerType> mComponentsBufferUseFlags;
     };
 
 public:

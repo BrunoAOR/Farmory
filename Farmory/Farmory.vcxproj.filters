@@ -159,6 +159,9 @@
     <ClInclude Include="src\scenes\test\CTestSystems.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\maz\CReferenceMasterBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\maz\CGlfwHandler.cpp">

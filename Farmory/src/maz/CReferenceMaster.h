@@ -161,6 +161,7 @@ void CReferenceMaster<T, MEMORY_OWNER>::DeleteReferences()
 	this->m_dataPtr = nullptr;
 }
 
+
 template<typename T>
 using CReferenceOwner = CReferenceMaster<T, true>;
 template<typename T>

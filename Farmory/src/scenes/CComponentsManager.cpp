@@ -38,9 +38,10 @@ void CComponentsManager::RefreshComponents()
 {
     for (uint16 i = 0, iCount = static_cast<uint16>(mComponentManagers.size()); i < iCount; ++i)
     {
-        MAZ_ASSERT(mComponentManagers[i] != nullptr
-            , "[CComponentsManager]::RefreshComponents - Component of the desired type (%hu) has already been registered!", i);
-        mComponentManagers[i]->RefreshComponents(this);
+        if (mComponentManagers[i] != nullptr)
+        {
+            mComponentManagers[i]->RefreshComponents(this);
+        }
     }
 }
 
