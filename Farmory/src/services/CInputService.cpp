@@ -26,7 +26,7 @@ bool CInputService::Init()
     bool lOk = true;
     lOk = lOk && CGlfwHandler::RegisterKeyboardStateCallback(CGlfwHandler::KeyboardStateCallback::Create< CInputService, &CInputService::OnKeyboardState>(this));
     lOk = lOk && CGlfwHandler::RegisterMousePositionCallback(CGlfwHandler::MousePositionCallback::Create< CInputService, &CInputService::OnMousePosition>(this));
-    lOk = lOk && CGlfwHandler::RegisterMouseScrollallback   (CGlfwHandler::MouseScrollCallback  ::Create< CInputService, &CInputService::OnMouseScroll  >(this));
+    lOk = lOk && CGlfwHandler::RegisterMouseScrollCallback   (CGlfwHandler::MouseScrollCallback  ::Create< CInputService, &CInputService::OnMouseScroll  >(this));
     return lOk;
 }
 

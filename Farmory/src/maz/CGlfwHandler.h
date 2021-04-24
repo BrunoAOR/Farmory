@@ -43,7 +43,7 @@ public:
     static bool RegisterMousePositionCallback(MousePositionCallback aCallback);
     static bool UnregisterMousePositionCallback(MousePositionCallback aCallback);
 
-    static bool RegisterMouseScrollallback(MouseScrollCallback aCallback);
+    static bool RegisterMouseScrollCallback(MouseScrollCallback aCallback);
     static bool UnregisterMouseScrollCallback(MouseScrollCallback aCallback);
 
 private: 

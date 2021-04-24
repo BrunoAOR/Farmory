@@ -237,7 +237,7 @@ bool CGlfwHandler::UnregisterMousePositionCallback(MousePositionCallback aCallba
 }
 
 
-bool CGlfwHandler::RegisterMouseScrollallback(MouseScrollCallback aCallback)
+bool CGlfwHandler::RegisterMouseScrollCallback(MouseScrollCallback aCallback)
 {
     bool lFound = false;
 
