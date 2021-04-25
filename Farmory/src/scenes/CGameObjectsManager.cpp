@@ -50,7 +50,9 @@ void CGameObjectsManager::RefreshGameObjects()
         }
         else
         {
-            iterator.Get()->mIsSignatureDirty = false;
+            CReference<CGameObject> gameObject = iterator.Get();
+            gameObject->mIsSignatureDirty = false;
+            gameObject->mPreviousSignature = gameObject->mSignature;
         }
         ++iterator;
     }
@@ -76,6 +78,45 @@ CReference<CGameObject> CGameObjectsManager::CreateGameObject(CGameObject* aPare
 bool CGameObjectsManager::RequestDestroyGameObject(const uint16 aGameObjectId)
 {
     return mGameObjectsBuffer.FlagElementForRemoval(aGameObjectId);
+}
+
+
+CGameObjectsManager::CModifiedGameObjectsIterator CGameObjectsManager::GetModifiedGameObjectsIterator()
+{
+    const typename CGameObjectsBuffer::CBufferIterator iterator = mGameObjectsBuffer.GetIterator(CGameObjectsBuffer::EIteratorFlags::ANY);
+    return CModifiedGameObjectsIterator(iterator);
+}
+
+
+CGameObjectsManager::CModifiedGameObjectsIterator::operator bool()
+{
+    return static_cast<bool>(mInternalIterator);
+}
+
+
+void CGameObjectsManager::CModifiedGameObjectsIterator::operator++()
+{
+    ++mInternalIterator;
+    while (mInternalIterator && !mInternalIterator.Get()->mIsSignatureDirty)
+    {
+        ++mInternalIterator;
+    }
+}
+
+
+CReference<CGameObject> CGameObjectsManager::CModifiedGameObjectsIterator::Get()
+{
+    return mInternalIterator.Get();
+}
+
+
+CGameObjectsManager::CModifiedGameObjectsIterator::CModifiedGameObjectsIterator(const CGameObjectsBuffer::CBufferIterator& aIterator)
+    : mInternalIterator(aIterator)
+{
+    while (mInternalIterator && !mInternalIterator.Get()->mIsSignatureDirty)
+    {
+        ++mInternalIterator;
+    }
 }
 
 } // maz

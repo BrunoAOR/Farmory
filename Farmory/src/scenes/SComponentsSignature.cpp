@@ -32,16 +32,23 @@ void SComponentsSignature::RemoveComponent(EComponentType aComponentType)
     mSubSignatures[componentTypeSubSignatureIndex] = (mSubSignatures[componentTypeSubSignatureIndex] & ~(1 << componentTypeBitIndex));
 }
 
-bool SComponentsSignature::IsSignatureContainedInSelf(const SComponentsSignature& aOtherSginature)
+
+bool SComponentsSignature::IsSupersetOf(const SComponentsSignature& aOtherSignature) const
 {
     bool isContainedWithin = true;
-    
+
     for (uint8 i = 0; (i < sSubSignaturesCount) && isContainedWithin; ++i)
     {
-        isContainedWithin = ((mSubSignatures[i] & aOtherSginature.mSubSignatures[i]) == aOtherSginature.mSubSignatures[i]);
+        isContainedWithin = ((mSubSignatures[i] & aOtherSignature.mSubSignatures[i]) == aOtherSignature.mSubSignatures[i]);
     }
 
     return isContainedWithin;
+}
+
+
+bool SComponentsSignature::IsSubsetOf(const SComponentsSignature& aOtherSignature) const
+{
+    return aOtherSignature.IsSupersetOf(*this);
 }
 
 } // maz

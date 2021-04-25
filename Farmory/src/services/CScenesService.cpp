@@ -13,6 +13,7 @@ namespace maz
 CScenesService::CScenesService()
     : mComponentsManager()
     , mGameObjectsManager(mComponentsManager)
+    , mSystemsManager(mGameObjectsManager)
 { ; }
 
 
@@ -74,15 +75,28 @@ bool CScenesService::Init()
     lOk = lOk && mSystemsManager.RegisterSystem<CSystemTransformB>();
     MAZ_ASSERT(lOk, "WTF?!");
 
+    CReference<CGameObject> gameObjectTA = mGameObjectsManager.CreateGameObject(nullptr, "GO-TA");
+    gameObjectTA->AddComponent<CTransformComponent>();
+    gameObjectTA->AddComponent<CTestComponentA>();
+
+    CReference<CGameObject> gameObjectTB = mGameObjectsManager.CreateGameObject(nullptr, "GO-TB");
+    gameObjectTB->AddComponent<CTransformComponent>();
+    gameObjectTB->AddComponent<CTestComponentB>();
+
+    CReference<CGameObject> gameObjectTAB = mGameObjectsManager.CreateGameObject(nullptr, "GO-TAB");
+    gameObjectTAB->AddComponent<CTransformComponent>();
+    gameObjectTAB->AddComponent<CTestComponentA>();
+    gameObjectTAB->AddComponent<CTestComponentB>();
+
     return lOk;
 }
 
 
 void CScenesService::End()
 {
-    mGameObjectsManager.Shutdown();
-    mComponentsManager.Shutdown();
     mSystemsManager.Shutdown();
+    mComponentsManager.Shutdown();
+    mGameObjectsManager.Shutdown();
 }
 
 

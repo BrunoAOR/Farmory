@@ -37,11 +37,16 @@ public:
     template<typename COMPONENT_CLASS>
     CReference<COMPONENT_CLASS> GetComponent();
 
+    bool IsSignatureDirty() const;
+    const SComponentsSignature& GetPreviousSignature() const;
+    const SComponentsSignature& GetSignature() const;
+
 private:
     uint16_t mId;
     CComponentsManager& mComponentsManager;
     CReference<CGameObject> mThis;
 
+    SComponentsSignature mPreviousSignature;
     SComponentsSignature mSignature;
     bool mIsSignatureDirty;
 

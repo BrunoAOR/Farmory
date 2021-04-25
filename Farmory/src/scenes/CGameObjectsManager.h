@@ -11,7 +11,24 @@ namespace maz
 
 class CGameObjectsManager
 {
-    friend class CGameObjectsIterator;
+    using CGameObjectsBuffer = CReferenceHolderBuffer<CGameObject, kMaxGameObjectsCount>;
+public:
+    class CModifiedGameObjectsIterator
+    {
+        friend class CGameObjectsManager;
+    public:
+        operator bool();
+        void operator ++();
+        CReference<CGameObject> Get();
+
+    private:
+        CModifiedGameObjectsIterator(const CGameObjectsBuffer::CBufferIterator& aIterator);
+
+    private:
+        CGameObjectsBuffer::CBufferIterator mInternalIterator;
+    };
+
+
 public:
     CGameObjectsManager(CComponentsManager& aComponentsManager);
 
@@ -19,11 +36,10 @@ public:
     void RefreshGameObjects();
     CReference<CGameObject> CreateGameObject(CGameObject* aParent, const CFixedString32& aName);
     bool RequestDestroyGameObject(const uint16 aGameObjectId);
-
+    CModifiedGameObjectsIterator GetModifiedGameObjectsIterator();
 
 private:
     CComponentsManager& mComponentsManager;
-    using CGameObjectsBuffer = CReferenceHolderBuffer<CGameObject, kMaxGameObjectsCount>;
     CGameObjectsBuffer mGameObjectsBuffer;
 };
 

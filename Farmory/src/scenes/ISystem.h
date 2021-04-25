@@ -13,6 +13,8 @@ namespace maz
 
 class ISystem
 {
+    friend class CSystemsManager;
+
 public:
     ISystem();
     virtual ~ISystem() = 0 {};

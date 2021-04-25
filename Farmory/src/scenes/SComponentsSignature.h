@@ -15,7 +15,8 @@ public:
     void AddComponent(EComponentType aComponentType);
     void RemoveComponent(EComponentType aComponentType);
 
-    bool IsSignatureContainedInSelf(const SComponentsSignature& aOtherSginature);
+    bool IsSupersetOf(const SComponentsSignature& aOtherSignature) const;
+    bool IsSubsetOf(const SComponentsSignature& aOtherSignature) const;
 
 private:
     static constexpr uint8 sBitsPerSubSignature = 32u;

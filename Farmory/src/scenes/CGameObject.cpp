@@ -74,4 +74,23 @@ bool CGameObject::RemoveComponent(EComponentType aComponentType)
     return lOk;
 }
 
+
+bool CGameObject::IsSignatureDirty() const
+{
+    return mIsSignatureDirty;
+}
+
+
+const SComponentsSignature& CGameObject::GetPreviousSignature() const
+{
+    return mPreviousSignature;
+}
+
+
+const SComponentsSignature& CGameObject::GetSignature() const
+{
+    return mSignature;
+}
+
+
 } // maz

@@ -1,11 +1,14 @@
 #include "CSystemsManager.h"
+#include <scenes/CGameObjectsManager.h>
+#include <scenes/SComponentsSignature.h>
 
 
 namespace maz
 {
 
-CSystemsManager::CSystemsManager()
-    : mSystemsCount(0)
+CSystemsManager::CSystemsManager(CGameObjectsManager& aGameObjectsManager)
+    : mGameObjectsManager(aGameObjectsManager)
+    , mSystemsCount(0)
 {
     mSystems.fill(nullptr);
 }
@@ -35,17 +38,54 @@ void CSystemsManager::Shutdown()
 
 void CSystemsManager::RefreshSystems()
 {
-    TODO;
-    // I should be adding and removing gameobjects from the systems here based on whether the gameobjects signatures match the systems signature
-    // This is something that can't be done by each system at the ISystem level through a non-virtual ISystem::Refresh call, because systems only know about their current GameObjects.
-    // The CSystemManager will probably need access to the CGameObjectsManager to access the full list of GameObjects and go through them one by one checking if they match systems.
-    // To speed things up, GameObjects should have a flag indicating if their component list has changed in this frame (set by CComponentsManager perhaps?)
-
-
     // Remove GameObjects from systems
-
+    for (uint16 i = 0; i < mSystemsCount; ++i)
+    {
+        ISystem* system = mSystems[i];
+        const SComponentsSignature& systemSignature = system->GetSignature();
+        for (uint16 j = 0, jCount = static_cast<uint16>(system->mGameObjects.size()); j < jCount; ++j)
+        {
+            CReference<CGameObject> gameObject = system->mGameObjects[j];
+            if (gameObject && gameObject->IsSignatureDirty())
+            {
+                if (systemSignature.IsSubsetOf(gameObject->GetPreviousSignature())
+                    && !systemSignature.IsSubsetOf(gameObject->GetSignature()))
+                {
+                    // So, the previous GameObject signature did match the System but the current one doesn't, we rremove the gameobject
+                    system->mGameObjects[j] = CReference<CGameObject>();
+                }
+            }
+        }
+    }
 
     // Add GameObjects to systems
+    CGameObjectsManager::CModifiedGameObjectsIterator modifiedGameObjectsIterator = mGameObjectsManager.GetModifiedGameObjectsIterator();
+    while (modifiedGameObjectsIterator)
+    {
+        CReference<CGameObject> gameObject = modifiedGameObjectsIterator.Get();
+        MAZ_ASSERT(gameObject->IsSignatureDirty(), "CSystemsManager::RefreshSystems - A gameobject contained in CGameObjectsManager::CModifiedGameObjectsIterator returns false when calling IsSignatureDirty!");
+        for (uint16 i = 0; i < mSystemsCount; ++i)
+        {
+            ISystem* system = mSystems[i];
+            const SComponentsSignature& systemSignature = system->GetSignature();
+            if (!systemSignature.IsSubsetOf(gameObject->GetPreviousSignature())
+                && systemSignature.IsSubsetOf(gameObject->GetSignature()))
+            {
+                // So, the previous GameObject signature did NOT match the System but the current one DOES, we add the gameobject in the first-most available slot
+                bool added = false;
+                for (uint16 j = 0, jCount = static_cast<uint16>(system->mGameObjects.size()); (j < jCount) && !added; ++j)
+                {
+                    added = !(system->mGameObjects[j]);
+                    if (added)
+                    {
+                        system->mGameObjects[j] = gameObject;
+                    }
+                }
+            }
+        }
+        ++modifiedGameObjectsIterator;
+    }
+
 
     // Update systems
     for (uint16 i = 0; i < mSystemsCount; ++i)
