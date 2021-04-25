@@ -28,19 +28,20 @@ public:
 public:
     enum EIteratorFlags
     {
-        NONE,
-        PROCESS_ADD_PENDING,
-        PROCESS_REMOVE_PENDING
+        NONE                    = 0,
+        ANY                     = 1 << 0,
+        PROCESS_ADD_PENDING     = 1 << 1,
+        PROCESS_REMOVE_PENDING  = 1 << 2
     };
 
 
 private:
     enum class EBufferUseFlags : uint8
     {
-        NONE = 0,
-        IN_USE = 1 << 0,
-        JUST_ADDED = 1 << 1,
-        TO_REMOVE = 1 << 2
+        NONE        = 0,
+        IN_USE      = 1 << 0,
+        JUST_ADDED  = 1 << 1,
+        TO_REMOVE   = 1 << 2
     };
     std::array<CReferenceMaster<T, MEMORY_OWNER>, BUFFER_SIZE> mElements;       // mComponents
     uint8 mBuffer[sizeof(T) * BUFFER_SIZE];                                     // mComponentsBuffer
@@ -195,13 +196,21 @@ template<typename T, bool MEMORY_OWNER, uint16 BUFFER_SIZE>
 inline typename CReferenceMasterBuffer<T, MEMORY_OWNER, BUFFER_SIZE>::EBufferUseFlags CReferenceMasterBuffer<T, MEMORY_OWNER, BUFFER_SIZE>::iteratorToBufferFlags(EIteratorFlags aIteratorFlags)
 {
     EBufferUseFlags bufferFlags = EBufferUseFlags::NONE;
-    if (IsFlagSet(aIteratorFlags, EIteratorFlags::PROCESS_ADD_PENDING))
+    if (IsFlagSet(aIteratorFlags, EIteratorFlags::ANY))
     {
-        SetFlag(bufferFlags, EBufferUseFlags::JUST_ADDED);
+        // If ANY is set, that means we don't care about any pending status, so we return an iterator to all valid Elements (the ones flagged as IN_USE)
+        SetFlag(bufferFlags, EBufferUseFlags::IN_USE);
     }
-    if (IsFlagSet(aIteratorFlags, EIteratorFlags::PROCESS_REMOVE_PENDING))
+    else
     {
-        SetFlag(bufferFlags, EBufferUseFlags::TO_REMOVE);
+        if (IsFlagSet(aIteratorFlags, EIteratorFlags::PROCESS_ADD_PENDING))
+        {
+            SetFlag(bufferFlags, EBufferUseFlags::JUST_ADDED);
+        }
+        if (IsFlagSet(aIteratorFlags, EIteratorFlags::PROCESS_REMOVE_PENDING))
+        {
+            SetFlag(bufferFlags, EBufferUseFlags::TO_REMOVE);
+        }
     }
     return bufferFlags;
 }

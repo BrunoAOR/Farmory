@@ -11,7 +11,7 @@ CGameObjectsManager::CGameObjectsManager(CComponentsManager& aComponentsManager)
 
 void CGameObjectsManager::Shutdown()
 {
-    typename CGameObjectsBuffer::CBufferIterator iterator = mGameObjectsBuffer.GetIterator(CGameObjectsBuffer::EIteratorFlags::NONE);
+    typename CGameObjectsBuffer::CBufferIterator iterator = mGameObjectsBuffer.GetIterator(CGameObjectsBuffer::EIteratorFlags::ANY);
 
     while (iterator)
     {
@@ -28,7 +28,7 @@ void CGameObjectsManager::Shutdown()
 
 void CGameObjectsManager::RefreshGameObjects()
 {
-    typename CGameObjectsBuffer::CBufferIterator iterator = mGameObjectsBuffer.GetIterator(static_cast<CGameObjectsBuffer::EIteratorFlags>(CGameObjectsBuffer::EIteratorFlags::PROCESS_ADD_PENDING | CGameObjectsBuffer::EIteratorFlags::PROCESS_REMOVE_PENDING));
+    typename CGameObjectsBuffer::CBufferIterator iterator = mGameObjectsBuffer.GetIterator(CGameObjectsBuffer::EIteratorFlags::ANY);
 
     while (iterator)
     {
@@ -47,6 +47,10 @@ void CGameObjectsManager::RefreshGameObjects()
             bool removed = iterator.RemoveElement();
             MAZ_ASSERT(removed, "CGameObjectsManager::RefreshGameObjects - Failed to remove Gameobject with id %hhu that was flagged for removal!", iterator.GetId());
             iterator.ClearIteratorFlag(CGameObjectsBuffer::EIteratorFlags::PROCESS_REMOVE_PENDING);
+        }
+        else
+        {
+            iterator.Get()->mIsSignatureDirty = false;
         }
         ++iterator;
     }

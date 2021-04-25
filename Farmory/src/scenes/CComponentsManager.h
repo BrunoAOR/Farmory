@@ -63,7 +63,7 @@ private:
 
         void Shutdown(CComponentsManager* aComponentsManager)
         {
-            typename CComponentBuffer::CBufferIterator iterator = mComponentsBuffer.GetIterator(CComponentBuffer::EIteratorFlags::NONE);
+            typename CComponentBuffer::CBufferIterator iterator = mComponentsBuffer.GetIterator(CComponentBuffer::EIteratorFlags::ANY);
 
             while (iterator)
             {
