@@ -46,6 +46,9 @@ private:
     std::array<CReferenceMaster<T, MEMORY_OWNER>, BUFFER_SIZE> mElements;
     uint8 mBuffer[sizeof(T) * BUFFER_SIZE];
     std::array<EBufferUseFlags, BUFFER_SIZE> mBufferUseFlags;
+    // This is the first index after which (including itself) no more elements are flagged as IN_USE
+    // Note that there may still be elements NOT IN_USE before.
+    uint16 mStartOfInactiveRange;
 
 
 public:
@@ -87,13 +90,14 @@ inline CReferenceMasterBuffer<T, MEMORY_OWNER, BUFFER_SIZE>::CReferenceMasterBuf
     }
     std::memset(mBuffer, 0, sizeof(T) * BUFFER_SIZE);
     mBufferUseFlags.fill(EBufferUseFlags::NONE);
+    mStartOfInactiveRange = 0u;
 }
 
 
 template<typename T, bool MEMORY_OWNER, uint16 BUFFER_SIZE>
 inline void CReferenceMasterBuffer<T, MEMORY_OWNER, BUFFER_SIZE>::Clear()
 {
-    for (uint16 i = 0, iCount = static_cast<uint16>(mElements.size()); i < iCount; ++i)
+    for (uint16 i = 0; i < mStartOfInactiveRange; ++i)
     {
         if (IsFlagSet(mBufferUseFlags[i], EBufferUseFlags::IN_USE))
         {
@@ -116,6 +120,7 @@ inline uint16 CReferenceMasterBuffer<T, MEMORY_OWNER, BUFFER_SIZE>::GetNextAvail
             elementId = i;
         }
     }
+    MAZ_ASSERT(elementId <= mStartOfInactiveRange, "CReferenceMasterBuffer::GetNextAvailableId - The elementId to return (%hu) is greater than mStartOfInactiveRange (%hu)!", elementId, mStartOfInactiveRange);
     return elementId;
 }
 
@@ -138,6 +143,11 @@ inline uint16 CReferenceMasterBuffer<T, MEMORY_OWNER, BUFFER_SIZE>::AddElement(C
     if (elementId != kInvalidElementId)
     {
         mElements[elementId] = CReferenceMaster<T, MEMORY_OWNER>(MAZ_PLACEMENT_NEW(&(mBuffer[sizeof(T) * elementId]), T, std::forward<ConstructionArgs>(aArgs) ...));
+        MAZ_ASSERT(elementId <= mStartOfInactiveRange, "CReferenceMasterBuffer::GetNextAvailableId - The elementId to return (%hu) is greater than mStartOfInactiveRange (%hu)!", elementId, mStartOfInactiveRange);
+        if (elementId == mStartOfInactiveRange)
+        {
+            ++mStartOfInactiveRange;
+        }
     }
 
     return elementId;
@@ -170,6 +180,23 @@ inline bool CReferenceMasterBuffer<T, MEMORY_OWNER, BUFFER_SIZE>::RemoveFlaggedE
         mElements[aElementId].~CReferenceMaster<T, MEMORY_OWNER>();
         reinterpret_cast<T*>(&(mBuffer[sizeof(T) * aElementId]))->~T();
         ClearFlag(mBufferUseFlags[aElementId], EBufferUseFlags::IN_USE);
+        
+        if (aElementId == mStartOfInactiveRange - 1)
+        {
+            // So, we've removed the element IN_USE that was last in the list. We go backwards looking for the new last element. 
+            // We set mStartOfInactiveRange to zero so that if no element is flagged as IN_USE, we already have the right value.
+            mStartOfInactiveRange = 0;
+            for (uint16 i = aElementId; (i > 0) && (mStartOfInactiveRange == 0); --i)
+            {
+                const uint16 queryIndex = i - 1; // This is NOT done in the for-increment to prevent i from overflowing through 0 to MAX_UINT16. We start before aElementId.
+
+                if (IsFlagSet(mBufferUseFlags[queryIndex], EBufferUseFlags::IN_USE))
+                {
+                    mStartOfInactiveRange = queryIndex + 1;
+                }
+            }
+            // Note that if no element had the IN_USE flag, then mStartOfInactiveRange will remain as 0, which is correct.
+        }
     }
 
     return lOk;
@@ -292,7 +319,7 @@ template<typename T, bool MEMORY_OWNER, uint16 BUFFER_SIZE>
 inline void CReferenceMasterBuffer<T, MEMORY_OWNER, BUFFER_SIZE>::CBufferIterator::findNextValidIndex(uint16 startIndex)
 {
     mCurrentIndex = kInvalidElementId;
-    for (uint16 i = startIndex; (i < BUFFER_SIZE) && (mCurrentIndex == kInvalidElementId); ++i)
+    for (uint16 i = startIndex; (i < mManager->mStartOfInactiveRange) && (mCurrentIndex == kInvalidElementId); ++i)
     {
         if(IsFlagSet(mManager->mBufferUseFlags[i], EBufferUseFlags::IN_USE) && IsAnyFlagSet(mManager->mBufferUseFlags[i], mFlags))
         {
