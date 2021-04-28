@@ -43,9 +43,9 @@ private:
         JUST_ADDED  = 1 << 1,
         TO_REMOVE   = 1 << 2
     };
-    std::array<CReferenceMaster<T, MEMORY_OWNER>, BUFFER_SIZE> mElements;       // mComponents
-    uint8 mBuffer[sizeof(T) * BUFFER_SIZE];                                     // mComponentsBuffer
-    std::array<EBufferUseFlags, BUFFER_SIZE> mBufferUseFlags;                   // mComponentsBufferUseFlags
+    std::array<CReferenceMaster<T, MEMORY_OWNER>, BUFFER_SIZE> mElements;
+    uint8 mBuffer[sizeof(T) * BUFFER_SIZE];
+    std::array<EBufferUseFlags, BUFFER_SIZE> mBufferUseFlags;
 
 
 public:

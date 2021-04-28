@@ -116,9 +116,6 @@ private:
 
     private:
         CComponentBuffer mComponentsBuffer;
-        //std::array<CReferenceHolder<COMPONENT_CLASS>, kMaxComponentsPerType> mComponents;
-        //uint8 mComponentsBuffer[sizeof(COMPONENT_CLASS) * kMaxComponentsPerType];
-        //std::array<EComponentUseFlags, kMaxComponentsPerType> mComponentsBufferUseFlags;
     };
 
 public:
@@ -164,6 +161,9 @@ public:
     }
 
 private:
+    //TODO: Consider determining the full size required for all managers and put them all one after the other in memory on a buffer.
+    // Then, just have the array of pointers like here, but we would have all components in contiguous memory.
+    // (Still separated by the fact that not all capaciy in each manager will be used)
     std::array<CComponentManagerBase*, MAZ_ENUM_COUNT(EComponentType)> mComponentManagers;
 };
 
