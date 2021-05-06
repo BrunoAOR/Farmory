@@ -25,7 +25,7 @@ public:
     bool SetUniform1i(const char* aName, int aI);
     bool SetUniform1f(const char* aName, float aF);
     bool SetUniform4f(const char* aName, float aX, float aY, float aZ, float aW);
-    bool SetUniformMat4(const char* aName, float* aMat4Ptr);
+    bool SetUniformMat4(const char* aName, const float* aMat4Ptr);
 
 private:
     unsigned int mId;

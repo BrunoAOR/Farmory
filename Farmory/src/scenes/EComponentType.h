@@ -10,6 +10,7 @@ namespace maz
 enum class EComponentType : uint8_t
 {
     Transform,
+    Sprite,
     TestCompA,
     TestCompB,
 

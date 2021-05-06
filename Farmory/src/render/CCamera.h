@@ -31,8 +31,8 @@ public:
     float GetFov() const;
     void SetFov(float aFov);
 
-    float* GetViewMatrixPtr();
-    float* GetProjMatrixPtr();
+    const float* GetViewMatrixPtr() const;
+    const float* GetProjMatrixPtr() const;
 
 private:
     void RebuildViewMatrix();

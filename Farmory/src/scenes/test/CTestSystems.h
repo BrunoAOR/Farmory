@@ -25,6 +25,15 @@ public:
     virtual void Update() override;
 };
 
+class CMotionSystemTest
+    : public ISystem
+{
+public:
+    CMotionSystemTest();
+    virtual ~CMotionSystemTest();
+    virtual void Update() override;
+};
+
 } // maz
 
 #endif // !_H_C_TEST_SYSTEMS_

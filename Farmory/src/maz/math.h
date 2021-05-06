@@ -5,6 +5,7 @@
 #include <external/glm/glm.hpp>
 #include <external/glm/gtc/matrix_transform.hpp>
 #include <external/glm/gtc/type_ptr.hpp>
+#include <external/glm/gtx/quaternion.hpp>
 
 
 namespace maz

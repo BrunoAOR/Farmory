@@ -2,10 +2,12 @@
 #include "CScenesService.h"
 
 #include <scenes/CGameObject.h>
-#include <scenes/CTransformComponent.h>
 #include <scenes/test/CTestSystems.h>
-#include <scenes/CTransformComponent.h>
+#include <scenes/components/CTransformComponent.h>
+#include <scenes/components/CSpriteComponent.h>
+#include <scenes/systems/CRenderSystem.h>
 #include <scenes/test/CTestComponents.h>
+
 
 namespace maz
 {
@@ -63,30 +65,11 @@ void test()
     MAZ_DELETE(componentsManager);
 }
 
+
 bool CScenesService::Init()
 {
     bool lOk = true;
     test();
-
-    lOk = lOk && mComponentsManager.RegisterComponent<CTransformComponent>();
-    lOk = lOk && mComponentsManager.RegisterComponent<CTestComponentA>();
-    lOk = lOk && mComponentsManager.RegisterComponent<CTestComponentB>();
-    lOk = lOk && mSystemsManager.RegisterSystem<CSystemTransformA>();
-    lOk = lOk && mSystemsManager.RegisterSystem<CSystemTransformB>();
-    MAZ_ASSERT(lOk, "WTF?!");
-
-    CReference<CGameObject> gameObjectTA = mGameObjectsManager.CreateGameObject(nullptr, "GO-TA");
-    gameObjectTA->AddComponent<CTransformComponent>();
-    gameObjectTA->AddComponent<CTestComponentA>();
-
-    CReference<CGameObject> gameObjectTB = mGameObjectsManager.CreateGameObject(nullptr, "GO-TB");
-    gameObjectTB->AddComponent<CTransformComponent>();
-    gameObjectTB->AddComponent<CTestComponentB>();
-
-    CReference<CGameObject> gameObjectTAB = mGameObjectsManager.CreateGameObject(nullptr, "GO-TAB");
-    gameObjectTAB->AddComponent<CTransformComponent>();
-    gameObjectTAB->AddComponent<CTestComponentA>();
-    gameObjectTAB->AddComponent<CTestComponentB>();
 
     return lOk;
 }
@@ -112,6 +95,78 @@ void CScenesService::PreUpdate()
 
 void CScenesService::Update()
 {
+    static bool hasLoadedScene = false;
+    if (!hasLoadedScene)
+    {
+        hasLoadedScene = true;
+
+        bool lOk = true;
+
+        bool useBaseScene = false;
+        if (useBaseScene)
+        {
+            //Register components and systems
+            lOk = lOk && mComponentsManager.RegisterComponent<CTransformComponent>();
+            lOk = lOk && mComponentsManager.RegisterComponent<CTestComponentA>();
+            lOk = lOk && mComponentsManager.RegisterComponent<CTestComponentB>();
+            lOk = lOk && mSystemsManager.RegisterSystem<CSystemTransformA>();
+            lOk = lOk && mSystemsManager.RegisterSystem<CSystemTransformB>();
+            MAZ_ASSERT(lOk, "WTF?!");
+
+            // Load test scene
+            CReference<CGameObject> gameObjectTA = mGameObjectsManager.CreateGameObject(nullptr, "GO-TA");
+            gameObjectTA->AddComponent<CTransformComponent>();
+            gameObjectTA->AddComponent<CTestComponentA>();
+
+            CReference<CGameObject> gameObjectTB = mGameObjectsManager.CreateGameObject(nullptr, "GO-TB");
+            gameObjectTB->AddComponent<CTransformComponent>();
+            gameObjectTB->AddComponent<CTestComponentB>();
+
+            CReference<CGameObject> gameObjectTAB = mGameObjectsManager.CreateGameObject(nullptr, "GO-TAB");
+            gameObjectTAB->AddComponent<CTransformComponent>();
+            gameObjectTAB->AddComponent<CTestComponentA>();
+            gameObjectTAB->AddComponent<CTestComponentB>();
+        }
+
+        bool useComplexScene = true;
+        if (useComplexScene)
+        {
+            //Register components and systems
+            lOk = lOk && mComponentsManager.RegisterComponent<CTransformComponent>();
+            lOk = lOk && mComponentsManager.RegisterComponent<CSpriteComponent>();
+            lOk = lOk && mComponentsManager.RegisterComponent<CTestComponentA>();
+            lOk = lOk && mSystemsManager.RegisterSystem<CRenderSystem>();
+            lOk = lOk && mSystemsManager.RegisterSystem<CMotionSystemTest>();
+
+            // Load test scene
+            {
+                CReference<CGameObject> gameObject = mGameObjectsManager.CreateGameObject(nullptr, "Sprite +1");
+                gameObject->AddComponent<CTransformComponent>();
+                gameObject->AddComponent<CSpriteComponent>();
+                CReference<CTransformComponent> transform = gameObject->GetComponent<CTransformComponent>();
+                transform->mTranslation = glm::vec3(1.0f, 1.0f, 0.0f);
+                transform->RebuildModelMatrix();
+            }
+            {
+                CReference<CGameObject> gameObject = mGameObjectsManager.CreateGameObject(nullptr, "Sprite -1");
+                gameObject->AddComponent<CTransformComponent>();
+                gameObject->AddComponent<CSpriteComponent>();
+                CReference<CTransformComponent> transform = gameObject->GetComponent<CTransformComponent>();
+                transform->mTranslation = glm::vec3(-1.0f, -1.0f, 0.0f);
+                transform->RebuildModelMatrix();
+            }
+            {
+                CReference<CGameObject> gameObject = mGameObjectsManager.CreateGameObject(nullptr, "Sprite 0");
+                gameObject->AddComponent<CTransformComponent>();
+                gameObject->AddComponent<CSpriteComponent>();
+                gameObject->AddComponent<CTestComponentA>();
+                CReference<CTransformComponent> transform = gameObject->GetComponent<CTransformComponent>();
+                transform->mTranslation = glm::vec3(0.0f, 0.0f, 0.0f);
+                transform->RebuildModelMatrix();
+            }
+        }
+
+    }
     // Update Scene loading
     mGameObjectsManager.RefreshGameObjects();
     mComponentsManager.RefreshComponents();

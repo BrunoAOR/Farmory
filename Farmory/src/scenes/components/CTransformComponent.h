@@ -20,9 +20,19 @@ public:
         return EComponentType::Transform;
     }
 
-    float a, b, c;
+    const glm::mat4& GetModelMatrix() const { return mModelMatrix; }
+
+public:
+    glm::vec3 mTranslation;
+    glm::quat mRotation;
+    glm::vec3 mScale;
+
+public:
+    void RebuildModelMatrix();
 
 private:
+    glm::mat4 mModelMatrix;
+
 };
 
 } // maz

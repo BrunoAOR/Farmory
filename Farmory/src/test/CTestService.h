@@ -24,6 +24,7 @@ public:
 
     virtual void Update() override;
     void TestRender();
+    const CCamera& GetCamera() const { return mCamera; }
 
 private:
 
