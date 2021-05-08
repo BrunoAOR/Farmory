@@ -132,7 +132,7 @@
     <ClInclude Include="src\maz\CReferenceMaster.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\scenes\components\CTransformComponent.h">
+    <ClInclude Include="src\scenes\components\CTransform2DComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\scenes\CGameObject.h">
@@ -257,7 +257,7 @@
     <ClCompile Include="src\maz\CReferenceBase.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\scenes\components\CTransformComponent.cpp">
+    <ClCompile Include="src\scenes\components\CTransform2DComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\scenes\CGameObjectsManager.cpp">

@@ -3,7 +3,7 @@
 
 #include <scenes/CGameObject.h>
 #include <scenes/test/CTestSystems.h>
-#include <scenes/components/CTransformComponent.h>
+#include <scenes/components/CTransform2DComponent.h>
 #include <scenes/components/CSpriteComponent.h>
 #include <scenes/systems/CRenderSystem.h>
 #include <scenes/test/CTestComponents.h>
@@ -25,23 +25,23 @@ void test()
 {
     CComponentsManager* componentsManager = MAZ_NEW(CComponentsManager);
     CGameObjectsManager* gameObjectsManager = MAZ_NEW(CGameObjectsManager, *componentsManager);
-    componentsManager->RegisterComponent<CTransformComponent>();
+    componentsManager->RegisterComponent<CTransform2DComponent>();
     CReference<CGameObject> gameObject = gameObjectsManager->CreateGameObject(nullptr, "Timmy");
     gameObjectsManager->RefreshGameObjects();
-    CReference<CTransformComponent> transform1 = gameObject->AddComponent<CTransformComponent>();
-    bool hasIt = gameObject->HasComponent<CTransformComponent>();
-    CReference<CTransformComponent> transform2 = gameObject->GetComponent<CTransformComponent>();
+    CReference<CTransform2DComponent> transform1 = gameObject->AddComponent<CTransform2DComponent>();
+    bool hasIt = gameObject->HasComponent<CTransform2DComponent>();
+    CReference<CTransform2DComponent> transform2 = gameObject->GetComponent<CTransform2DComponent>();
     bool isSame = (transform1 == transform2);
     bool isValid1 = (bool)transform1;
     bool isValid2 = (bool)transform2;
     componentsManager->RefreshComponents();
-    hasIt = gameObject->HasComponent<CTransformComponent>();
-    transform2 = gameObject->GetComponent<CTransformComponent>();
+    hasIt = gameObject->HasComponent<CTransform2DComponent>();
+    transform2 = gameObject->GetComponent<CTransform2DComponent>();
     isSame = (transform1 == transform2);
-    transform2 = CReference<CTransformComponent>();
+    transform2 = CReference<CTransform2DComponent>();
     isValid1 = (bool)transform1;
     isValid2 = (bool)transform2;
-    gameObject->RemoveComponent<CTransformComponent>();
+    gameObject->RemoveComponent<CTransform2DComponent>();
     isValid1 = (bool)transform1;
     isValid2 = (bool)transform2;
     componentsManager->RefreshComponents();
@@ -106,7 +106,7 @@ void CScenesService::Update()
         if (useBaseScene)
         {
             //Register components and systems
-            lOk = lOk && mComponentsManager.RegisterComponent<CTransformComponent>();
+            lOk = lOk && mComponentsManager.RegisterComponent<CTransform2DComponent>();
             lOk = lOk && mComponentsManager.RegisterComponent<CTestComponentA>();
             lOk = lOk && mComponentsManager.RegisterComponent<CTestComponentB>();
             lOk = lOk && mSystemsManager.RegisterSystem<CSystemTransformA>();
@@ -115,15 +115,15 @@ void CScenesService::Update()
 
             // Load test scene
             CReference<CGameObject> gameObjectTA = mGameObjectsManager.CreateGameObject(nullptr, "GO-TA");
-            gameObjectTA->AddComponent<CTransformComponent>();
+            gameObjectTA->AddComponent<CTransform2DComponent>();
             gameObjectTA->AddComponent<CTestComponentA>();
 
             CReference<CGameObject> gameObjectTB = mGameObjectsManager.CreateGameObject(nullptr, "GO-TB");
-            gameObjectTB->AddComponent<CTransformComponent>();
+            gameObjectTB->AddComponent<CTransform2DComponent>();
             gameObjectTB->AddComponent<CTestComponentB>();
 
             CReference<CGameObject> gameObjectTAB = mGameObjectsManager.CreateGameObject(nullptr, "GO-TAB");
-            gameObjectTAB->AddComponent<CTransformComponent>();
+            gameObjectTAB->AddComponent<CTransform2DComponent>();
             gameObjectTAB->AddComponent<CTestComponentA>();
             gameObjectTAB->AddComponent<CTestComponentB>();
         }
@@ -132,7 +132,7 @@ void CScenesService::Update()
         if (useComplexScene)
         {
             //Register components and systems
-            lOk = lOk && mComponentsManager.RegisterComponent<CTransformComponent>();
+            lOk = lOk && mComponentsManager.RegisterComponent<CTransform2DComponent>();
             lOk = lOk && mComponentsManager.RegisterComponent<CSpriteComponent>();
             lOk = lOk && mComponentsManager.RegisterComponent<CTestComponentA>();
             lOk = lOk && mSystemsManager.RegisterSystem<CRenderSystem>();
@@ -141,24 +141,24 @@ void CScenesService::Update()
             // Load test scene
             {
                 CReference<CGameObject> gameObject = mGameObjectsManager.CreateGameObject(nullptr, "Sprite +1");
-                gameObject->AddComponent<CTransformComponent>();
+                gameObject->AddComponent<CTransform2DComponent>();
                 gameObject->AddComponent<CSpriteComponent>();
-                CReference<CTransformComponent> transform = gameObject->GetComponent<CTransformComponent>();
+                CReference<CTransform2DComponent> transform = gameObject->GetComponent<CTransform2DComponent>();
                 transform->SetTranslation(TVec2(1.0f, 1.0f));
             }
             {
                 CReference<CGameObject> gameObject = mGameObjectsManager.CreateGameObject(nullptr, "Sprite -1");
-                gameObject->AddComponent<CTransformComponent>();
+                gameObject->AddComponent<CTransform2DComponent>();
                 gameObject->AddComponent<CSpriteComponent>();
-                CReference<CTransformComponent> transform = gameObject->GetComponent<CTransformComponent>();
+                CReference<CTransform2DComponent> transform = gameObject->GetComponent<CTransform2DComponent>();
                 transform->SetTranslation(TVec2(-1.0f, -1.0f));
             }
             {
                 CReference<CGameObject> gameObject = mGameObjectsManager.CreateGameObject(nullptr, "Sprite 0");
-                gameObject->AddComponent<CTransformComponent>();
+                gameObject->AddComponent<CTransform2DComponent>();
                 gameObject->AddComponent<CSpriteComponent>();
                 gameObject->AddComponent<CTestComponentA>();
-                CReference<CTransformComponent> transform = gameObject->GetComponent<CTransformComponent>();
+                CReference<CTransform2DComponent> transform = gameObject->GetComponent<CTransform2DComponent>();
                 transform->SetTranslation(TVec2(0.0f, 0.0f));
                 transform->SetScale(TVec2(0.5f, 2.0f));
             }

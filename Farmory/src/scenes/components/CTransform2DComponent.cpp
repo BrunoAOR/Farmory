@@ -1,48 +1,48 @@
 #define MAZ_LOG_VERBOSE
-#include "CTransformComponent.h"
+#include "CTransform2DComponent.h"
 
 
 namespace maz
 {
 
-CTransformComponent::CTransformComponent(CReference<CGameObject>& aOwner)
+CTransform2DComponent::CTransform2DComponent(CReference<CGameObject>& aOwner)
     : IComponent(aOwner)
     , mTranslation(0.0f, 0.0f)
     , mRotation(0.0f)
     , mScale(1.0f, 1.0f)
     , mModelMatrix(1.0f)
 {
-    MAZ_LOGGER_VERBOSE("CTransformComponent::CTransformComponent called");
+    MAZ_LOGGER_VERBOSE("CTransform2DComponent::CTransform2DComponent called");
     rebuildModelMatrix();
 }
 
 
-CTransformComponent::~CTransformComponent()
+CTransform2DComponent::~CTransform2DComponent()
 {
-    MAZ_LOGGER_VERBOSE("CTransformComponent::~CTransformComponent called");
+    MAZ_LOGGER_VERBOSE("CTransform2DComponent::~CTransform2DComponent called");
 }
 
 
-const TVec2& CTransformComponent::GetTranslation() const
+const TVec2& CTransform2DComponent::GetTranslation() const
 {
     return mTranslation;
 }
 
 
-void CTransformComponent::SetTranslation(const TVec2& aTranslation)
+void CTransform2DComponent::SetTranslation(const TVec2& aTranslation)
 {
     mTranslation = aTranslation;
     mModelMatrixDirty = true;
 }
 
 
-float CTransformComponent::GetRotation() const
+float CTransform2DComponent::GetRotation() const
 {
     return mRotation;
 }
 
 
-void CTransformComponent::SetRotation(float aRotation)
+void CTransform2DComponent::SetRotation(float aRotation)
 {
     mRotation = aRotation;
     while (mRotation >= 360.0f)
@@ -57,31 +57,31 @@ void CTransformComponent::SetRotation(float aRotation)
 }
 
 
-const TVec2& CTransformComponent::GetScale() const
+const TVec2& CTransform2DComponent::GetScale() const
 {
     return mScale;
 }
 
 
-void CTransformComponent::SetScale(const TVec2& aScale)
+void CTransform2DComponent::SetScale(const TVec2& aScale)
 {
     mScale = aScale;
     mModelMatrixDirty = true;
 }
 
 
-const TMat4x4& CTransformComponent::GetModelMatrix() const
+const TMat4x4& CTransform2DComponent::GetModelMatrix() const
 {
     if (mModelMatrixDirty)
     {
-        const_cast<CTransformComponent*>(this)->mModelMatrixDirty = false;
-        const_cast<CTransformComponent*>(this)->rebuildModelMatrix();
+        const_cast<CTransform2DComponent*>(this)->mModelMatrixDirty = false;
+        const_cast<CTransform2DComponent*>(this)->rebuildModelMatrix();
     }
     return mModelMatrix;
 }
 
 
-void CTransformComponent::rebuildModelMatrix()
+void CTransform2DComponent::rebuildModelMatrix()
 {
     mModelMatrix = TMat4x4(1.0f);
     mModelMatrix = glm::translate(mModelMatrix, TVec3(mTranslation, 0.0f));

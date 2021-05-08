@@ -1,5 +1,5 @@
 #include "CTestSystems.h"
-#include <scenes/components/CTransformComponent.h>
+#include <scenes/components/CTransform2DComponent.h>
 #include <services/CServicesManager.h>
 #include <services/CInputService.h>
 #include <services/CTimeService.h>
@@ -143,7 +143,7 @@ void CMotionSystemTest::Update()
         {
             if (gameObject)
             {
-                CReference<CTransformComponent> transform = gameObject->GetComponent<CTransformComponent>();
+                CReference<CTransform2DComponent> transform = gameObject->GetComponent<CTransform2DComponent>();
                 transform->SetTranslation(transform->GetTranslation() + lMotion);
                 transform->SetRotation(transform->GetRotation() + zRotation);
                 transform->SetScale(transform->GetScale() + lScale);

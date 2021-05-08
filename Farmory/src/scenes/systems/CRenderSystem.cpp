@@ -1,5 +1,5 @@
 #include "CRenderSystem.h"
-#include <scenes/components/CTransformComponent.h>
+#include <scenes/components/CTransform2DComponent.h>
 #include <scenes/components/CSpriteComponent.h>
 #include <render/CCamera.h>
 #include <services/CServicesManager.h>
@@ -31,7 +31,7 @@ void CRenderSystem::Update()
     {
         if (gameObject)
         {
-            CReference<CTransformComponent> transformComponent = gameObject->GetComponent<CTransformComponent>();
+            CReference<CTransform2DComponent> transformComponent = gameObject->GetComponent<CTransform2DComponent>();
             CReference<CSpriteComponent> spriteComponent = gameObject->GetComponent<CSpriteComponent>();
 
             spriteComponent->mShader.Use();
