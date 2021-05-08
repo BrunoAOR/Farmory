@@ -1,5 +1,5 @@
-#ifndef _H_C_TRANSFORM_COMPONENT_
-#define _H_C_TRANSFORM_COMPONENT_
+#ifndef _H_C_TRANSFORM_2D_COMPONENT_
+#define _H_C_TRANSFORM_2D_COMPONENT_
 
 #include <scenes/IComponent.h>
 #include <scenes/EComponentType.h>
@@ -8,33 +8,44 @@ namespace maz
 {
 
 class CGameObject;
-class CTransformComponent
+class CTransform2DComponent
     : public IComponent
 {
 public:
-    CTransformComponent(CReference<CGameObject>& aOwner);
-    ~CTransformComponent();
+    CTransform2DComponent(CReference<CGameObject>& aOwner);
+    ~CTransform2DComponent();
 
     static constexpr EComponentType GetType()
     {
         return EComponentType::Transform;
     }
 
-    const glm::mat4& GetModelMatrix() const { return mModelMatrix; }
+    const TVec2& GetTranslation() const;
+    void SetTranslation(const TVec2& aPosition);
 
-public:
-    glm::vec3 mTranslation;
-    glm::quat mRotation;
-    glm::vec3 mScale;
+    // Note that CW rotation is negative and CCW rotation is positive
+    float GetRotation() const;
+    void SetRotation(float aRotation);
 
-public:
-    void RebuildModelMatrix();
+    const TVec2& GetScale() const;
+    void SetScale(const TVec2& aScale);
+
+    const TMat4x4& GetModelMatrix() const;
+
 
 private:
-    glm::mat4 mModelMatrix;
+    void rebuildModelMatrix();
 
+
+private:
+    TVec2 mTranslation;
+    float mRotation;
+    TVec2 mScale;
+
+    TMat4x4 mModelMatrix;
+    bool mModelMatrixDirty;
 };
 
 } // maz
 
-#endif // !_H_C_TRANSFORM_COMPONENT_
+#endif // !_H_C_TRANSFORM_2D_COMPONENT_

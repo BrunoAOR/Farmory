@@ -76,7 +76,7 @@ void CMotionSystemTest::Update()
     bool lChangesMade = false;
     const float lDt = lTimeService->GetDeltaTime();
     const float lSpeed = 0.1f;
-    glm::vec3 lMotion(0.0f, 0.0f, 0.0f);
+    glm::vec2 lMotion(0.0f, 0.0f);
     if (lInputService->IsKeyDown(GLFW_KEY_I))
     {
         lMotion.y += 1;
@@ -113,6 +113,30 @@ void CMotionSystemTest::Update()
     }
     zRotation *= lRotSpeed * lDt;
 
+    const float lScaleSpeed = 0.5f;
+    TVec2 lScale(0.0f, 0.0f);
+    if (lInputService->IsKeyDown(GLFW_KEY_KP_4))
+    {
+        lScale.x -= 1;
+        lChangesMade = true;
+    }
+    if (lInputService->IsKeyDown(GLFW_KEY_KP_6))
+    {
+        lScale.x += 1;
+        lChangesMade = true;
+    }
+    if (lInputService->IsKeyDown(GLFW_KEY_KP_8))
+    {
+        lScale.y += 1;
+        lChangesMade = true;
+    }
+    if (lInputService->IsKeyDown(GLFW_KEY_KP_2))
+    {
+        lScale.y -= 1;
+        lChangesMade = true;
+    }
+    lScale *= lScaleSpeed * lDt;
+
     if (lChangesMade)
     {
         for (CReference<CGameObject>& gameObject : mGameObjects)
@@ -120,9 +144,9 @@ void CMotionSystemTest::Update()
             if (gameObject)
             {
                 CReference<CTransformComponent> transform = gameObject->GetComponent<CTransformComponent>();
-                transform->mTranslation += lMotion;
-                transform->mRotation = glm::quat(glm::vec3(0.0f, 0.0f, glm::radians(zRotation))) * transform->mRotation;
-                transform->RebuildModelMatrix();
+                transform->SetTranslation(transform->GetTranslation() + lMotion);
+                transform->SetRotation(transform->GetRotation() + zRotation);
+                transform->SetScale(transform->GetScale() + lScale);
             }
         }
     }

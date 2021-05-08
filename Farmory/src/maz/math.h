@@ -14,6 +14,7 @@ namespace maz
 using TVec2   = glm::vec2;
 using TVec3   = glm::vec3;
 using TMat4x4 = glm::mat4;
+using TQuat   = glm::quat;
 
 inline bool IsApproxEq(float aLhs, float aRhs, float aMaxDiff = EPSILON_FLOAT)
 {

@@ -144,16 +144,14 @@ void CScenesService::Update()
                 gameObject->AddComponent<CTransformComponent>();
                 gameObject->AddComponent<CSpriteComponent>();
                 CReference<CTransformComponent> transform = gameObject->GetComponent<CTransformComponent>();
-                transform->mTranslation = glm::vec3(1.0f, 1.0f, 0.0f);
-                transform->RebuildModelMatrix();
+                transform->SetTranslation(TVec2(1.0f, 1.0f));
             }
             {
                 CReference<CGameObject> gameObject = mGameObjectsManager.CreateGameObject(nullptr, "Sprite -1");
                 gameObject->AddComponent<CTransformComponent>();
                 gameObject->AddComponent<CSpriteComponent>();
                 CReference<CTransformComponent> transform = gameObject->GetComponent<CTransformComponent>();
-                transform->mTranslation = glm::vec3(-1.0f, -1.0f, 0.0f);
-                transform->RebuildModelMatrix();
+                transform->SetTranslation(TVec2(-1.0f, -1.0f));
             }
             {
                 CReference<CGameObject> gameObject = mGameObjectsManager.CreateGameObject(nullptr, "Sprite 0");
@@ -161,8 +159,8 @@ void CScenesService::Update()
                 gameObject->AddComponent<CSpriteComponent>();
                 gameObject->AddComponent<CTestComponentA>();
                 CReference<CTransformComponent> transform = gameObject->GetComponent<CTransformComponent>();
-                transform->mTranslation = glm::vec3(0.0f, 0.0f, 0.0f);
-                transform->RebuildModelMatrix();
+                transform->SetTranslation(TVec2(0.0f, 0.0f));
+                transform->SetScale(TVec2(0.5f, 2.0f));
             }
         }
 
