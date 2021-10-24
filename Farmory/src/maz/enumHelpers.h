@@ -12,16 +12,16 @@ constexpr std::underlying_type_t<ENUM_TYPE> EnumToNumber(ENUM_TYPE aEnumValue)
 
 
 template<typename FLAG_ENUM_TYPE>
-bool IsFlagSet(FLAG_ENUM_TYPE& aInOutFlags, FLAG_ENUM_TYPE aFlagToCheck)
+bool IsFlagSet(const FLAG_ENUM_TYPE& aFlags, FLAG_ENUM_TYPE aFlagToCheck)
 {
-    return ((EnumToNumber(aInOutFlags) & EnumToNumber(aFlagToCheck)) == EnumToNumber(aFlagToCheck));
+    return ((EnumToNumber(aFlags) & EnumToNumber(aFlagToCheck)) == EnumToNumber(aFlagToCheck));
 }
 
 
 template<typename FLAG_ENUM_TYPE>
-bool IsAnyFlagSet(FLAG_ENUM_TYPE& aInOutFlags, FLAG_ENUM_TYPE aFlagToCheck)
+bool IsAnyFlagSet(const FLAG_ENUM_TYPE& aFlags, FLAG_ENUM_TYPE aFlagToCheck)
 {
-    return ((EnumToNumber(aInOutFlags) & EnumToNumber(aFlagToCheck)) != 0);
+    return ((EnumToNumber(aFlags) & EnumToNumber(aFlagToCheck)) != 0);
 }
 
 
