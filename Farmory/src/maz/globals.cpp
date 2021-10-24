@@ -13,7 +13,7 @@ bool gShouldClose = false;
 
 } // global
 
-void Logger(const char file[], int line, const char* format, ...)
+void Logger(const char* file, int line, const char* function, const char* format, ...)
 {
     static char tmp_string[4096];
     static char tmp_string2[4096];
@@ -23,7 +23,7 @@ void Logger(const char file[], int line, const char* format, ...)
     va_start(ap, format);
     vsprintf_s(tmp_string, 4096, format, ap);
     va_end(ap);
-    sprintf_s(tmp_string2, 4096, "%s(%d) : %s\n", file, line, tmp_string);
+    sprintf_s(tmp_string2, 4096, "%s (ln. %d) [%s]: %s\n", file, line, function, tmp_string);
     OutputDebugStringA(tmp_string2);
 }
 

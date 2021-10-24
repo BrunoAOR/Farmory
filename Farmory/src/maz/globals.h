@@ -17,10 +17,10 @@
 #endif // DEBUG
 
 
-#define MAZ_REL_LOGGER(format, ...) maz::Logger(__FILE__, __LINE__, format, __VA_ARGS__);
+#define MAZ_REL_LOGGER(format, ...) maz::Logger(__FILE__, __LINE__, __FUNCTION__, format, __VA_ARGS__);
 #ifdef DEBUG
-#define MAZ_LOGGER(format, ...) maz::Logger(__FILE__, __LINE__, format, __VA_ARGS__);
-#define MAZ_LOGGER_IF(expression, format, ...) if(expression) { maz::Logger(__FILE__, __LINE__, format, __VA_ARGS__); }
+#define MAZ_LOGGER(format, ...) maz::Logger(__FILE__, __LINE__, __FUNCTION__, format, __VA_ARGS__);
+#define MAZ_LOGGER_IF(expression, format, ...) if(expression) { maz::Logger(__FILE__, __LINE__, __FUNCTION__, format, __VA_ARGS__); }
 #else
 #define MAZ_LOGGER(format, ...) ((void)0);
 #define MAZ_LOGGER_IF(expression, format, ...) ((void)0);
@@ -28,8 +28,8 @@
 
 
 #ifdef MAZ_LOG_VERBOSE
-#define MAZ_LOGGER_VERBOSE(format, ...) maz::Logger(__FILE__, __LINE__, format, __VA_ARGS__);
-#define MAZ_LOGGER_VERBOSE_IF(expression, format, ...) if(expression) { maz::Logger(__FILE__, __LINE__, format, __VA_ARGS__); }
+#define MAZ_LOGGER_VERBOSE(format, ...) maz::Logger(__FILE__, __LINE__, __FUNCTION__, format, __VA_ARGS__);
+#define MAZ_LOGGER_VERBOSE_IF(expression, format, ...) if(expression) { maz::Logger(__FILE__, __LINE__, __FUNCTION__, format, __VA_ARGS__); }
 #else
 #define MAZ_LOGGER_VERBOSE(format, ...) ((void)0);
 #define MAZ_LOGGER_VERBOSE_IF(expression, format, ...) ((void)0);
@@ -48,8 +48,8 @@
 
 
 #ifdef DEBUG
-#define MAZ_ASSERT(expression, format, ...) if(!(expression)) maz::Logger(__FILE__, __LINE__, "%s" format, "ASSERT: ", __VA_ARGS__); assert(expression);
-#define MAZ_ERROR(format, ...) maz::Logger(__FILE__, __LINE__, "%s" format, "ERROR: ", __VA_ARGS__); assert(false);
+#define MAZ_ASSERT(expression, format, ...) if(!(expression)) maz::Logger(__FILE__, __LINE__, __FUNCTION__, "%s" format, "ASSERT: ", __VA_ARGS__); assert(expression);
+#define MAZ_ERROR(format, ...) maz::Logger(__FILE__, __LINE__, __FUNCTION__, "%s" format, "ERROR: ", __VA_ARGS__); assert(false);
 #else
 #define MAZ_ASSERT(expression, format, ...) ((void)0);
 #define MAZ_ERROR(format, ...) ((void)0);
@@ -66,7 +66,7 @@ namespace global
 extern bool gShouldClose;
 } // global
 
-void Logger(const char file[], int line, const char* format, ...);
+void Logger(const char* file, int line, const char* function, const char* format, ...);
 
 } // maz
 
