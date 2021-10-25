@@ -3,7 +3,7 @@
 
 #include <maz/globals.h>
 #include <array>
-#include <maz/CReferenceMasterBuffer.h>
+#include <maz/CReferenceBuffer.h>
 #include <scenes/CGameObject.h>
 
 namespace maz
@@ -11,7 +11,7 @@ namespace maz
 
 class CGameObjectsManager
 {
-    using CGameObjectsBuffer = CReferenceHolderBuffer<CGameObject, kMaxGameObjectsCount>;
+    using CGameObjectsBuffer = CReferenceBuffer<CGameObject, kMaxGameObjectsCount>;
 public:
     class CModifiedGameObjectsIterator
     {

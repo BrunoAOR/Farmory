@@ -5,7 +5,7 @@
 #include <maz/globals.h>
 #include <scenes/EComponentType.h>
 #include <array>
-#include <maz/CReferenceMasterBuffer.h>
+#include <maz/CReferenceBuffer.h>
 
 namespace maz
 {
@@ -36,16 +36,7 @@ private:
     template<typename COMPONENT_CLASS>
     class CComponentManager : public CComponentManagerBase
     {
-        using CComponentBuffer = CReferenceHolderBuffer<COMPONENT_CLASS, kMaxComponentsPerType>;
-
-    private:
-        enum class EComponentUseFlags : uint8
-        {
-            NONE        = 0,
-            IN_USE      = 1 << 0,
-            JUST_ADDED  = 1 << 1,
-            TO_REMOVE   = 1 << 2
-        };
+        using CComponentBuffer = CReferenceBuffer<COMPONENT_CLASS, kMaxComponentsPerType>;
 
     public:
         CComponentManager(EComponentType aComponentType)

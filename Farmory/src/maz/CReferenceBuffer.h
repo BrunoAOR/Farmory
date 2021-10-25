@@ -9,13 +9,13 @@ namespace maz
 {
 const uint16 kInvalidElementId = MAX_UINT16;
 
-template<typename T, bool MEMORY_OWNER, uint16 BUFFER_SIZE>
-class CReferenceMasterBuffer
+template<typename T, uint16 BUFFER_SIZE>
+class CReferenceBuffer
 {
     static_assert(BUFFER_SIZE < kInvalidElementId);
 
 public:
-    CReferenceMasterBuffer();
+    CReferenceBuffer();
     void Clear();
     uint16 GetNextAvailableId();
     template<typename ... ConstructionArgs>
@@ -43,7 +43,7 @@ private:
         JUST_ADDED  = 1 << 1,
         TO_REMOVE   = 1 << 2
     };
-    std::array<CReferenceMaster<T, MEMORY_OWNER>, BUFFER_SIZE> mElements;
+    std::array<CReferenceHolder<T>, BUFFER_SIZE> mElements;
     uint8 mBuffer[sizeof(T) * BUFFER_SIZE];
     std::array<EBufferUseFlags, BUFFER_SIZE> mBufferUseFlags;
     // This is the first index after which (including itself) no more elements are flagged as IN_USE
@@ -64,11 +64,11 @@ public:
         bool RemoveElement();
 
     private:
-        friend class CReferenceMasterBuffer;
-        CBufferIterator(CReferenceMasterBuffer* aManager, EBufferUseFlags aFlags);
+        friend class CReferenceBuffer;
+        CBufferIterator(CReferenceBuffer* aManager, EBufferUseFlags aFlags);
         void findNextValidIndex(uint16 startIndex);
 
-        CReferenceMasterBuffer* mManager;
+        CReferenceBuffer* mManager;
         EBufferUseFlags mFlags;
         uint16 mCurrentIndex;
     };
@@ -80,13 +80,13 @@ private:
 };
 
 
-template<typename T, bool MEMORY_OWNER, uint16 BUFFER_SIZE>
-inline CReferenceMasterBuffer<T, MEMORY_OWNER, BUFFER_SIZE>::CReferenceMasterBuffer()
+template<typename T, uint16 BUFFER_SIZE>
+inline CReferenceBuffer<T, BUFFER_SIZE>::CReferenceBuffer()
 {
-    MAZ_LOGGER_VERBOSE("CReferenceMasterBuffer::CReferenceMasterBuffer - called");
+    MAZ_LOGGER_VERBOSE("Called");
     for (size_t i = 0, iCount = mElements.size(); i < iCount; ++i)
     {
-        mElements[i] = std::move(CReferenceMaster<T, MEMORY_OWNER>());
+        mElements[i] = std::move(CReferenceHolder<T>());
     }
     std::memset(mBuffer, 0, sizeof(T) * BUFFER_SIZE);
     mBufferUseFlags.fill(EBufferUseFlags::NONE);
@@ -94,14 +94,14 @@ inline CReferenceMasterBuffer<T, MEMORY_OWNER, BUFFER_SIZE>::CReferenceMasterBuf
 }
 
 
-template<typename T, bool MEMORY_OWNER, uint16 BUFFER_SIZE>
-inline void CReferenceMasterBuffer<T, MEMORY_OWNER, BUFFER_SIZE>::Clear()
+template<typename T, uint16 BUFFER_SIZE>
+inline void CReferenceBuffer<T, BUFFER_SIZE>::Clear()
 {
     for (uint16 i = 0; i < mStartOfInactiveRange; ++i)
     {
         if (IsFlagSet(mBufferUseFlags[i], EBufferUseFlags::IN_USE))
         {
-            mElements[i].~CReferenceMaster<T, MEMORY_OWNER>();
+            mElements[i].~CReferenceHolder<T>();
             reinterpret_cast<T*>(&(mBuffer[sizeof(T) * i]))->~T();
             mBufferUseFlags[i] = EBufferUseFlags::NONE;
         }
@@ -109,8 +109,8 @@ inline void CReferenceMasterBuffer<T, MEMORY_OWNER, BUFFER_SIZE>::Clear()
 }
 
 
-template<typename T, bool MEMORY_OWNER, uint16 BUFFER_SIZE>
-inline uint16 CReferenceMasterBuffer<T, MEMORY_OWNER, BUFFER_SIZE>::GetNextAvailableId()
+template<typename T, uint16 BUFFER_SIZE>
+inline uint16 CReferenceBuffer<T, BUFFER_SIZE>::GetNextAvailableId()
 {
     uint16 elementId = kInvalidElementId;
     for (uint16 i = 0, iCount = static_cast<uint16>(mBufferUseFlags.size()); (i < iCount) && (elementId == kInvalidElementId); ++i)
@@ -120,14 +120,14 @@ inline uint16 CReferenceMasterBuffer<T, MEMORY_OWNER, BUFFER_SIZE>::GetNextAvail
             elementId = i;
         }
     }
-    MAZ_ASSERT(elementId <= mStartOfInactiveRange, "CReferenceMasterBuffer::GetNextAvailableId - The elementId to return (%hu) is greater than mStartOfInactiveRange (%hu)!", elementId, mStartOfInactiveRange);
+    MAZ_ASSERT(elementId <= mStartOfInactiveRange, "The elementId to return (%hu) is greater than mStartOfInactiveRange (%hu)!", elementId, mStartOfInactiveRange);
     return elementId;
 }
 
 
-template<typename T, bool MEMORY_OWNER, uint16 BUFFER_SIZE>
+template<typename T, uint16 BUFFER_SIZE>
 template<typename ...ConstructionArgs>
-inline uint16 CReferenceMasterBuffer<T, MEMORY_OWNER, BUFFER_SIZE>::AddElement(ConstructionArgs&& ...aArgs)
+inline uint16 CReferenceBuffer<T, BUFFER_SIZE>::AddElement(ConstructionArgs&& ...aArgs)
 {
     uint16 elementId = kInvalidElementId;
     for (uint16 i = 0, iCount = static_cast<uint16>(mBufferUseFlags.size()); (i < iCount) && (elementId == kInvalidElementId); ++i)
@@ -139,11 +139,11 @@ inline uint16 CReferenceMasterBuffer<T, MEMORY_OWNER, BUFFER_SIZE>::AddElement(C
             elementId = i;
         }
     }
-    MAZ_ASSERT(elementId != kInvalidElementId, "CReferenceMasterBuffer::AddElement - Failed to find an available slot for element!");
+    MAZ_ASSERT(elementId != kInvalidElementId, "Failed to find an available slot for element!");
     if (elementId != kInvalidElementId)
     {
-        mElements[elementId] = CReferenceMaster<T, MEMORY_OWNER>(MAZ_PLACEMENT_NEW(&(mBuffer[sizeof(T) * elementId]), T, std::forward<ConstructionArgs>(aArgs) ...));
-        MAZ_ASSERT(elementId <= mStartOfInactiveRange, "CReferenceMasterBuffer::GetNextAvailableId - The elementId to return (%hu) is greater than mStartOfInactiveRange (%hu)!", elementId, mStartOfInactiveRange);
+        mElements[elementId] = CReferenceHolder<T>(MAZ_PLACEMENT_NEW(&(mBuffer[sizeof(T) * elementId]), T, std::forward<ConstructionArgs>(aArgs) ...));
+        MAZ_ASSERT(elementId <= mStartOfInactiveRange, "The elementId to return (%hu) is greater than mStartOfInactiveRange (%hu)!", elementId, mStartOfInactiveRange);
         if (elementId == mStartOfInactiveRange)
         {
             ++mStartOfInactiveRange;
@@ -154,14 +154,14 @@ inline uint16 CReferenceMasterBuffer<T, MEMORY_OWNER, BUFFER_SIZE>::AddElement(C
 }
 
 
-template<typename T, bool MEMORY_OWNER, uint16 BUFFER_SIZE>
-inline bool CReferenceMasterBuffer<T, MEMORY_OWNER, BUFFER_SIZE>::FlagElementForRemoval(const uint16 aElementId)
+template<typename T, uint16 BUFFER_SIZE>
+inline bool CReferenceBuffer<T, BUFFER_SIZE>::FlagElementForRemoval(const uint16 aElementId)
 {
     const bool lOk = IsFlagSet(mBufferUseFlags[aElementId], EBufferUseFlags::IN_USE);
 
     if (lOk)
     {
-        MAZ_ASSERT(!IsFlagSet(mBufferUseFlags[aElementId], EBufferUseFlags::JUST_ADDED), "CReferenceMasterBuffer::FlagElementForRemoval - Attempting to remove an element that has been added and remains flagged as pending!");
+        MAZ_ASSERT(!IsFlagSet(mBufferUseFlags[aElementId], EBufferUseFlags::JUST_ADDED), "Attempting to remove an element that has been added and remains flagged as pending!");
         SetFlag(mBufferUseFlags[aElementId], EBufferUseFlags::TO_REMOVE);
     }
 
@@ -169,15 +169,15 @@ inline bool CReferenceMasterBuffer<T, MEMORY_OWNER, BUFFER_SIZE>::FlagElementFor
 }
 
 
-template<typename T, bool MEMORY_OWNER, uint16 BUFFER_SIZE>
-inline bool CReferenceMasterBuffer<T, MEMORY_OWNER, BUFFER_SIZE>::RemoveFlaggedElement(const uint16 aElementId)
+template<typename T, uint16 BUFFER_SIZE>
+inline bool CReferenceBuffer<T, BUFFER_SIZE>::RemoveFlaggedElement(const uint16 aElementId)
 {
     const bool lOk = (IsFlagSet(mBufferUseFlags[aElementId], EBufferUseFlags::TO_REMOVE));
     if (lOk)
     {
-        MAZ_ASSERT(IsFlagSet(mBufferUseFlags[aElementId], EBufferUseFlags::IN_USE), "CReferenceMasterBuffer::RemoveElement - Attempting to remove an element (id %hhu) which is flagged with TO_REMOVE but not with IN_USE!", aElementId);
+        MAZ_ASSERT(IsFlagSet(mBufferUseFlags[aElementId], EBufferUseFlags::IN_USE), "Attempting to remove an element (id %hhu) which is flagged with TO_REMOVE but not with IN_USE!", aElementId);
         ClearFlag(mBufferUseFlags[aElementId], EBufferUseFlags::TO_REMOVE);
-        mElements[aElementId].~CReferenceMaster<T, MEMORY_OWNER>();
+        mElements[aElementId].~CReferenceHolder<T>();
         reinterpret_cast<T*>(&(mBuffer[sizeof(T) * aElementId]))->~T();
         ClearFlag(mBufferUseFlags[aElementId], EBufferUseFlags::IN_USE);
         
@@ -203,24 +203,24 @@ inline bool CReferenceMasterBuffer<T, MEMORY_OWNER, BUFFER_SIZE>::RemoveFlaggedE
 }
 
 
-template<typename T, bool MEMORY_OWNER, uint16 BUFFER_SIZE>
-inline CReference<T> CReferenceMasterBuffer<T, MEMORY_OWNER, BUFFER_SIZE>::GetElement(const uint16 aElementId)
+template<typename T, uint16 BUFFER_SIZE>
+inline CReference<T> CReferenceBuffer<T, BUFFER_SIZE>::GetElement(const uint16 aElementId)
 {
-    MAZ_ASSERT(IsFlagSet(mBufferUseFlags[aElementId], EBufferUseFlags::IN_USE), "CReferenceMasterBuffer::GetElement - Attempting to retrieve uninitialized element with id %hu!", aElementId);
+    MAZ_ASSERT(IsFlagSet(mBufferUseFlags[aElementId], EBufferUseFlags::IN_USE), "Attempting to retrieve uninitialized element with id %hu!", aElementId);
     return (IsFlagSet(mBufferUseFlags[aElementId], EBufferUseFlags::IN_USE)) ? mElements[aElementId].GetReference() : CReference<T>();
 }
 
 
-template<typename T, bool MEMORY_OWNER, uint16 BUFFER_SIZE>
-inline typename CReferenceMasterBuffer<T, MEMORY_OWNER, BUFFER_SIZE>::CBufferIterator CReferenceMasterBuffer<T, MEMORY_OWNER, BUFFER_SIZE>::GetIterator(EIteratorFlags aFlags)
+template<typename T, uint16 BUFFER_SIZE>
+inline typename CReferenceBuffer<T, BUFFER_SIZE>::CBufferIterator CReferenceBuffer<T, BUFFER_SIZE>::GetIterator(EIteratorFlags aFlags)
 {
     EBufferUseFlags bufferFlags = iteratorToBufferFlags(aFlags);
     return CBufferIterator(this, bufferFlags);
 }
 
 
-template<typename T, bool MEMORY_OWNER, uint16 BUFFER_SIZE>
-inline typename CReferenceMasterBuffer<T, MEMORY_OWNER, BUFFER_SIZE>::EBufferUseFlags CReferenceMasterBuffer<T, MEMORY_OWNER, BUFFER_SIZE>::iteratorToBufferFlags(EIteratorFlags aIteratorFlags)
+template<typename T, uint16 BUFFER_SIZE>
+inline typename CReferenceBuffer<T, BUFFER_SIZE>::EBufferUseFlags CReferenceBuffer<T, BUFFER_SIZE>::iteratorToBufferFlags(EIteratorFlags aIteratorFlags)
 {
     EBufferUseFlags bufferFlags = EBufferUseFlags::NONE;
     if (IsFlagSet(aIteratorFlags, EIteratorFlags::ANY))
@@ -242,24 +242,21 @@ inline typename CReferenceMasterBuffer<T, MEMORY_OWNER, BUFFER_SIZE>::EBufferUse
     return bufferFlags;
 }
 
+// **********
+// **********
+// ITERATOR
+// **********
+// **********
 
-
-template<typename T, uint32 BUFFER_SIZE>
-using CReferenceOwnerBuffer = CReferenceMasterBuffer<T, true, BUFFER_SIZE>;
-template<typename T, uint32 BUFFER_SIZE>
-using CReferenceHolderBuffer = CReferenceMasterBuffer<T, false, BUFFER_SIZE>;
-
-
-
-template<typename T, bool MEMORY_OWNER, uint16 BUFFER_SIZE>
-inline CReferenceMasterBuffer<T, MEMORY_OWNER, BUFFER_SIZE>::CBufferIterator::operator bool()
+template<typename T, uint16 BUFFER_SIZE>
+inline CReferenceBuffer<T, BUFFER_SIZE>::CBufferIterator::operator bool()
 {
     return (mCurrentIndex != kInvalidElementId) && static_cast<bool>(mManager->mElements[mCurrentIndex]);
 }
 
 
-template<typename T, bool MEMORY_OWNER, uint16 BUFFER_SIZE>
-inline void CReferenceMasterBuffer<T, MEMORY_OWNER, BUFFER_SIZE>::CBufferIterator::operator++()
+template<typename T, uint16 BUFFER_SIZE>
+inline void CReferenceBuffer<T, BUFFER_SIZE>::CBufferIterator::operator++()
 {
     if (mCurrentIndex != kInvalidElementId)
     {
@@ -268,55 +265,55 @@ inline void CReferenceMasterBuffer<T, MEMORY_OWNER, BUFFER_SIZE>::CBufferIterato
 }
 
 
-template<typename T, bool MEMORY_OWNER, uint16 BUFFER_SIZE>
-inline bool CReferenceMasterBuffer<T, MEMORY_OWNER, BUFFER_SIZE>::CBufferIterator::HasIteratorFlag(EIteratorFlags aIteratorFlag)
+template<typename T, uint16 BUFFER_SIZE>
+inline bool CReferenceBuffer<T, BUFFER_SIZE>::CBufferIterator::HasIteratorFlag(EIteratorFlags aIteratorFlag)
 {
     EBufferUseFlags bufferFlags = mManager->iteratorToBufferFlags(aIteratorFlag);
     return IsFlagSet(mManager->mBufferUseFlags[mCurrentIndex], bufferFlags);
 }
 
 
-template<typename T, bool MEMORY_OWNER, uint16 BUFFER_SIZE>
-inline void CReferenceMasterBuffer<T, MEMORY_OWNER, BUFFER_SIZE>::CBufferIterator::ClearIteratorFlag(EIteratorFlags aIteratorFlag)
+template<typename T, uint16 BUFFER_SIZE>
+inline void CReferenceBuffer<T, BUFFER_SIZE>::CBufferIterator::ClearIteratorFlag(EIteratorFlags aIteratorFlag)
 {
     EBufferUseFlags bufferFlags = mManager->iteratorToBufferFlags(aIteratorFlag);
     ClearFlag(mManager->mBufferUseFlags[mCurrentIndex], bufferFlags);
 }
 
 
-template<typename T, bool MEMORY_OWNER, uint16 BUFFER_SIZE>
-inline CReference<T> CReferenceMasterBuffer<T, MEMORY_OWNER, BUFFER_SIZE>::CBufferIterator::Get()
+template<typename T, uint16 BUFFER_SIZE>
+inline CReference<T> CReferenceBuffer<T, BUFFER_SIZE>::CBufferIterator::Get()
 {
     return mManager->mElements[mCurrentIndex].GetReference();
 }
 
-template<typename T, bool MEMORY_OWNER, uint16 BUFFER_SIZE>
-inline uint16 CReferenceMasterBuffer<T, MEMORY_OWNER, BUFFER_SIZE>::CBufferIterator::GetId()
+template<typename T, uint16 BUFFER_SIZE>
+inline uint16 CReferenceBuffer<T, BUFFER_SIZE>::CBufferIterator::GetId()
 {
     return mCurrentIndex;
 }
 
 
-template<typename T, bool MEMORY_OWNER, uint16 BUFFER_SIZE>
-inline bool CReferenceMasterBuffer<T, MEMORY_OWNER, BUFFER_SIZE>::CBufferIterator::RemoveElement()
+template<typename T, uint16 BUFFER_SIZE>
+inline bool CReferenceBuffer<T, BUFFER_SIZE>::CBufferIterator::RemoveElement()
 {
     return mManager->RemoveFlaggedElement(mCurrentIndex);
 }
 
 
-template<typename T, bool MEMORY_OWNER, uint16 BUFFER_SIZE>
-inline CReferenceMasterBuffer<T, MEMORY_OWNER, BUFFER_SIZE>::CBufferIterator::CBufferIterator(CReferenceMasterBuffer* aManager, EBufferUseFlags aFlags)
+template<typename T, uint16 BUFFER_SIZE>
+inline CReferenceBuffer<T, BUFFER_SIZE>::CBufferIterator::CBufferIterator(CReferenceBuffer* aManager, EBufferUseFlags aFlags)
     : mManager(aManager)
     , mFlags(aFlags)
     , mCurrentIndex(0)
 {
-    MAZ_ASSERT(mManager != nullptr, "CBufferIterator::CBufferIterator - Attempting to construct a CBufferIterator without providing a valid CReferenceMasterBuffer pointer!");
+    MAZ_ASSERT(mManager != nullptr, "Attempting to construct a CBufferIterator without providing a valid CReferenceBuffer pointer!");
     findNextValidIndex(0);
 }
 
 
-template<typename T, bool MEMORY_OWNER, uint16 BUFFER_SIZE>
-inline void CReferenceMasterBuffer<T, MEMORY_OWNER, BUFFER_SIZE>::CBufferIterator::findNextValidIndex(uint16 startIndex)
+template<typename T, uint16 BUFFER_SIZE>
+inline void CReferenceBuffer<T, BUFFER_SIZE>::CBufferIterator::findNextValidIndex(uint16 startIndex)
 {
     mCurrentIndex = kInvalidElementId;
     for (uint16 i = startIndex; (i < mManager->mStartOfInactiveRange) && (mCurrentIndex == kInvalidElementId); ++i)
