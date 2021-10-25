@@ -10,12 +10,13 @@ namespace maz
 const uint16 kInvalidElementId = MAX_UINT16;
 
 template<typename T, uint16 BUFFER_SIZE>
-class CReferenceBuffer
+class CReferenceBuffer final
 {
     static_assert(BUFFER_SIZE < kInvalidElementId);
 
 public:
     CReferenceBuffer();
+    ~CReferenceBuffer();
     void Clear();
     uint16 GetNextAvailableId();
     template<typename ... ConstructionArgs>
@@ -93,6 +94,13 @@ inline CReferenceBuffer<T, BUFFER_SIZE>::CReferenceBuffer()
     mStartOfInactiveRange = 0u;
 }
 
+template<typename T, uint16 BUFFER_SIZE>
+inline CReferenceBuffer<T, BUFFER_SIZE>::~CReferenceBuffer()
+{
+    MAZ_LOGGER_VERBOSE("Called");
+    Clear();
+}
+
 
 template<typename T, uint16 BUFFER_SIZE>
 inline void CReferenceBuffer<T, BUFFER_SIZE>::Clear()
@@ -106,6 +114,8 @@ inline void CReferenceBuffer<T, BUFFER_SIZE>::Clear()
             mBufferUseFlags[i] = EBufferUseFlags::NONE;
         }
     }
+
+    mStartOfInactiveRange = 0u;
 }
 
 
