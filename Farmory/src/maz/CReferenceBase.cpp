@@ -55,7 +55,7 @@ void CReferenceBase::reset()
 {
 	if (m_referencesList != nullptr)
 	{
-		auto it = std::find(m_referencesList->begin(), m_referencesList->end(), this);
+		std::list<CReferenceBase*>::iterator it = std::find(m_referencesList->begin(), m_referencesList->end(), this);
 		assert(it != m_referencesList->end());
 		m_referencesList->erase(it);
 		if (m_referencesList->size() == 0)

@@ -147,7 +147,7 @@ void CReferenceMaster<T, MEMORY_OWNER>::DeleteReferences()
 		delete static_cast<T*>(this->m_dataPtr);
 	}
 
-	for (auto& ref : *(this->m_referencesList))
+	for (CReferenceBase* ref : *(this->m_referencesList))
 	{
 		if (this != ref)
 		{
