@@ -50,6 +50,7 @@ void CGameObjectsManager::RefreshGameObjects()
         }
         else
         {
+            // Clean up signature state in preparation for updates coming from the ComponentsManager
             CReference<CGameObject> gameObject = iterator.Get();
             gameObject->mIsSignatureDirty = false;
             gameObject->mPreviousSignature = gameObject->mSignature;

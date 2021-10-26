@@ -15,7 +15,7 @@ CGameObject::CGameObject(uint16 aId, CComponentsManager& aComponentsManager, CGa
     , mNumChildren(0)
     , mName(aName)
 {
-    MAZ_LOGGER_VERBOSE("CGameObject::CGameObject - called");
+    MAZ_LOGGER_VERBOSE("Called");
     for (uint16 i = 0, iCount = static_cast<uint16>(mComponents.max_size()); i < iCount; ++i)
     {
         mComponents[i] = kInvalidComponentId;
@@ -25,12 +25,12 @@ CGameObject::CGameObject(uint16 aId, CComponentsManager& aComponentsManager, CGa
 
 CGameObject::~CGameObject()
 {
-    MAZ_LOGGER_VERBOSE("CGameObject::~CGameObject - called");
+    MAZ_LOGGER_VERBOSE("Called");
 #ifdef DEBUG
     // Verify no components are left in GameObject
     for (uint16 i = 0, iCount = static_cast<uint16>(mComponents.max_size()); i < iCount; ++i)
     {
-        MAZ_ASSERT(mComponents[i] == kInvalidComponentId, "CGameObject::~CGameObject - Component of type %hu has not been removed from GameObject with id %hu", i, GetId());
+        MAZ_ASSERT(mComponents[i] == kInvalidComponentId, "Component of type %hu has not been removed from GameObject with id %hu", i, GetId());
     }
 #endif // DEBUG
 }

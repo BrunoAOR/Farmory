@@ -16,7 +16,7 @@ CSystemsManager::CSystemsManager(CGameObjectsManager& aGameObjectsManager)
 
 CSystemsManager::~CSystemsManager()
 {
-    MAZ_ASSERT(mSystemsCount == 0, "CSystemsManager::~CSystemsManager - Destructor called while there are systems created. Forgot to call Shutdown?");
+    MAZ_ASSERT(mSystemsCount == 0, "Destructor called while there are systems created. Forgot to call Shutdown?");
 }
 
 
@@ -32,7 +32,7 @@ void CSystemsManager::Shutdown()
         }
     }
     mSystems.fill(nullptr);
-    MAZ_ASSERT(mSystemsCount == 0, "CSystemsManager::Shutdown - There are still systems created even after Shutdown. This should not have happened!");
+    MAZ_ASSERT(mSystemsCount == 0, "There are still systems created even after Shutdown. This should not have happened!");
 }
 
 
@@ -48,10 +48,10 @@ void CSystemsManager::RefreshSystems()
             CReference<CGameObject> gameObject = system->mGameObjects[j];
             if (gameObject && gameObject->IsSignatureDirty())
             {
-                if (systemSignature.IsSubsetOf(gameObject->GetPreviousSignature())
-                    && !systemSignature.IsSubsetOf(gameObject->GetSignature()))
+                MAZ_ASSERT(systemSignature.IsSubsetOf(gameObject->GetPreviousSignature()), "Somehow, a gameObject used by this system did not have a matching Signature in the frame!");
+                if (!systemSignature.IsSubsetOf(gameObject->GetSignature()))
                 {
-                    // So, the previous GameObject signature did match the System but the current one doesn't, we rremove the gameobject
+                    // So, the previous GameObject signature did match the System but the current one doesn't, we remove the gameobject
                     system->mGameObjects[j] = CReference<CGameObject>();
                 }
             }
@@ -63,7 +63,7 @@ void CSystemsManager::RefreshSystems()
     while (modifiedGameObjectsIterator)
     {
         CReference<CGameObject> gameObject = modifiedGameObjectsIterator.Get();
-        MAZ_ASSERT(gameObject->IsSignatureDirty(), "CSystemsManager::RefreshSystems - A gameobject contained in CGameObjectsManager::CModifiedGameObjectsIterator returns false when calling IsSignatureDirty!");
+        MAZ_ASSERT(gameObject->IsSignatureDirty(), "A gameobject contained in CGameObjectsManager::CModifiedGameObjectsIterator returns false when calling IsSignatureDirty!");
         for (uint16 i = 0; i < mSystemsCount; ++i)
         {
             ISystem* system = mSystems[i];
@@ -81,6 +81,7 @@ void CSystemsManager::RefreshSystems()
                         system->mGameObjects[j] = gameObject;
                     }
                 }
+                MAZ_ASSERT(added, "Failed to add a GameObject with matching signature to one of the systems!");
             }
         }
         ++modifiedGameObjectsIterator;

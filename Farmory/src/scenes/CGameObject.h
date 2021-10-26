@@ -69,7 +69,7 @@ inline CReference<COMPONENT_CLASS> CGameObject::AddComponent()
     if (mComponents[EnumToNumber(COMPONENT_CLASS::GetType())] == kInvalidComponentId)
     {
         const uint16 newComponentId = mComponentsManager.AddComponent<COMPONENT_CLASS>(mThis);
-        MAZ_ASSERT(newComponentId != kInvalidComponentId, "[CGameObject]::AddComponent - Failed to add component of desired type!");
+        MAZ_ASSERT(newComponentId != kInvalidComponentId, "Failed to add component of desired type!");
         // Even though the component has been created and we store its ID, the GameObject signature is NOT modified until the ComponentsManager is updated.
         // This means that any systems that would now include this GameObject, will only do so in the next frame.
         mComponents[EnumToNumber(COMPONENT_CLASS::GetType())] = newComponentId;
