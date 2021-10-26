@@ -5,14 +5,10 @@
 namespace maz
 {
 
-CGameObject::CGameObject(uint16 aId, CComponentsManager& aComponentsManager, CGameObject* aParent, const CFixedString32& aName)
+CGameObject::CGameObject(uint16 aId, CComponentsManager& aComponentsManager, const CFixedString32& aName)
     : mId(aId)
     , mComponentsManager(aComponentsManager)
     , mIsSignatureDirty(false)
-    , mParent(aParent)
-    , mNextSibling(nullptr)
-    , mFirstChild(nullptr)
-    , mNumChildren(0)
     , mName(aName)
 {
     MAZ_LOGGER_VERBOSE("Called");
@@ -36,10 +32,10 @@ CGameObject::~CGameObject()
 }
 
 
-void CGameObject::updateComponentId(EComponentType aComponentType, uint16 aId)
+void CGameObject::updateComponentId(EComponentType aComponentType, uint16 aComponentId)
 {
-    mComponents[EnumToNumber(aComponentType)] = aId;
-    if (aId != kInvalidComponentId)
+    mComponents[EnumToNumber(aComponentType)] = aComponentId;
+    if (aComponentId != kInvalidComponentId)
     {
         mSignature.AddComponent(aComponentType);
     }
@@ -57,7 +53,7 @@ uint16 CGameObject::GetId() const
 }
 
 
-const CFixedString32 CGameObject::GetName() const
+const CFixedString32& CGameObject::GetName() const
 {
     return mName;
 }

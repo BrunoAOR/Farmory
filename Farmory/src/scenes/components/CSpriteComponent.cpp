@@ -5,7 +5,7 @@ namespace maz
 {
 
 CSpriteComponent::CSpriteComponent(CReference<CGameObject>& aOwner)
-    : IComponent(aOwner)
+    : CComponentBase(aOwner)
 {
     //TODO: Should provide methods to set up Shader, texture (and mesh type?) from outside the Component
     mShader.Init(CFile("data/default.vs"), CFile("data/default.fs"));
@@ -21,7 +21,7 @@ CSpriteComponent::CSpriteComponent(CReference<CGameObject>& aOwner)
     lOk = lOk && mTexture.Init();
     lOk = lOk && mTexture.SetImage(CFile("data/Smiley.png"), true);
     lOk = lOk && mMesh.InitRectangle(0, 0);
-    MAZ_ASSERT(lOk, "CSpriteComponent::CSpriteComponent - Failed to properly set up.");
+    MAZ_ASSERT(lOk, "Failed to properly set up.");
 }
 
 
@@ -31,7 +31,5 @@ CSpriteComponent::~CSpriteComponent()
     mTexture.End();
     mMesh.End();
 }
-
-
 
 } // maz

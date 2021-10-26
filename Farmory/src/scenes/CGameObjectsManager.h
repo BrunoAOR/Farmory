@@ -34,7 +34,7 @@ public:
 
     void Shutdown();
     void RefreshGameObjects();
-    CReference<CGameObject> CreateGameObject(CGameObject* aParent, const CFixedString32& aName);
+    CReference<CGameObject> CreateGameObject(const CFixedString32& aName);
     bool RequestDestroyGameObject(const uint16 aGameObjectId);
     CModifiedGameObjectsIterator GetModifiedGameObjectsIterator();
 

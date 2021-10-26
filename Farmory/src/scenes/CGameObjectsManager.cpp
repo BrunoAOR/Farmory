@@ -60,13 +60,13 @@ void CGameObjectsManager::RefreshGameObjects()
 }
 
 
-CReference<CGameObject> CGameObjectsManager::CreateGameObject(CGameObject* aParent, const CFixedString32& aName)
+CReference<CGameObject> CGameObjectsManager::CreateGameObject(const CFixedString32& aName)
 {
     CReference<CGameObject> lGameObject;
     const uint16 gameObjectId = mGameObjectsBuffer.GetNextAvailableId();
     if (gameObjectId != kInvalidElementId)
     {
-        const uint16 actualGameObjectId = mGameObjectsBuffer.AddElement(gameObjectId, mComponentsManager, aParent, aName);
+        const uint16 actualGameObjectId = mGameObjectsBuffer.AddElement(gameObjectId, mComponentsManager, aName);
         MAZ_ASSERT(gameObjectId == actualGameObjectId, "CGameObjectsManager::CreateGameObject - The next available id in the GameObjectsBuffer does not match the actual id used for the creation of the gameobject!");
         lGameObject = mGameObjectsBuffer.GetElement(actualGameObjectId);
         lGameObject->mThis = lGameObject;

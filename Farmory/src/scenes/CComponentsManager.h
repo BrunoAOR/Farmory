@@ -16,7 +16,14 @@ class CComponentsManager
 private:
     template<typename COMPONENT_CLASS>
     friend class CComponentManager;
+    
     void updateComponentIdForGameObject(CReference<CGameObject> aGameObject, EComponentType aComponentType, uint16 aId);
+    
+    template<typename COMPONENT_CLASS>
+    void setComponentThisReference(CReference<COMPONENT_CLASS>& aComponent)
+    {
+        aComponent->mThis = aComponent;
+    }
 
     class CComponentManagerBase
     {
@@ -88,9 +95,13 @@ private:
         }
 
 
-        uint16 AddComponent(CReference<CGameObject>& aOwner)
+        uint16 AddComponent(CComponentsManager* aComponentsManager, CReference<CGameObject>& aOwner)
         {
-            return mComponentsBuffer.AddElement(aOwner);
+            const uint16 componentId = mComponentsBuffer.AddElement(aOwner);
+            CReference<COMPONENT_CLASS> component = mComponentsBuffer.GetElement(componentId);
+            aComponentsManager->setComponentThisReference(component);
+
+            return componentId;
         }
 
 

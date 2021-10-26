@@ -13,7 +13,7 @@ namespace maz
 
 class CGameObject;
 class CSpriteComponent
-    : public IComponent
+    : public CComponentBase<CSpriteComponent>
 {
 public:
     CSpriteComponent(CReference<CGameObject>& aOwner);

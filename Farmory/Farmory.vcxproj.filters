@@ -159,7 +159,7 @@
     <ClInclude Include="src\scenes\test\CTestSystems.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\maz\CReferenceMasterBuffer.h">
+    <ClInclude Include="src\maz\CReferenceBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\scenes\components\CSpriteComponent.h">

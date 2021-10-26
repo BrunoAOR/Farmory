@@ -18,14 +18,14 @@ private:
     friend class CGameObjectsManager;
     friend class CComponentsManager;
     
-    void updateComponentId(EComponentType aComponentType, uint16 aId);
+    void updateComponentId(EComponentType aComponentType, uint16 aComponentId);
 
 public:
-    CGameObject(uint16 aId, CComponentsManager& aComponentsManager, CGameObject* aParent, const CFixedString32& aName);
+    CGameObject(uint16 aId, CComponentsManager& aComponentsManager, const CFixedString32& aName);
     ~CGameObject();
 
     uint16 GetId() const;
-    const CFixedString32 GetName() const;
+    const CFixedString32& GetName() const;
 
     template<typename COMPONENT_CLASS>
     CReference<COMPONENT_CLASS> AddComponent();
@@ -42,19 +42,13 @@ public:
     const SComponentsSignature& GetSignature() const;
 
 private:
-    uint16_t mId;
+    const uint16_t mId;
     CComponentsManager& mComponentsManager;
     CReference<CGameObject> mThis;
 
     SComponentsSignature mPreviousSignature;
     SComponentsSignature mSignature;
     bool mIsSignatureDirty;
-
-    CGameObject* mParent;
-    CGameObject* mNextSibling;
-    CGameObject* mFirstChild;
-    uint16 mNumChildren;
-
 
     CFixedString32 mName;
 
@@ -104,10 +98,10 @@ template<typename COMPONENT_CLASS>
 inline CReference<COMPONENT_CLASS> CGameObject::GetComponent()
 {
     CReference<COMPONENT_CLASS> component;
-    const uint16 componentIndex = mComponents[EnumToNumber(COMPONENT_CLASS::GetType())];
-    if (componentIndex != kInvalidComponentId)
+    const uint16 componentId = mComponents[EnumToNumber(COMPONENT_CLASS::GetType())];
+    if (componentId != kInvalidComponentId)
     {
-        component = mComponentsManager.GetComponent<COMPONENT_CLASS>(componentIndex);
+        component = mComponentsManager.GetComponent<COMPONENT_CLASS>(componentId);
     }
 
     return component;

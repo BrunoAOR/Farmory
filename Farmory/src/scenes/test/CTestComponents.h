@@ -10,20 +10,20 @@ namespace maz
 
 class CGameObject;
 class CTestComponentA
-    : public IComponent
+    : public CComponentBase<CTestComponentA>
 {
 public:
-    CTestComponentA(CReference<CGameObject>& aOwner) : IComponent(aOwner) { MAZ_LOGGER("CTestComponentA::CTestComponentA called"); }
-    ~CTestComponentA() { MAZ_LOGGER("CTestComponentA::~CTestComponentA called"); }
+    CTestComponentA(CReference<CGameObject>& aOwner) : CComponentBase(aOwner) { MAZ_LOGGER("Called"); }
+    ~CTestComponentA() { MAZ_LOGGER("Called"); }
     static constexpr EComponentType GetType() { return EComponentType::TestCompA; }
 };
 
 class CTestComponentB
-    : public IComponent
+    : public CComponentBase<CTestComponentB>
 {
 public:
-    CTestComponentB(CReference<CGameObject>& aOwner) : IComponent(aOwner) { MAZ_LOGGER("CTestComponentB::CTestComponentB called"); }
-    ~CTestComponentB() { MAZ_LOGGER("CTestComponentB::~CTestComponentB called"); }
+    CTestComponentB(CReference<CGameObject>& aOwner) : CComponentBase(aOwner) { MAZ_LOGGER("Called"); }
+    ~CTestComponentB() { MAZ_LOGGER("Called"); }
     static constexpr EComponentType GetType() { return EComponentType::TestCompB; }
 };
 

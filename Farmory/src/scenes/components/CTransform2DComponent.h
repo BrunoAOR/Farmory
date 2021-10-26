@@ -8,8 +8,22 @@ namespace maz
 {
 
 class CGameObject;
+
+struct STransform2D
+{
+    TVec2 mTranslation;
+    float mRotation;
+    TVec2 mScale;
+
+    STransform2D()
+        : mTranslation(0.0f, 0.0f)
+        , mRotation(0.0f)
+        , mScale(1.0f, 1.0f)
+    {}
+};
+
 class CTransform2DComponent
-    : public IComponent
+    : public CComponentBase<CTransform2DComponent>
 {
 public:
     CTransform2DComponent(CReference<CGameObject>& aOwner);
@@ -30,20 +44,34 @@ public:
     const TVec2& GetScale() const;
     void SetScale(const TVec2& aScale);
 
+    void SetParentTransform(CReference<CTransform2DComponent>& aParentTransform);
+
     const TMat4x4& GetModelMatrix() const;
+    const CReference<CTransform2DComponent>& GetParentTransform() const;
+
+    const STransform2D& GetLocalTransform() const;
+    STransform2D& GetWorldTransform(); 
+    bool IsLocalTransformDirty() const;
+
+    void RebuildModelMatrix(); // Should only be accessed by CTransformHierarchySystem
+
+private:
+    bool addChildTransform(CReference<CTransform2DComponent>& aChildTransform);
+    bool removeChildTransform(CReference<CTransform2DComponent>& aChildTransform);
+
 
 
 private:
-    void rebuildModelMatrix();
+    STransform2D mLocalTransform;
+    STransform2D mWorldTransform;
 
-
-private:
-    TVec2 mTranslation;
-    float mRotation;
-    TVec2 mScale;
-
+    bool mLocalTransformDirty;
     TMat4x4 mModelMatrix;
-    bool mModelMatrixDirty;
+
+    CReference<CTransform2DComponent> mParent;
+    CReference<CTransform2DComponent> mNextSibling;
+    CReference<CTransform2DComponent> mFirstChild;
+    uint16 mNumChildren;
 };
 
 } // maz

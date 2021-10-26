@@ -6,87 +6,192 @@ namespace maz
 {
 
 CTransform2DComponent::CTransform2DComponent(CReference<CGameObject>& aOwner)
-    : IComponent(aOwner)
-    , mTranslation(0.0f, 0.0f)
-    , mRotation(0.0f)
-    , mScale(1.0f, 1.0f)
+    : CComponentBase(aOwner)
+    , mLocalTransformDirty(true)
     , mModelMatrix(1.0f)
 {
-    MAZ_LOGGER_VERBOSE("CTransform2DComponent::CTransform2DComponent called");
-    rebuildModelMatrix();
+    MAZ_LOGGER_VERBOSE("Called");
+    RebuildModelMatrix();
 }
 
 
 CTransform2DComponent::~CTransform2DComponent()
 {
-    MAZ_LOGGER_VERBOSE("CTransform2DComponent::~CTransform2DComponent called");
+    MAZ_LOGGER_VERBOSE("Called");
 }
 
 
 const TVec2& CTransform2DComponent::GetTranslation() const
 {
-    return mTranslation;
+    return mLocalTransform.mTranslation;
 }
 
 
 void CTransform2DComponent::SetTranslation(const TVec2& aTranslation)
 {
-    mTranslation = aTranslation;
-    mModelMatrixDirty = true;
+    mLocalTransform.mTranslation = aTranslation;
+    mLocalTransformDirty = true;
 }
 
 
 float CTransform2DComponent::GetRotation() const
 {
-    return mRotation;
+    return mLocalTransform.mRotation;
 }
 
 
 void CTransform2DComponent::SetRotation(float aRotation)
 {
-    mRotation = aRotation;
-    while (mRotation >= 360.0f)
+    mLocalTransform.mRotation = aRotation;
+    while (mLocalTransform.mRotation >= 360.0f)
     {
-        mRotation -= 360.0f;
+        mLocalTransform.mRotation -= 360.0f;
     }
-    while (mRotation < 0.0f)
+    while (mLocalTransform.mRotation < 0.0f)
     {
-        mRotation += 360.0f;
+        mLocalTransform.mRotation += 360.0f;
     }
-    mModelMatrixDirty = true;
+    mLocalTransformDirty = true;
 }
 
 
 const TVec2& CTransform2DComponent::GetScale() const
 {
-    return mScale;
+    return mLocalTransform.mScale;
 }
 
 
 void CTransform2DComponent::SetScale(const TVec2& aScale)
 {
-    mScale = aScale;
-    mModelMatrixDirty = true;
+    mLocalTransform.mScale = aScale;
+    mLocalTransformDirty = true;
+}
+
+void CTransform2DComponent::SetParentTransform(CReference<CTransform2DComponent>& aParentTransform)
+{
+    // Setting the current parent as parent is an acceptable request, which results in the transform being moved to the end of the parent's hierarchy
+
+    // Clear current hierarchy information
+    if (mParent)
+    {
+        mParent->removeChildTransform(GetThis());
+    }
+
+    // Update new hiararchy info
+    if (aParentTransform)
+    {
+        aParentTransform->addChildTransform(GetThis());
+    }
 }
 
 
 const TMat4x4& CTransform2DComponent::GetModelMatrix() const
 {
-    if (mModelMatrixDirty)
+    if (mLocalTransformDirty)
     {
-        const_cast<CTransform2DComponent*>(this)->mModelMatrixDirty = false;
-        const_cast<CTransform2DComponent*>(this)->rebuildModelMatrix();
+        const_cast<CTransform2DComponent*>(this)->RebuildModelMatrix();
     }
     return mModelMatrix;
 }
 
+const CReference<CTransform2DComponent>& CTransform2DComponent::GetParentTransform() const
+{
+    return mParent;
+}
 
-void CTransform2DComponent::rebuildModelMatrix()
+
+const STransform2D& CTransform2DComponent::GetLocalTransform() const
+{
+    return mLocalTransform;
+}
+
+
+STransform2D& CTransform2DComponent::GetWorldTransform()
+{
+    return mWorldTransform;
+}
+
+bool CTransform2DComponent::IsLocalTransformDirty() const
+{
+    return mLocalTransformDirty;
+}
+
+
+bool CTransform2DComponent::addChildTransform(CReference<CTransform2DComponent>& aChildTransform)
+{
+    if (mNumChildren == 0)
+    {
+        mFirstChild = aChildTransform;
+    }
+    else
+    {
+        CReference<CTransform2DComponent> lastChild = mFirstChild;
+
+        for (uint16 childIdx = 0; childIdx < mNumChildren - 1; ++childIdx)
+        {
+            lastChild = lastChild->mNextSibling;
+        }
+
+        MAZ_ASSERT(!lastChild->mNextSibling, "The last child already has a nextSibling!");
+        lastChild->mNextSibling = aChildTransform;
+    }
+
+    aChildTransform->mParent = GetThis();
+    ++mNumChildren;
+
+    return true;
+}
+
+
+bool CTransform2DComponent::removeChildTransform(CReference<CTransform2DComponent>& aChildTransform)
+{
+    MAZ_ASSERT(mFirstChild, "Attempting to remove a child from a CTransform2DComponent which has no children!");
+    CReference<CTransform2DComponent> previousChild;
+    CReference<CTransform2DComponent> currentChild = mFirstChild;
+
+    bool found = false;
+    for (uint16 childIdx = 0; (childIdx < mNumChildren) && !found; ++childIdx)
+    {
+        found = (currentChild == aChildTransform);
+        if (found)
+        {
+            // Reconnect siblings chain
+            if (previousChild)
+            {
+                previousChild->mNextSibling = currentChild->mNextSibling;
+            }
+            else
+            {
+                MAZ_ASSERT(currentChild == mFirstChild, "Child transform to remove is not the mFirstChild, but there is not previousChild!");
+                mFirstChild = aChildTransform->mNextSibling;
+            }
+            
+            // Update child counter
+            --mNumChildren;
+
+            // Clean up removed child
+            aChildTransform->mParent = CReference<CTransform2DComponent>();
+            aChildTransform->mNextSibling = CReference<CTransform2DComponent>();
+            aChildTransform->mLocalTransformDirty = true;
+        }
+
+        // Move forward in children hierarchy
+        previousChild = currentChild;
+        currentChild = currentChild->mNextSibling;
+    }
+
+    return found;
+}
+
+
+void CTransform2DComponent::RebuildModelMatrix()
 {
     mModelMatrix = TMat4x4(1.0f);
-    mModelMatrix = glm::translate(mModelMatrix, TVec3(mTranslation, 0.0f));
-    mModelMatrix = mModelMatrix * glm::toMat4(TQuat(TVec3(0.0f, 0.0f, glm::radians(mRotation))));
-    mModelMatrix = glm::scale(mModelMatrix, TVec3(mScale, 1.0f));
+    mModelMatrix = glm::translate(mModelMatrix, TVec3(mLocalTransform.mTranslation, 0.0f));
+    mModelMatrix = mModelMatrix * glm::toMat4(TQuat(TVec3(0.0f, 0.0f, glm::radians(mLocalTransform.mRotation))));
+    mModelMatrix = glm::scale(mModelMatrix, TVec3(mLocalTransform.mScale, 1.0f));
+
+    mLocalTransformDirty = false;
 }
 
 } // maz

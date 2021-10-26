@@ -174,7 +174,7 @@
     <ClInclude Include="src\maz\CGlfwHandler.h" />
     <ClInclude Include="src\maz\config.h" />
     <ClInclude Include="src\maz\constants.h" />
-    <ClInclude Include="src\maz\CReferenceMasterBuffer.h" />
+    <ClInclude Include="src\maz\CReferenceBuffer.h" />
     <ClInclude Include="src\maz\enumHelpers.h" />
     <ClInclude Include="src\maz\globals.h" />
     <ClInclude Include="src\maz\math.h" />

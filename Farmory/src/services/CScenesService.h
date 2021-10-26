@@ -26,6 +26,9 @@ public:
     virtual void PostUpdate() override;
 
 private:
+    bool LoadTestScenes();
+
+private:
     CComponentsManager mComponentsManager;
     CGameObjectsManager mGameObjectsManager;
     CSystemsManager mSystemsManager;
