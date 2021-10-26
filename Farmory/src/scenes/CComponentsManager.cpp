@@ -50,7 +50,7 @@ bool CComponentsManager::RemoveComponent(EComponentType aComponentType, const ui
 {
     CComponentManagerBase* componentManager = mComponentManagers[EnumToNumber(aComponentType)];
     MAZ_ASSERT(componentManager != nullptr
-        , "[CComponentsManager]::RemoveComponent - Component manager of the desired type (%hu) has not been created been registered!", EnumToNumber(aComponentType));
+        , "Component manager of the desired type (%hu) has not been created been registered!", EnumToNumber(aComponentType));
     return componentManager->RemoveComponent(aComponentIndex);
 }
 
