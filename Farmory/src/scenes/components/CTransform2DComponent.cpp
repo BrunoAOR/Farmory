@@ -7,11 +7,10 @@ namespace maz
 
 CTransform2DComponent::CTransform2DComponent(CReference<CGameObject>& aOwner)
     : CComponentBase(aOwner)
-    , mLocalTransformDirty(true)
+    , mWorldTransformDirty(true)
     , mModelMatrix(1.0f)
 {
     MAZ_LOGGER_VERBOSE("Called");
-    RebuildModelMatrix();
 }
 
 
@@ -23,49 +22,51 @@ CTransform2DComponent::~CTransform2DComponent()
 
 const TVec2& CTransform2DComponent::GetTranslation() const
 {
-    return mLocalTransform.mTranslation;
+    return mLocalTransform.GetTranslation();
 }
 
 
 void CTransform2DComponent::SetTranslation(const TVec2& aTranslation)
 {
-    mLocalTransform.mTranslation = aTranslation;
-    mLocalTransformDirty = true;
+    if (mLocalTransform.GetTranslation() != aTranslation)
+    {
+        mLocalTransform.SetTranslation(aTranslation);
+        mWorldTransformDirty = true;
+    }
 }
 
 
 float CTransform2DComponent::GetRotation() const
 {
-    return mLocalTransform.mRotation;
+    return mLocalTransform.GetRotation();
 }
 
 
 void CTransform2DComponent::SetRotation(float aRotation)
 {
-    mLocalTransform.mRotation = aRotation;
-    while (mLocalTransform.mRotation >= 360.0f)
+    if (mLocalTransform.GetRotation() != aRotation)
     {
-        mLocalTransform.mRotation -= 360.0f;
+        mLocalTransform.SetRotation(aRotation);
+        mWorldTransformDirty = true;
     }
-    while (mLocalTransform.mRotation < 0.0f)
-    {
-        mLocalTransform.mRotation += 360.0f;
-    }
-    mLocalTransformDirty = true;
 }
 
 
 const TVec2& CTransform2DComponent::GetScale() const
 {
-    return mLocalTransform.mScale;
+    return mLocalTransform.GetScale();
 }
 
 
 void CTransform2DComponent::SetScale(const TVec2& aScale)
 {
-    mLocalTransform.mScale = aScale;
-    mLocalTransformDirty = true;
+    if (mLocalTransform.GetScale() != aScale)
+    {
+        mLocalTransform.SetScale(aScale);
+        mWorldTransformDirty = true;
+    }
 }
+
 
 void CTransform2DComponent::SetParentTransform(CReference<CTransform2DComponent>& aParentTransform)
 {
@@ -77,7 +78,7 @@ void CTransform2DComponent::SetParentTransform(CReference<CTransform2DComponent>
         mParent->removeChildTransform(GetThis());
     }
 
-    // Update new hiararchy info
+    // Update new hierarchy info
     if (aParentTransform)
     {
         aParentTransform->addChildTransform(GetThis());
@@ -85,14 +86,27 @@ void CTransform2DComponent::SetParentTransform(CReference<CTransform2DComponent>
 }
 
 
+const CReference<CTransform2DComponent>& CTransform2DComponent::GetNextSiblingTransform() const
+{
+    return mNextSibling;
+}
+
+
+const CReference<CTransform2DComponent>& CTransform2DComponent::GetFirstChildTransform() const
+{
+    return mFirstChild;
+}
+
+
 const TMat4x4& CTransform2DComponent::GetModelMatrix() const
 {
-    if (mLocalTransformDirty)
+    if (mWorldTransformDirty)
     {
-        const_cast<CTransform2DComponent*>(this)->RebuildModelMatrix();
+        //const_cast<CTransform2DComponent*>(this)->RebuildModelMatrix();
     }
     return mModelMatrix;
 }
+
 
 const CReference<CTransform2DComponent>& CTransform2DComponent::GetParentTransform() const
 {
@@ -106,14 +120,15 @@ const STransform2D& CTransform2DComponent::GetLocalTransform() const
 }
 
 
-STransform2D& CTransform2DComponent::GetWorldTransform()
+const STransform2D& CTransform2DComponent::GetWorldTransform() const
 {
     return mWorldTransform;
 }
 
-bool CTransform2DComponent::IsLocalTransformDirty() const
+
+bool CTransform2DComponent::IsWorldTransformDirty() const
 {
-    return mLocalTransformDirty;
+    return mWorldTransformDirty;
 }
 
 
@@ -172,7 +187,7 @@ bool CTransform2DComponent::removeChildTransform(CReference<CTransform2DComponen
             // Clean up removed child
             aChildTransform->mParent = CReference<CTransform2DComponent>();
             aChildTransform->mNextSibling = CReference<CTransform2DComponent>();
-            aChildTransform->mLocalTransformDirty = true;
+            aChildTransform->mWorldTransformDirty = true;
         }
 
         // Move forward in children hierarchy
@@ -184,14 +199,20 @@ bool CTransform2DComponent::removeChildTransform(CReference<CTransform2DComponen
 }
 
 
+void CTransform2DComponent::SetWorldTransform(const STransform2D& aTransform)
+{
+    mWorldTransform = aTransform;
+}
+
+
 void CTransform2DComponent::RebuildModelMatrix()
 {
     mModelMatrix = TMat4x4(1.0f);
-    mModelMatrix = glm::translate(mModelMatrix, TVec3(mLocalTransform.mTranslation, 0.0f));
-    mModelMatrix = mModelMatrix * glm::toMat4(TQuat(TVec3(0.0f, 0.0f, glm::radians(mLocalTransform.mRotation))));
-    mModelMatrix = glm::scale(mModelMatrix, TVec3(mLocalTransform.mScale, 1.0f));
+    mModelMatrix = glm::translate(mModelMatrix, TVec3(mWorldTransform.GetTranslation(), 0.0f));
+    mModelMatrix = mModelMatrix * glm::toMat4(TQuat(TVec3(0.0f, 0.0f, glm::radians(mWorldTransform.GetRotation()))));
+    mModelMatrix = glm::scale(mModelMatrix, TVec3(mWorldTransform.GetScale(), 1.0f));
 
-    mLocalTransformDirty = false;
+    mWorldTransformDirty = false;
 }
 
 } // maz

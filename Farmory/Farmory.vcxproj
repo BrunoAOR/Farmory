@@ -193,6 +193,7 @@
     <ClInclude Include="src\scenes\components\CSpriteComponent.h" />
     <ClInclude Include="src\scenes\CSystemsManager.h" />
     <ClInclude Include="src\scenes\systems\CRenderSystem.h" />
+    <ClInclude Include="src\scenes\systems\CTransformHierarchySystem.h" />
     <ClInclude Include="src\scenes\test\CTestSystems.h" />
     <ClInclude Include="src\scenes\test\CTestComponents.h" />
     <ClInclude Include="src\scenes\components\CTransform2DComponent.h" />
@@ -240,6 +241,7 @@
     <ClCompile Include="src\scenes\ISystem.cpp" />
     <ClCompile Include="src\scenes\SComponentsSignature.cpp" />
     <ClCompile Include="src\scenes\systems\CRenderSystem.cpp" />
+    <ClCompile Include="src\scenes\systems\CTransformHierarchySystem.cpp" />
     <ClCompile Include="src\scenes\test\CTestSystems.cpp" />
     <ClCompile Include="src\services\CInputService.cpp" />
     <ClCompile Include="src\services\CRenderService.cpp" />

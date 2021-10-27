@@ -6,6 +6,7 @@
 #include <scenes/components/CTransform2DComponent.h>
 #include <scenes/components/CSpriteComponent.h>
 #include <scenes/systems/CRenderSystem.h>
+#include <scenes/systems/CTransformHierarchySystem.h>
 #include <scenes/test/CTestComponents.h>
 
 
@@ -152,6 +153,7 @@ bool CScenesService::LoadTestScenes()
         lOk = lOk && mComponentsManager.RegisterComponent<CTestComponentA>();
         lOk = lOk && mSystemsManager.RegisterSystem<CRenderSystem>();
         lOk = lOk && mSystemsManager.RegisterSystem<CMotionSystemTest>();
+        lOk = lOk && mSystemsManager.RegisterSystem<CTransformHierarchySystem>();
 
         // Load test scene
         {
@@ -161,13 +163,7 @@ bool CScenesService::LoadTestScenes()
             CReference<CTransform2DComponent> transform = gameObject->GetComponent<CTransform2DComponent>();
             transform->SetTranslation(TVec2(1.0f, 1.0f));
         }
-        {
-            CReference<CGameObject> gameObject = mGameObjectsManager.CreateGameObject("Sprite -1");
-            gameObject->AddComponent<CTransform2DComponent>();
-            gameObject->AddComponent<CSpriteComponent>();
-            CReference<CTransform2DComponent> transform = gameObject->GetComponent<CTransform2DComponent>();
-            transform->SetTranslation(TVec2(-1.0f, -1.0f));
-        }
+        CReference<CTransform2DComponent> parentTransform;
         {
             CReference<CGameObject> gameObject = mGameObjectsManager.CreateGameObject("Sprite 0");
             gameObject->AddComponent<CTransform2DComponent>();
@@ -176,6 +172,15 @@ bool CScenesService::LoadTestScenes()
             CReference<CTransform2DComponent> transform = gameObject->GetComponent<CTransform2DComponent>();
             transform->SetTranslation(TVec2(0.0f, 0.0f));
             transform->SetScale(TVec2(0.5f, 2.0f));
+            parentTransform = transform;
+        }
+        {
+            CReference<CGameObject> gameObject = mGameObjectsManager.CreateGameObject("Sprite -1");
+            gameObject->AddComponent<CTransform2DComponent>();
+            gameObject->AddComponent<CSpriteComponent>();
+            CReference<CTransform2DComponent> transform = gameObject->GetComponent<CTransform2DComponent>();
+            transform->SetTranslation(TVec2(-1.0f, -1.0f));
+            transform->SetParentTransform(parentTransform);
         }
     }
 
