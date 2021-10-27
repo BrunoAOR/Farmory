@@ -46,7 +46,12 @@ void CSystemsManager::RefreshSystems()
         for (uint16 j = 0, jCount = static_cast<uint16>(system->mGameObjects.size()); j < jCount; ++j)
         {
             CReference<CGameObject> gameObject = system->mGameObjects[j];
-            if (gameObject && gameObject->IsSignatureDirty())
+            if (!gameObject)
+            {
+                // GameObject has been invalidated and shall be removed from the System
+                system->mGameObjects[j] = CReference<CGameObject>();
+            }
+            else if (gameObject->IsSignatureDirty())
             {
                 MAZ_ASSERT(systemSignature.IsSubsetOf(gameObject->GetPreviousSignature()), "Somehow, a gameObject used by this system did not have a matching Signature in the frame!");
                 if (!systemSignature.IsSubsetOf(gameObject->GetSignature()))
