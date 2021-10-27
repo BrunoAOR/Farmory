@@ -8,7 +8,7 @@ namespace maz
 
 bool operator==(const CReferenceBase& lhs, const CReferenceBase& rhs)
 {
-	return (lhs.m_referencesList && rhs.m_referencesList && lhs.m_referencesList == rhs.m_referencesList);
+	return (lhs.m_referencesList && rhs.m_referencesList && (lhs.m_referencesList == rhs.m_referencesList));
 }
 
 
