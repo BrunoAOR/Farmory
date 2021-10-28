@@ -170,18 +170,40 @@
     <ClInclude Include="src\external\stb_image.h" />
     <ClInclude Include="src\files\CFile.h" />
     <ClInclude Include="src\maz\CDelegate.h" />
+    <ClInclude Include="src\maz\CFixedSizeString.h" />
     <ClInclude Include="src\maz\CGlfwHandler.h" />
     <ClInclude Include="src\maz\config.h" />
+    <ClInclude Include="src\maz\constants.h" />
+    <ClInclude Include="src\maz\CReferenceBuffer.h" />
+    <ClInclude Include="src\maz\enumHelpers.h" />
     <ClInclude Include="src\maz\globals.h" />
     <ClInclude Include="src\maz\math.h" />
     <ClInclude Include="src\maz\mazApp.h" />
+    <ClInclude Include="src\maz\CReference.h" />
+    <ClInclude Include="src\maz\CReferenceBase.h" />
+    <ClInclude Include="src\maz\CReferenceMaster.h" />
     <ClInclude Include="src\maz\types.h" />
     <ClInclude Include="src\render\CCamera.h" />
     <ClInclude Include="src\render\CMesh.h" />
     <ClInclude Include="src\render\CShaderProgram.h" />
     <ClInclude Include="src\render\CTexture2D.h" />
+    <ClInclude Include="src\scenes\CGameObject.h" />
+    <ClInclude Include="src\scenes\CGameObjectsManager.h" />
+    <ClInclude Include="src\scenes\CComponentsManager.h" />
+    <ClInclude Include="src\scenes\components\CSpriteComponent.h" />
+    <ClInclude Include="src\scenes\CSystemsManager.h" />
+    <ClInclude Include="src\scenes\systems\CRenderSystem.h" />
+    <ClInclude Include="src\scenes\systems\CTransformHierarchySystem.h" />
+    <ClInclude Include="src\scenes\test\CTestSystems.h" />
+    <ClInclude Include="src\scenes\test\CTestComponents.h" />
+    <ClInclude Include="src\scenes\components\CTransform2DComponent.h" />
+    <ClInclude Include="src\scenes\EComponentType.h" />
+    <ClInclude Include="src\scenes\IComponent.h" />
+    <ClInclude Include="src\scenes\ISystem.h" />
+    <ClInclude Include="src\scenes\SComponentsSignature.h" />
     <ClInclude Include="src\services\CInputService.h" />
     <ClInclude Include="src\services\CRenderService.h" />
+    <ClInclude Include="src\services\CScenesService.h" />
     <ClInclude Include="src\services\CServicesManager.h" />
     <ClInclude Include="src\services\CTimeService.h" />
     <ClInclude Include="src\services\CImGuiService.h" />
@@ -204,12 +226,26 @@
     <ClCompile Include="src\maz\CGlfwHandler.cpp" />
     <ClCompile Include="src\maz\globals.cpp" />
     <ClCompile Include="src\maz\mazApp.cpp" />
+    <ClCompile Include="src\maz\CReferenceBase.cpp" />
     <ClCompile Include="src\render\CCamera.cpp" />
     <ClCompile Include="src\render\CMesh.cpp" />
     <ClCompile Include="src\render\CShaderProgram.cpp" />
     <ClCompile Include="src\render\CTexture2D.cpp" />
+    <ClCompile Include="src\scenes\CGameObject.cpp" />
+    <ClCompile Include="src\scenes\CGameObjectsManager.cpp" />
+    <ClCompile Include="src\scenes\CComponentsManager.cpp" />
+    <ClCompile Include="src\scenes\components\CSpriteComponent.cpp" />
+    <ClCompile Include="src\scenes\CSystemsManager.cpp" />
+    <ClCompile Include="src\scenes\components\CTransform2DComponent.cpp" />
+    <ClCompile Include="src\scenes\IComponent.cpp" />
+    <ClCompile Include="src\scenes\ISystem.cpp" />
+    <ClCompile Include="src\scenes\SComponentsSignature.cpp" />
+    <ClCompile Include="src\scenes\systems\CRenderSystem.cpp" />
+    <ClCompile Include="src\scenes\systems\CTransformHierarchySystem.cpp" />
+    <ClCompile Include="src\scenes\test\CTestSystems.cpp" />
     <ClCompile Include="src\services\CInputService.cpp" />
     <ClCompile Include="src\services\CRenderService.cpp" />
+    <ClCompile Include="src\services\CScenesService.cpp" />
     <ClCompile Include="src\services\CServicesManager.cpp" />
     <ClCompile Include="src\services\CTimeService.cpp" />
     <ClCompile Include="src\services\CImGuiService.cpp" />
@@ -218,6 +254,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="src\deprecated\CDelegateOld.inl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="Natvis\CReference.natvis" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -4,8 +4,9 @@
 //Services
 #include <services/CTimeService.h>
 #include <services/CInputService.h>
-#include <test/CTestService.h>
+#include <services/CScenesService.h>
 #include <services/CRenderService.h>
+#include <test/CTestService.h>
 #include <services/CImGuiService.h>
 
 
@@ -25,7 +26,7 @@ bool StartUp()
 {
     bool lOk = nullptr == gServiceManager;
     
-    MAZ_ASSERT(nullptr == gServiceManager, "{Services} StartUp - Called for a second time after successful initialization. No action will be performed!");
+    MAZ_ASSERT(nullptr == gServiceManager, "Called for a second time after successful initialization. No action will be performed!");
     if (lOk)
     {
         gServiceManager = MAZ_NEW(CServicesManager);
@@ -38,7 +39,7 @@ bool StartUp()
 
 void Shutdown()
 {
-    MAZ_ASSERT(nullptr != gServiceManager, "{Services} Shutdown - Called without having called StartUp before hand. No action will be performed!");
+    MAZ_ASSERT(nullptr != gServiceManager, "Called without having called StartUp before hand. No action will be performed!");
     if (nullptr != gServiceManager)
     {
         gServiceManager->End();
@@ -65,12 +66,13 @@ bool CServicesManager::Init()
 
     if (!mServices.empty())
     {
-        MAZ_ERROR("[CServicesManager]::Init - Attempting to initialize the CServicesManager when it has already been initialized. the Manager will be Ended before continuing with initialization!");
+        MAZ_ERROR("Attempting to initialize the CServicesManager when it has already been initialized. the Manager will be Ended before continuing with initialization!");
         End();
     }
 
     mServices.push_back(MAZ_NEW(CTimeService));
     mServices.push_back(MAZ_NEW(CInputService));
+    mServices.push_back(MAZ_NEW(CScenesService));
     mServices.push_back(MAZ_NEW(CRenderService));
     mServices.push_back(MAZ_NEW(CTestService));
 #ifdef EDITOR

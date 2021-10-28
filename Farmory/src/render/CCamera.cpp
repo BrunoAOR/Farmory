@@ -153,13 +153,13 @@ void CCamera::SetFov(float aFov)
 }
 
 
-float* CCamera::GetViewMatrixPtr()
+const float* CCamera::GetViewMatrixPtr() const
 {
     return glm::value_ptr(mViewMatrix);
 }
 
 
-float* CCamera::GetProjMatrixPtr()
+const float* CCamera::GetProjMatrixPtr() const
 {
     return glm::value_ptr(mProjMatrix);
 }
@@ -180,13 +180,16 @@ void CCamera::RebuildProjMatrix(ECameraMode aMode)
     }
     else if (ECameraMode::ORTHOGRAPHIC == aMode)
     {
-        mProjMatrix = glm::ortho(0.0f, mWidth, 0.0f, mHeight, mNear, mFar);
+        // Zooming-in means increasing the pixels per unit value
+        const float lPixelsPerUnit = 200.0f;
+        mProjMatrix = glm::ortho(0.0f, mWidth / lPixelsPerUnit, 0.0f, mHeight / lPixelsPerUnit, mNear, mFar);
     }
 }
 
 
 void CCamera::OnFramebufferResized(int aWidth, int aHeight)
 {
+    MAZ_LOGGER("CCamera::OnFramebufferResized - Old: %.0fx%.0f | New: %dx%d", mWidth, mHeight, aWidth, aHeight);
     mWidth  = static_cast< float >(aWidth);
     mHeight = static_cast< float >(aHeight);
     RebuildProjMatrix(mMode);

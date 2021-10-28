@@ -45,7 +45,7 @@ bool CTestService::Init()
     mCamera.Init();
     mCamera.SetPosition(TVec3(0.0f, 0.0f, 3.0f));
     mCamera.SetLookAt(TVec3(0.0f, 0.0f, -1.0f), TVec3(0.0f, 1.0f, 0.0f));
-    mCamera.SetCameraMode(ECameraMode::PERSPECTIVE);
+    mCamera.SetCameraMode(ECameraMode::ORTHOGRAPHIC);
     mCamera.SetClippingPlanes(0.1f, 100.0f);
     mCamera.SetFov(45.0f);
 
@@ -291,7 +291,7 @@ void CTestService::TestRender3()
     }
 
     glm::vec3 lCubePositions[] = {
-      glm::vec3(0.0f,  0.0f,  0.0f),
+      glm::vec3(0.0f,  0.0f,  -2.0f),
       glm::vec3(2.0f,  5.0f, -15.0f),
       glm::vec3(-1.5f, -2.2f, -2.5f),
       glm::vec3(-3.8f, -2.0f, -12.3f),
@@ -311,10 +311,10 @@ void CTestService::TestRender3()
     // Camera
     // Mouse motion input
     const float kSensitivity = 0.05f;
-    lCameraYaw   += kSensitivity * lInputService->GetMousePosDelta(EMouseAxis::X_AXIS);
-    lCameraPitch -= kSensitivity * lInputService->GetMousePosDelta(EMouseAxis::Y_AXIS);
-    lCameraYaw   = (lCameraYaw < 0.0f) ? lCameraYaw + 360.0f : (lCameraYaw > 360.0f ? lCameraYaw - 360.0f : lCameraYaw);
-    lCameraPitch = (lCameraPitch < -89.0f) ? -89.0f : (lCameraPitch > 89.0f ? 89.0f : lCameraPitch);
+    //lCameraYaw   += kSensitivity * lInputService->GetMousePosDelta(EMouseAxis::X_AXIS);
+    //lCameraPitch -= kSensitivity * lInputService->GetMousePosDelta(EMouseAxis::Y_AXIS);
+    //lCameraYaw   = (lCameraYaw < 0.0f) ? lCameraYaw + 360.0f : (lCameraYaw > 360.0f ? lCameraYaw - 360.0f : lCameraYaw);
+    //lCameraPitch = (lCameraPitch < -89.0f) ? -89.0f : (lCameraPitch > 89.0f ? 89.0f : lCameraPitch);
 
     TVec3 lCameraFront;
     lCameraFront.x = cosf(glm::radians(lCameraYaw)) * cosf(glm::radians(lCameraPitch));
@@ -349,6 +349,16 @@ void CTestService::TestRender3()
     {
         const glm::vec3 lCameraRight = glm::normalize(glm::cross(lCameraFront, lCameraUp));
         lCamPos += lCamDistance * lCameraRight;
+    }
+    if (lInputService->IsKeyDown(GLFW_KEY_R))
+    {
+        const glm::vec3 lCameraRight = glm::normalize(glm::cross(lCameraFront, lCameraUp));
+        lCamPos += lCamDistance * lCameraUp;
+    }
+    else if (lInputService->IsKeyDown(GLFW_KEY_F))
+    {
+        const glm::vec3 lCameraRight = glm::normalize(glm::cross(lCameraFront, lCameraUp));
+        lCamPos -= lCamDistance * lCameraUp;
     }
 
     mCamera.SetPosition(lCamPos);

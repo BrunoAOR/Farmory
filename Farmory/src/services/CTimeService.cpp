@@ -1,3 +1,4 @@
+//#define MAZ_LOG_VERBOSE
 #include <maz/globals.h>
 #include "CTimeService.h"
 #include <maz/CGlfwHandler.h>
@@ -45,6 +46,8 @@ void CTimeService::PreUpdate()
     const float lCurrentFrameTime = static_cast< float >(glfwGetTime());
     mDeltaTime = lCurrentFrameTime - mLastFrameTime;
     mLastFrameTime = lCurrentFrameTime;
+
+    MAZ_LOGGER_VERBOSE("FPS: %3.0f (Frame time: %.3fms)", 1.0f / mDeltaTime, mDeltaTime * 1000.0f);
 }
 
 

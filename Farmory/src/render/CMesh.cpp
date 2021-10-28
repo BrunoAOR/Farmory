@@ -10,7 +10,7 @@ CMesh::CMesh()
     : mVAO         (GL_NONE)
     , mVBO         (GL_NONE)
     , mEBO         (GL_NONE)
-    ,mIndexesCount (0)
+    , mIndexesCount (0)
 { ; }
 
 

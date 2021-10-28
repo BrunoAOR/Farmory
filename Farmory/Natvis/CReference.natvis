@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+    <Type Name="maz::CReference&lt;*&gt;">
+        <DisplayString>{{ type={"$T1"} }}</DisplayString>
+        <Expand>
+            <Item Name ="Valid">m_dataPtr != nullptr</Item>
+            <Item Name="RefCount" Condition="m_dataPtr != nullptr">m_referencesList->_Mypair._Myval2._Mysize</Item>
+            <Item Name="Data" Condition="m_dataPtr != nullptr">($T1*)m_dataPtr</Item>
+        </Expand>
+    </Type>
+</AutoVisualizer>

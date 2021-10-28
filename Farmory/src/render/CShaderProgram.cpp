@@ -177,7 +177,7 @@ bool CShaderProgram::SetUniform4f(const char* aName, float aX, float aY, float a
 }
 
 
-bool CShaderProgram::SetUniformMat4(const char* aName, float* aMat4Ptr)
+bool CShaderProgram::SetUniformMat4(const char* aName, const float* aMat4Ptr)
 {
     bool lOk = IsOk();
     if (lOk)

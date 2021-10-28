@@ -23,6 +23,7 @@ int MazMain()
     lOk = lOk && Services::StartUp();
 
     // Loop
+    MAZ_LOGGER("Loop will start");
     while (lOk && !glfwWindowShouldClose(CGlfwHandler::GetWindow()) && !maz::global::gShouldClose)
     {
         glfwPollEvents();

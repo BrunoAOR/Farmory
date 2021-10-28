@@ -33,6 +33,8 @@ CTextData CTextData::FromFile(const CFile& aFile)
 		lSStream << lFStream.rdbuf();
 		lFStream.close();
 		lContent = lSStream.str();
+
+		lFStream.close();
 	}
 
 	return CTextData(lContent);
