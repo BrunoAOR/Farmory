@@ -5,8 +5,10 @@
 #include <maz/globals.h>
 #include <maz/CReferenceMaster.h>
 
+
 namespace maz
 {
+
 const uint16 kInvalidElementId = MAX_UINT16;
 
 template<typename T, uint16 BUFFER_SIZE>
@@ -93,6 +95,7 @@ inline CReferenceBuffer<T, BUFFER_SIZE>::CReferenceBuffer()
     mBufferUseFlags.fill(EBufferUseFlags::NONE);
     mStartOfInactiveRange = 0u;
 }
+
 
 template<typename T, uint16 BUFFER_SIZE>
 inline CReferenceBuffer<T, BUFFER_SIZE>::~CReferenceBuffer()
@@ -252,11 +255,13 @@ inline typename CReferenceBuffer<T, BUFFER_SIZE>::EBufferUseFlags CReferenceBuff
     return bufferFlags;
 }
 
+
 // **********
 // **********
 // ITERATOR
 // **********
 // **********
+
 
 template<typename T, uint16 BUFFER_SIZE>
 inline CReferenceBuffer<T, BUFFER_SIZE>::CBufferIterator::operator bool()
@@ -296,6 +301,7 @@ inline CReference<T> CReferenceBuffer<T, BUFFER_SIZE>::CBufferIterator::Get()
 {
     return mManager->mElements[mCurrentIndex].GetReference();
 }
+
 
 template<typename T, uint16 BUFFER_SIZE>
 inline uint16 CReferenceBuffer<T, BUFFER_SIZE>::CBufferIterator::GetId()

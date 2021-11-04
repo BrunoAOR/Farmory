@@ -1,6 +1,7 @@
 #ifndef _H_TYPES_
 #define _H_TYPES_
 
+
 namespace maz
 {
 

@@ -10,8 +10,10 @@
 #include <scenes/CComponentsManager.h>
 #include <scenes/SComponentsSignature.h>
 
+
 namespace maz
 {
+
 class CGameObject final
 {
 private:

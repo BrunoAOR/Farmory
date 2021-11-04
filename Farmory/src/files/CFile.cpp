@@ -4,16 +4,21 @@
 #include <sstream>
 #include <external/stb_image.h>
 
+
 namespace maz
 {
 
 CFile::CFile(const char* aFullPath) : mPath(aFullPath) { ; }
+
+
 CFile::~CFile() { ; }
+
 
 bool CFile::IsOk() const
 {
 	return (nullptr != mPath);
 }
+
 
 const char* CFile::GetFullPath() const
 {
@@ -45,10 +50,12 @@ CTextData::CTextData() { ; }
 CTextData::CTextData(const std::string& aData) : mData(aData) { ; }
 CTextData::~CTextData() { ; }
 
+
 bool CTextData::IsOk() const
 {
     return !mData.empty();
 }
+
 
 const char* CTextData::GetData() const
 {
@@ -68,8 +75,11 @@ CImageData CImageData::FromFile(const CFile& aFile)
 	return lImageData;
 }
 
+
 CImageData::CImageData() : mData(nullptr), mWidth(0), mHeight(0), mChannelsCount(0) { ; }
 CImageData::CImageData(unsigned char* aData) : mData(aData), mWidth(0), mHeight(0), mChannelsCount(0) { ; }
+
+
 CImageData::CImageData(CImageData&& aOther) : mData(aOther.mData), mWidth(aOther.mWidth), mHeight(aOther.mHeight), mChannelsCount(aOther.mChannelsCount)
 {
 	if (this != &aOther)
@@ -81,6 +91,7 @@ CImageData::CImageData(CImageData&& aOther) : mData(aOther.mData), mWidth(aOther
 	}
 }
 
+
 CImageData::~CImageData()
 {
     if (nullptr != mData)
@@ -90,25 +101,30 @@ CImageData::~CImageData()
     }
 }
 
+
 bool CImageData::IsOk() const
 {
 	return (nullptr != mData);
 }
+
 
 unsigned char* CImageData::GetData() const
 {
     return mData;
 }
 
+
 int CImageData::GetWidth() const
 {
 	return mWidth;
 }
 
+
 int CImageData::GetHeight() const
 {
 	return mHeight;
 }
+
 
 int CImageData::GetChannelsCount() const
 {

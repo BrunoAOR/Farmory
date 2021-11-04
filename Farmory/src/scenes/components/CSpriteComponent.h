@@ -12,6 +12,8 @@ namespace maz
 {
 
 class CGameObject;
+
+
 class CSpriteComponent
     : public CComponentBase<CSpriteComponent>
 {
@@ -23,8 +25,6 @@ public:
     {
         return EComponentType::Sprite;
     }
-
-    
 
 public:
     CShaderProgram mShader;

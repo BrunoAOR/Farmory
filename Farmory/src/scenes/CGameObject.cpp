@@ -88,5 +88,4 @@ const SComponentsSignature& CGameObject::GetSignature() const
     return mSignature;
 }
 
-
 } // maz

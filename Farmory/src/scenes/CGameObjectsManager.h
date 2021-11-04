@@ -6,12 +6,14 @@
 #include <maz/CReferenceBuffer.h>
 #include <scenes/CGameObject.h>
 
+
 namespace maz
 {
 
 class CGameObjectsManager
 {
     using CGameObjectsBuffer = CReferenceBuffer<CGameObject, kMaxGameObjectsCount>;
+
 public:
     class CModifiedGameObjectsIterator
     {

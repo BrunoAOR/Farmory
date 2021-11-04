@@ -51,11 +51,13 @@ private:
     EMagFilterMode mMagFilterMode;
 };
 
+
 enum class EAxis : uint32
 {
     X,
     Y
 };
+
 
 enum class EWrapMode : uint32
 {
@@ -64,6 +66,7 @@ enum class EWrapMode : uint32
     CLAMP_TO_EDGE,
     CLAMP_TO_BORDER
 };
+
 
 enum class EMinFilterMode : uint32
 {
@@ -74,6 +77,7 @@ enum class EMinFilterMode : uint32
     NEAREST_MIPMANP_LINEAR,
     LINEAR_MIPMAP_LINEAR
 };
+
 
 enum class EMagFilterMode : uint32
 {

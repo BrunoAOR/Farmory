@@ -231,5 +231,4 @@ bool CMesh::Draw() const
     return lOk;
 }
 
-
 } // maz

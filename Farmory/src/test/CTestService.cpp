@@ -18,6 +18,7 @@ namespace maz
 float lCameraYaw = -90.0f;
 float lCameraPitch = 0.0f;
 
+
 CTestService::CTestService()
 { 
     MAZ_LOGGER("CTestService::CTestService called");
@@ -86,7 +87,6 @@ void CTestService::TestRender()
 {
     TestRender3();
 }
-
 
 
 bool CTestService::ShaderInit()

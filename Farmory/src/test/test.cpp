@@ -2,6 +2,7 @@
 #include <maz/CDelegate.h>
 #include <deprecated/CDelegateOld.h>
 
+
 namespace maz
 {
 
@@ -32,25 +33,30 @@ struct CDelegateTest
     int mMult;
 };
 
+
 int test(float aF)
 {
     return static_cast<int>(aF);
 }
+
 
 float test(float aF, int aI)
 {
     return aI * aF;
 }
 
+
 float test()
 {
     return 17.45f;
 }
 
+
 CDelegate< int, float > GetDel(const CDelegateTest* aObj)
 {
     return CDelegate< int, float >::Create< CDelegateTest, &CDelegateTest::myFunc >(aObj);
 }
+
 
 void TestMain()
 {
@@ -162,6 +168,5 @@ void TestMain()
         MAZ_UNUSED_VAR(cmp11);
     }
 }
-
 
 } // maz

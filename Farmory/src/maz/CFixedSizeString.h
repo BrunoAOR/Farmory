@@ -27,6 +27,7 @@ private:
     char mBuffer[SIZE];
 };
 
+
 template<uint8 SIZE>
 inline CFixedSizeString<SIZE>::CFixedSizeString()
 {

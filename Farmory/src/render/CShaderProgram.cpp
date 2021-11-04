@@ -6,8 +6,10 @@
 
 namespace maz
 {
+
 namespace
 {
+
 unsigned int BuildShader(const char* aSource, GLenum aType)
 {
     unsigned int lShader = glCreateShader(aType);
@@ -28,14 +30,18 @@ unsigned int BuildShader(const char* aSource, GLenum aType)
 
     return lShader;
 }
+
 } // anonymous
 
 
 CShaderProgram::CShaderProgram() : mId(GL_NONE) { ; }
+
+
 CShaderProgram::~CShaderProgram()
 {
     MAZ_ASSERT(!IsOk(), "[CShaderProgram]::~CShaderProgram - Destructor called on an initialized ShaderProgram without having called 'End'!");
 }
+
 
 bool CShaderProgram::Init(const CFile& aVertexShaderFile, const CFile& aFragmentShaderFile)
 {

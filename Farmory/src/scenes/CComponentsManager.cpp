@@ -54,5 +54,4 @@ bool CComponentsManager::RemoveComponent(EComponentType aComponentType, const ui
     return componentManager->RemoveComponent(aComponentIndex);
 }
 
-
 } // maz

@@ -5,10 +5,13 @@
 #include <scenes/IComponent.h>
 #include <scenes/EComponentType.h>
 
+
 namespace maz
 {
 
 class CGameObject;
+
+
 class CTestComponentA
     : public CComponentBase<CTestComponentA>
 {
@@ -17,6 +20,7 @@ public:
     ~CTestComponentA() { MAZ_LOGGER("Called"); }
     static constexpr EComponentType GetType() { return EComponentType::TestCompA; }
 };
+
 
 class CTestComponentB
     : public CComponentBase<CTestComponentB>

@@ -7,11 +7,13 @@
 
 namespace maz
 {
+
 enum class EMouseAxis : uint32
 {
     X_AXIS,
     Y_AXIS
 };
+
 
 class CInputService
     : public IService

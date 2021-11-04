@@ -48,6 +48,7 @@ void Shutdown()
     }
 }
 
+
 CServicesManager* GetManager()
 {
     return gServiceManager;

@@ -1,9 +1,12 @@
 #ifndef _H_CAMERA_
 #define _H_CAMERA_
 
+
 namespace maz
 {
+
 enum class ECameraMode : uint32;
+
 
 class CCamera
 {
@@ -53,6 +56,7 @@ private:
     float mWidth;
     float mHeight;
 };
+
 
 enum class ECameraMode : uint32
 {

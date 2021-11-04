@@ -1,6 +1,7 @@
 #ifndef _H_TEST_
 #define _H_TEST_
 
+
 namespace maz
 {
 

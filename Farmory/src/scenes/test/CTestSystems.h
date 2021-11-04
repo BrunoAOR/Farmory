@@ -16,6 +16,7 @@ public:
     virtual void Update() override;
 };
 
+
 class CSystemTransformB
     : public ISystem
 {
@@ -24,6 +25,7 @@ public:
     virtual ~CSystemTransformB();
     virtual void Update() override;
 };
+
 
 class CMotionSystemTest
     : public ISystem

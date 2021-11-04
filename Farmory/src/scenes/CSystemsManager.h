@@ -8,6 +8,7 @@
 
 namespace maz
 {
+
 class CGameObjectsManager;
 class CSystemsManager
 {
@@ -19,7 +20,6 @@ public:
     void RefreshSystems();
     template<typename SYSTEM>
     bool RegisterSystem();
-
 
 private:
     CGameObjectsManager& mGameObjectsManager;

@@ -27,10 +27,8 @@ protected:
     void AddComponentToSignature(EComponentType aComponentType);
     void RemoveComponentFromSignature(EComponentType aComponentType);
 
-
 protected:
     std::array<CReference<CGameObject>, kMaxGameObjectsCount> mGameObjects;
-
 
 private:
     SComponentsSignature mSignature;

@@ -3,6 +3,7 @@
 
 #include <maz/globals.h>
 
+
 namespace maz
 {
 
@@ -15,6 +16,7 @@ public:
         , mFunc(nullptr)
     { ; }
     
+
     template< R(*Func)(P...) >
     static CDelegate Create()
     {
@@ -22,6 +24,7 @@ public:
         lDelegate.mFunc = &HelperFunc< Func >;
         return lDelegate;
     }
+
 
     template< typename T, R(T:: * Method)(P...) >
     static CDelegate Create(const T* aObj)
@@ -32,6 +35,7 @@ public:
         return lDelegate;
     }
 
+
     template< typename T, R(T:: * Method)(P...) const >
     static CDelegate CreateConst(const T* aObj)
     {
@@ -41,27 +45,29 @@ public:
         return lDelegate;
     }
 
+
     R operator()(P... aParams)
     {
         return (*mFunc)(mObj, aParams...);
     }
+
 
     bool operator== (const CDelegate& aOther)
     {
         return (mObj == aOther.mObj) && (mFunc == aOther.mFunc);
     }
 
+
     bool operator!= (const CDelegate& aOther)
     {
         return !(operator==(aOther));
     }
 
+
 private:
     using THelperFunc = R(*)(void*, P...);
     
-    void*       mObj;
-    THelperFunc mFunc;
-
+    
     template< R(*Function)(P...) >
     static R HelperFunc(void* aObj, P... aParams)
     {
@@ -69,11 +75,13 @@ private:
         return (*Function)(aParams...);
     }
 
+
     template< typename T, R(T::* Method)(P...) >
     static R HelperFunc(void* aObj, P... aParams)
     {
         return ((static_cast< T* >(aObj))->*Method)(aParams...);
     }
+
 
     template< typename T, R(T::* Method)(P...) const >
     static R HelperFunc(void* aObj, P... aParams)
@@ -81,6 +89,9 @@ private:
         return ((static_cast< T* >(aObj))->*Method)(aParams...);
     }
 
+
+    void* mObj;
+    THelperFunc mFunc;
 };
 
 } // maz

@@ -7,6 +7,7 @@
 #include <array>
 #include <maz/CReferenceBuffer.h>
 
+
 namespace maz
 {
 
@@ -19,11 +20,13 @@ private:
     
     void updateComponentIdForGameObject(CReference<CGameObject> aGameObject, EComponentType aComponentType, uint16 aId);
     
+    
     template<typename COMPONENT_CLASS>
     void setComponentThisReference(CReference<COMPONENT_CLASS>& aComponent)
     {
         aComponent->mThis = aComponent;
     }
+
 
     class CComponentManagerBase
     {
@@ -39,6 +42,7 @@ private:
     private:
         const EComponentType mComponentType;
     };
+
 
     template<typename COMPONENT_CLASS>
     class CComponentManager : public CComponentManagerBase
@@ -120,11 +124,13 @@ private:
         CComponentBuffer mComponentsBuffer;
     };
 
+
 public:
     CComponentsManager();
     void Shutdown();
     void RefreshComponents();
     bool RemoveComponent(EComponentType aComponentType, const uint16 aComponentIndex);
+
 
     template<typename COMPONENT_CLASS>
     bool RegisterComponent()

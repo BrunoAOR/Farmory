@@ -6,6 +6,7 @@
 
 namespace maz
 {
+
 class CFile
 {
 public:
@@ -18,6 +19,7 @@ public:
 private:
     const char* mPath;
 };
+
 
 class CTextData
 {
@@ -35,6 +37,7 @@ private:
 private:
     std::string mData;
 };
+
 
 class CImageData
 {

@@ -4,6 +4,7 @@
 #include <services/IService.h>
 #include <vector>
 
+
 namespace maz
 {
 
@@ -16,6 +17,7 @@ void Shutdown();
 CServicesManager* GetManager();
 
 } // Services
+
 
 class CServicesManager
 {

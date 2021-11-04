@@ -4,10 +4,12 @@
 #include <scenes/IComponent.h>
 #include <scenes/EComponentType.h>
 
+
 namespace maz
 {
 
 class CGameObject;
+
 
 struct STransform2D
 {
@@ -42,6 +44,7 @@ private:
     float mRotation;
     TVec2 mScale;
 };
+
 
 class CTransform2DComponent
     : public CComponentBase<CTransform2DComponent>
@@ -85,7 +88,6 @@ public:
 private:
     bool addChildTransform(CReference<CTransform2DComponent>& aChildTransform);
     bool removeChildTransform(CReference<CTransform2DComponent>& aChildTransform);
-
 
 private:
     STransform2D mLocalTransform;

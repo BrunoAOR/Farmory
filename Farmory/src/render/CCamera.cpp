@@ -2,6 +2,7 @@
 #include "CCamera.h"
 #include <maz/CGlfwHandler.h>
 
+
 namespace maz
 {
 
@@ -22,6 +23,7 @@ CCamera::CCamera()
 
 CCamera::~CCamera() { ; }
 
+
 bool CCamera::Init()
 {
     bool lOk = true;
@@ -40,6 +42,7 @@ bool CCamera::Init()
 
     return lOk;
 }
+
 
 void CCamera::End()
 {

@@ -16,10 +16,12 @@ CSystemTransformA::CSystemTransformA()
     AddComponentToSignature(EComponentType::TestCompA);
 }
 
+
 CSystemTransformA::~CSystemTransformA()
 {
 
 }
+
 
 void CSystemTransformA::Update()
 {
@@ -34,16 +36,19 @@ void CSystemTransformA::Update()
     MAZ_LOGGER("CSystemTransformA::Update - END");
 }
 
+
 CSystemTransformB::CSystemTransformB()
 {
     AddComponentToSignature(EComponentType::Transform);
     AddComponentToSignature(EComponentType::TestCompB);
 }
 
+
 CSystemTransformB::~CSystemTransformB()
 {
 
 }
+
 
 void CSystemTransformB::Update()
 {
@@ -58,6 +63,7 @@ void CSystemTransformB::Update()
     MAZ_LOGGER("CSystemTransformB::Update - END");
 }
 
+
 CMotionSystemTest::CMotionSystemTest()
 {
     AddComponentToSignature(EComponentType::Transform);
@@ -65,9 +71,11 @@ CMotionSystemTest::CMotionSystemTest()
     AddComponentToSignature(EComponentType::TestCompA);
 }
 
+
 CMotionSystemTest::~CMotionSystemTest()
 {
 }
+
 
 void CMotionSystemTest::Update()
 {

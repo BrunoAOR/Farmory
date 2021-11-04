@@ -5,10 +5,9 @@
 #include <services/CServicesManager.h>
 #include <test/CTestService.h>
 
+
 namespace maz
 {
-
-
 
 CRenderSystem::CRenderSystem()
 {

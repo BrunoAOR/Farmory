@@ -5,6 +5,10 @@
 
 namespace maz
 {
+
+namespace
+{
+
 TVec2 calculateWorldPosition(const STransform2D& aParentWorldTransform, const STransform2D& aLocalTransform)
 {
     TVec2 worldPosition(0.0f, 0.0f);
@@ -54,6 +58,8 @@ TVec2 calculateWorldScale(const TVec2& aParentWorldScale, const TVec2& aLocalSca
     worldScale.y = aLocalScale.y * aParentWorldScale.y;
     return worldScale;
 }
+
+} // anonymous
 
 
 CTransformHierarchySystem::CTransformHierarchySystem()
