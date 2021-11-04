@@ -3,8 +3,10 @@
 #include <GLAD/glad.h>
 #include <GLFW/glfw3.h>
 
+
 namespace maz
 {
+
 bool            CGlfwHandler::sOk       = false;
 GLFWwindow*     CGlfwHandler::sWindow   = nullptr;
 std::vector< CGlfwHandler::FramebufferResizedCallback > CGlfwHandler::sWindowResizedCallbacks;
@@ -95,6 +97,19 @@ GLFWwindow* CGlfwHandler::GetWindow()
 {
     return sWindow;
 }
+
+
+bool CGlfwHandler::IsWindowCloseRequested()
+{
+    return (sWindow && glfwWindowShouldClose(sWindow));
+}
+
+
+void CGlfwHandler::PollEvents()
+{
+    glfwPollEvents();
+}
+
 
 bool CGlfwHandler::GetFramebufferSize(int& aOutWidth, int& aOutHeight)
 {

@@ -52,7 +52,7 @@ private:
 
     CFixedString32 mName;
 
-    std::array<uint16, MAZ_ENUM_COUNT(EComponentType)> mComponents;
+    std::array<uint16, EnumCount<EComponentType>()> mComponents;
 };
 
 

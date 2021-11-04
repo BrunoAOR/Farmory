@@ -16,7 +16,7 @@ void CGameObjectsManager::Shutdown()
     while (iterator)
     {
         // Remove all components
-        for (uint16 componentId = 0; componentId < MAZ_ENUM_COUNT(EComponentType); ++componentId)
+        for (uint16 componentId = 0; componentId < EnumCount<EComponentType>(); ++componentId)
         {
             iterator.Get()->RemoveComponent(static_cast<EComponentType>(componentId));
         }
@@ -40,7 +40,7 @@ void CGameObjectsManager::RefreshGameObjects()
         else if (iterator.HasIteratorFlag(CGameObjectsBuffer::EIteratorFlags::PROCESS_REMOVE_PENDING))
         {
             // Remove all components
-            for (uint16 componentId = 0; componentId < MAZ_ENUM_COUNT(EComponentType); ++componentId)
+            for (uint16 componentId = 0; componentId < EnumCount<EComponentType>(); ++componentId)
             {
                 iterator.Get()->RemoveComponent(static_cast<EComponentType>(componentId));
             }

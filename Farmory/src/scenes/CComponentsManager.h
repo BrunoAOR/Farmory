@@ -166,7 +166,7 @@ private:
     //TODO: Consider determining the full size required for all managers and put them all one after the other in memory on a buffer.
     // Then, just have the array of pointers like here, but we would have all components in contiguous memory.
     // (Still separated by the fact that not all capacity in each manager will be used)
-    std::array<CComponentManagerBase*, MAZ_ENUM_COUNT(EComponentType)> mComponentManagers;
+    std::array<CComponentManagerBase*, EnumCount<EComponentType>()> mComponentManagers;
 };
 
 } // maz

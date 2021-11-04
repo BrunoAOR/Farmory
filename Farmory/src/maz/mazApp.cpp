@@ -2,7 +2,6 @@
 #include "mazApp.h"
 #include <maz/CGlfwHandler.h>
 #include <services/CServicesManager.h>
-#include <GLFW/glfw3.h>
 
 #include <test/test.h>
 
@@ -24,9 +23,9 @@ int MazMain()
 
     // Loop
     MAZ_LOGGER("Loop will start");
-    while (lOk && !glfwWindowShouldClose(CGlfwHandler::GetWindow()) && !maz::global::gShouldClose)
+    while (lOk && !CGlfwHandler::IsWindowCloseRequested() && !maz::global::gShouldClose)
     {
-        glfwPollEvents();
+        CGlfwHandler::PollEvents();
         Services::GetManager()->PreUpdate();
         Services::GetManager()->Update();
         Services::GetManager()->PostUpdate();

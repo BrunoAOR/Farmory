@@ -91,10 +91,6 @@ bool CScenesService::IsOk() const
 }
 
 
-void CScenesService::PreUpdate()
-{}
-
-
 void CScenesService::Update()
 {
     static bool hasLoadedScene = false;
@@ -110,9 +106,6 @@ void CScenesService::Update()
     mSystemsManager.RefreshSystems();
 }
 
-
-void CScenesService::PostUpdate()
-{}
 
 bool CScenesService::LoadTestScenes()
 {

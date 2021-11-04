@@ -19,7 +19,6 @@ public:
 
     virtual void PreUpdate() override;
     virtual void Update() override;
-    virtual void PostUpdate() override;
 };
 
 } // maz

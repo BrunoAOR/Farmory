@@ -4,6 +4,7 @@
 #include <maz/globals.h>
 #include <scenes/EComponentType.h>
 
+
 namespace maz
 {
 
@@ -20,7 +21,7 @@ public:
 
 private:
     static constexpr uint8 sBitsPerSubSignature = 32u;
-    static constexpr uint8 sSubSignaturesCount = (MAZ_ENUM_COUNT(EComponentType) - 1) / sBitsPerSubSignature + 1;
+    static constexpr uint8 sSubSignaturesCount = (EnumCount<EComponentType>() - 1) / sBitsPerSubSignature + 1;
     uint32 mSubSignatures[sSubSignaturesCount];
 };
 

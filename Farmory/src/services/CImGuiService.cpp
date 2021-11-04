@@ -12,8 +12,8 @@ namespace maz
 
 static const char* kGlslShaderVersion = "#version 330";
 
-CImGuiService::CImGuiService() { ; }
 
+CImGuiService::CImGuiService() { ; }
 CImGuiService::~CImGuiService() { ; }
 
 
@@ -121,11 +121,6 @@ void CImGuiService::Update()
 
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-}
-
-
-void CImGuiService::PostUpdate()
-{
 }
 
 } // maz

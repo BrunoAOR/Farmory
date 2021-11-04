@@ -5,32 +5,6 @@
 
 namespace maz
 {
-struct TTest
-{
-    TTest(int a) : mMult(a) { ; }
-
-    int myFunc(float aF)
-    {
-        return static_cast<int>(aF)* mMult;
-    }
-
-    int myFunc(float aF) const
-    {
-        return static_cast<int>(aF)* mMult * 1000;
-    }
-
-    int myConstFunc(float aF) const
-    {
-        return static_cast<int>(aF) * 2 * mMult;
-    }
-
-    static int myStaticFunc(float aF)
-    {
-        return static_cast<int>(aF) * 100;
-    }
-
-    int mMult;
-};
 
 template< typename R, typename ... P >
 class CDelegate

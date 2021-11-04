@@ -4,7 +4,6 @@
 #include <files/CFile.h>
 
 
-struct GLFWwindow;
 namespace maz
 {
 

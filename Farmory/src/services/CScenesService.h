@@ -21,9 +21,7 @@ public:
     virtual void End() override;
     virtual bool IsOk() const override;
 
-    virtual void PreUpdate() override;
     virtual void Update() override;
-    virtual void PostUpdate() override;
 
 private:
     bool LoadTestScenes();

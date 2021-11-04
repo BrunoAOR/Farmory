@@ -4,10 +4,11 @@
 #include <vector>
 #include <maz/CDelegate.h>
 
+
 struct GLFWwindow;
 namespace maz
 {
-enum class ECursorMode : uint32;
+enum class ECursorMode : uint8;
 
 class CGlfwHandler
 {
@@ -24,8 +25,11 @@ public:
 
     static bool IsOk();
 
+    // Windows
     static bool CreateGlWindow(int aWindowWidth, int aWindowHeight, const char* aWindowName);
     static GLFWwindow* GetWindow();
+    static bool IsWindowCloseRequested();
+    static void PollEvents();
 
     // Getters
     static bool GetFramebufferSize(int& aOutWidth, int& aOutHeight);
@@ -57,7 +61,6 @@ private:
     static void OnMousePosition(GLFWwindow* aWindow, double aXPos, double aYPos);
     static void OnMouseScroll  (GLFWwindow* aWindow, double aXOffset, double aYOffset);
 
-
 private:
     static bool sOk;
     static GLFWwindow* sWindow;
@@ -69,7 +72,7 @@ private:
 };
 
 
-enum class ECursorMode : uint32
+enum class ECursorMode : uint8
 {
     NORMAL,
     HIDDEN,
