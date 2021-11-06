@@ -11,31 +11,34 @@ namespace maz
 
 int MazMain()
 {
+#ifdef MAZ_DEBUG
     TestMain();
+#endif // MAZ_DEBUG
 
     MAZ_LOGGER("Starting up");
 
     bool lOk = true;
-    CServicesManager lServicesManager;
-
     lOk = lOk && CGlfwHandler::StartUp();
     lOk = lOk && Services::StartUp();
 
     // Loop
-    MAZ_LOGGER("Loop will start");
-    while (lOk && !CGlfwHandler::IsWindowCloseRequested() && !maz::global::gShouldClose)
+    if (lOk)
     {
-        CGlfwHandler::PollEvents();
-        Services::GetManager()->PreUpdate();
-        Services::GetManager()->Update();
-        Services::GetManager()->PostUpdate();
+        MAZ_LOGGER("Loop will start");
+        while (!CGlfwHandler::IsWindowCloseRequested() && !maz::global::gShouldClose)
+        {
+            CGlfwHandler::PollEvents();
+            Services::GetManager()->PreUpdate();
+            Services::GetManager()->Update();
+            Services::GetManager()->PostUpdate();
+        }
     }
 
     Services::Shutdown();
     CGlfwHandler::ShutDown();
 
     MAZ_LOGGER("Closing up");
-    return 0;
+    return lOk ? 0 : -1;
 }
 
 } // maz
