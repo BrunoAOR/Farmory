@@ -66,7 +66,7 @@ namespace global
 extern bool gShouldClose;
 } // global
 
-void Logger(const char* file, int line, const char* function, const char* format, ...);
+void Logger(const char* pFileName, int aLine, const char* apFunctionName, const char* apFormat, ...);
 
 } // maz
 

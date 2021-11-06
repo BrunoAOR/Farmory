@@ -20,37 +20,37 @@ constexpr std::underlying_type_t<ENUM_TYPE> EnumToNumber(ENUM_TYPE aEnumValue)
 
 
 template<typename FLAG_ENUM_TYPE>
-bool IsFlagSet(const FLAG_ENUM_TYPE& aFlags, FLAG_ENUM_TYPE aFlagToCheck)
+bool IsFlagSet(const FLAG_ENUM_TYPE& arFlags, FLAG_ENUM_TYPE aFlagToCheck)
 {
-    return ((EnumToNumber(aFlags) & EnumToNumber(aFlagToCheck)) == EnumToNumber(aFlagToCheck));
+    return ((EnumToNumber(arFlags) & EnumToNumber(aFlagToCheck)) == EnumToNumber(aFlagToCheck));
 }
 
 
 template<typename FLAG_ENUM_TYPE>
-bool IsAnyFlagSet(const FLAG_ENUM_TYPE& aFlags, FLAG_ENUM_TYPE aFlagToCheck)
+bool IsAnyFlagSet(const FLAG_ENUM_TYPE& arFlags, FLAG_ENUM_TYPE aFlagToCheck)
 {
-    return ((EnumToNumber(aFlags) & EnumToNumber(aFlagToCheck)) != 0);
+    return ((EnumToNumber(arFlags) & EnumToNumber(aFlagToCheck)) != 0);
 }
 
 
 template<typename FLAG_ENUM_TYPE>
-void SetFlag(FLAG_ENUM_TYPE& aInOutFlags, FLAG_ENUM_TYPE aFlagToSet)
+void SetFlag(FLAG_ENUM_TYPE& arInOutFlags, FLAG_ENUM_TYPE aFlagToSet)
 {
-    aInOutFlags = static_cast<FLAG_ENUM_TYPE>(EnumToNumber(aInOutFlags) | EnumToNumber(aFlagToSet));
+    arInOutFlags = static_cast<FLAG_ENUM_TYPE>(EnumToNumber(arInOutFlags) | EnumToNumber(aFlagToSet));
 }
 
 
 template<typename FLAG_ENUM_TYPE>
-void ClearFlag(FLAG_ENUM_TYPE& aInOutFlags, FLAG_ENUM_TYPE aFlagToReset)
+void ClearFlag(FLAG_ENUM_TYPE& arInOutFlags, FLAG_ENUM_TYPE aFlagToReset)
 {
-    aInOutFlags = static_cast<FLAG_ENUM_TYPE>(EnumToNumber(aInOutFlags) & (~EnumToNumber(aFlagToReset)));
+    arInOutFlags = static_cast<FLAG_ENUM_TYPE>(EnumToNumber(arInOutFlags) & (~EnumToNumber(aFlagToReset)));
 }
 
 
 template<typename FLAG_ENUM_TYPE>
-void ToggleFlag(FLAG_ENUM_TYPE& aInOutFlags, FLAG_ENUM_TYPE aFlagToToggle)
+void ToggleFlag(FLAG_ENUM_TYPE& arInOutFlags, FLAG_ENUM_TYPE aFlagToToggle)
 {
-    aInOutFlags = static_cast<FLAG_ENUM_TYPE>(EnumToNumber(aInOutFlags) ^ EnumToNumber(aFlagToToggle));
+    arInOutFlags = static_cast<FLAG_ENUM_TYPE>(EnumToNumber(arInOutFlags) ^ EnumToNumber(aFlagToToggle));
 }
 
 } // maz

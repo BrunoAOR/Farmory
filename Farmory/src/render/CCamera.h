@@ -26,8 +26,8 @@ public:
     float GetFarPlaneDistance() const;
 
     void SetCameraMode(ECameraMode aCameraMode);
-    void SetPosition(const TVec3& aPosition);
-    bool SetLookAt(const TVec3& aFront, const TVec3& aUp);
+    void SetPosition(const TVec3& arPosition);
+    bool SetLookAt(const TVec3& arFront, const TVec3& arUp);
     bool SetClippingPlanes(float aNearDistance, float aFarDistance);
 
     // Perspective

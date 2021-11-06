@@ -25,15 +25,15 @@ CSystemTransformA::~CSystemTransformA()
 
 void CSystemTransformA::Update()
 {
-    MAZ_LOGGER("CSystemTransformA::Update - START. Has %u GameObjects", mGameObjects.size());
-    for (CReference<CGameObject>& gameObject : mGameObjects)
+    MAZ_LOGGER("START. Has %u GameObjects", mGameObjects.size());
+    for (CReference<CGameObject>& lrGameObject : mGameObjects)
     {
-        if (gameObject)
+        if (lrGameObject)
         {
-            MAZ_LOGGER("CSystemTransformA::Update - Sees GameOjbect named '%s'", gameObject->GetName().c_str());
+            MAZ_LOGGER("Sees GameOjbect named '%s'", lrGameObject->GetName().c_str());
         }
     }
-    MAZ_LOGGER("CSystemTransformA::Update - END");
+    MAZ_LOGGER("END");
 }
 
 
@@ -52,15 +52,15 @@ CSystemTransformB::~CSystemTransformB()
 
 void CSystemTransformB::Update()
 {
-    MAZ_LOGGER("CSystemTransformB::Update - START. Has %u GameObjects", mGameObjects.size());
-    for (CReference<CGameObject>& gameObject : mGameObjects)
+    MAZ_LOGGER("START. Has %u GameObjects", mGameObjects.size());
+    for (CReference<CGameObject>& lrGameObject : mGameObjects)
     {
-        if (gameObject)
+        if (lrGameObject)
         {
-            MAZ_LOGGER("CSystemTransformB::Update - Sees GameOjbect named '%s'", gameObject->GetName().c_str());
+            MAZ_LOGGER("Sees GameOjbect named '%s'", lrGameObject->GetName().c_str());
         }
     }
-    MAZ_LOGGER("CSystemTransformB::Update - END");
+    MAZ_LOGGER("END");
 }
 
 
@@ -79,28 +79,28 @@ CMotionSystemTest::~CMotionSystemTest()
 
 void CMotionSystemTest::Update()
 {
-    CInputService* lInputService = Services::GetManager()->GetService< CInputService >();
-    CTimeService* lTimeService = Services::GetManager()->GetService< CTimeService >();
+    const CInputService* lpInputService = Services::GetManager()->GetService< CInputService >();
+    const CTimeService* lpTimeService = Services::GetManager()->GetService< CTimeService >();
     bool lChangesMade = false;
-    const float lDt = lTimeService->GetDeltaTime();
+    const float lDt = lpTimeService->GetDeltaTime();
     const float lSpeed = 0.1f;
     glm::vec2 lMotion(0.0f, 0.0f);
-    if (lInputService->IsKeyDown(GLFW_KEY_I))
+    if (lpInputService->IsKeyDown(GLFW_KEY_I))
     {
         lMotion.y += 1;
         lChangesMade = true;
     }
-    if (lInputService->IsKeyDown(GLFW_KEY_K))
+    if (lpInputService->IsKeyDown(GLFW_KEY_K))
     {
         lMotion.y -= 1;
         lChangesMade = true;
     }
-    if (lInputService->IsKeyDown(GLFW_KEY_J))
+    if (lpInputService->IsKeyDown(GLFW_KEY_J))
     {
         lMotion.x -= 1;
         lChangesMade = true;
     }
-    if (lInputService->IsKeyDown(GLFW_KEY_L))
+    if (lpInputService->IsKeyDown(GLFW_KEY_L))
     {
         lMotion.x += 1;
         lChangesMade = true;
@@ -108,37 +108,37 @@ void CMotionSystemTest::Update()
     lMotion *= lSpeed * lDt;
 
     const float lRotSpeed = 15.0f;
-    float zRotation = 0.0f;
-    if (lInputService->IsKeyDown(GLFW_KEY_U))
+    float lZRotation = 0.0f;
+    if (lpInputService->IsKeyDown(GLFW_KEY_U))
     {
-        zRotation += 1;
+        lZRotation += 1;
         lChangesMade = true;
     }
-    if (lInputService->IsKeyDown(GLFW_KEY_O))
+    if (lpInputService->IsKeyDown(GLFW_KEY_O))
     {
-        zRotation -= 1;
+        lZRotation -= 1;
         lChangesMade = true;
     }
-    zRotation *= lRotSpeed * lDt;
+    lZRotation *= lRotSpeed * lDt;
 
     const float lScaleSpeed = 0.5f;
     TVec2 lScale(0.0f, 0.0f);
-    if (lInputService->IsKeyDown(GLFW_KEY_KP_4))
+    if (lpInputService->IsKeyDown(GLFW_KEY_KP_4))
     {
         lScale.x -= 1;
         lChangesMade = true;
     }
-    if (lInputService->IsKeyDown(GLFW_KEY_KP_6))
+    if (lpInputService->IsKeyDown(GLFW_KEY_KP_6))
     {
         lScale.x += 1;
         lChangesMade = true;
     }
-    if (lInputService->IsKeyDown(GLFW_KEY_KP_8))
+    if (lpInputService->IsKeyDown(GLFW_KEY_KP_8))
     {
         lScale.y += 1;
         lChangesMade = true;
     }
-    if (lInputService->IsKeyDown(GLFW_KEY_KP_2))
+    if (lpInputService->IsKeyDown(GLFW_KEY_KP_2))
     {
         lScale.y -= 1;
         lChangesMade = true;
@@ -147,14 +147,14 @@ void CMotionSystemTest::Update()
 
     if (lChangesMade)
     {
-        for (CReference<CGameObject>& gameObject : mGameObjects)
+        for (CReference<CGameObject>& lrGameObject : mGameObjects)
         {
-            if (gameObject)
+            if (lrGameObject)
             {
-                CReference<CTransform2DComponent> transform = gameObject->GetComponent<CTransform2DComponent>();
-                transform->SetTranslation(transform->GetTranslation() + lMotion);
-                transform->SetRotation(transform->GetRotation() + zRotation);
-                transform->SetScale(transform->GetScale() + lScale);
+                CReference<CTransform2DComponent> lTransform = lrGameObject->GetComponent<CTransform2DComponent>();
+                lTransform->SetTranslation(lTransform->GetTranslation() + lMotion);
+                lTransform->SetRotation(lTransform->GetRotation() + lZRotation);
+                lTransform->SetScale(lTransform->GetScale() + lScale);
             }
         }
     }

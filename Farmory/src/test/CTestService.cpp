@@ -15,19 +15,19 @@
 namespace maz
 {
 
-float lCameraYaw = -90.0f;
-float lCameraPitch = 0.0f;
+float sCameraYaw = -90.0f;
+float sCameraPitch = 0.0f;
 
 
 CTestService::CTestService()
 { 
-    MAZ_LOGGER("CTestService::CTestService called");
+    MAZ_LOGGER("Called");
 }
 
 
 CTestService::~CTestService()
 {
-    MAZ_LOGGER("CTestService::~CTestService called");
+    MAZ_LOGGER("Called");
 }
 
 
@@ -136,8 +136,8 @@ void CTestService::TestRender1()
 
     // Rectangle - Color Changing
     mShader2.Use();
-    float lTime = static_cast<float> (glfwGetTime());
-    float lGreen = sinf(lTime) / 2.0f + 0.5f;
+    const float lTime = static_cast<float> (glfwGetTime());
+    const float lGreen = sinf(lTime) / 2.0f + 0.5f;
     mShader2.SetUniform4f("aUColor", 1.0f, lGreen, 0.0f, 1.0f);
     glm::mat4 lTransformS2(1.0f);
     lTransformS2 = glm::translate(lTransformS2, glm::vec3(-0.5, 0.5f, 0.0f));
@@ -145,25 +145,25 @@ void CTestService::TestRender1()
     mShader2.SetUniformMat4("aTransform", glm::value_ptr(lTransformS2));
     mRect.Draw();
 
-    CInputService* lInputService = Services::GetManager()->GetService< CInputService >();
-    MAZ_ASSERT(nullptr != lInputService, "");
+    CInputService* lpInputService = Services::GetManager()->GetService< CInputService >();
+    MAZ_ASSERT(nullptr != lpInputService, "");
     // Rectangle - Keyboard controlled
-    if (lInputService->IsKeyDown(GLFW_KEY_UP))
+    if (lpInputService->IsKeyDown(GLFW_KEY_UP))
     {
         mMixValue += 0.01f;
         if (mMixValue > 1.0f) mMixValue = 1.0f;
     }
-    else if (lInputService->IsKeyDown(GLFW_KEY_DOWN))
+    else if (lpInputService->IsKeyDown(GLFW_KEY_DOWN))
     {
         mMixValue -= 0.01f;
         if (mMixValue < 0.0f) mMixValue = 0.0f;
     }
 
-    if (lInputService->IsKeyDown(GLFW_KEY_Q))
+    if (lpInputService->IsKeyDown(GLFW_KEY_Q))
     {
         mTexture1.SetWrapMode(EAxis::X, EWrapMode::MIRRORED_REPEAT);
     }
-    else if (lInputService->IsKeyDown(GLFW_KEY_W))
+    else if (lpInputService->IsKeyDown(GLFW_KEY_W))
     {
         mTexture1.SetWrapMode(EAxis::X, EWrapMode::REPEAT);
     }
@@ -191,26 +191,26 @@ void CTestService::TestRender1()
 
 void CTestService::TestRender2()
 {
-    CInputService* lInputService = Services::GetManager()->GetService< CInputService >();
-    MAZ_ASSERT(nullptr != lInputService, "");
+    const CInputService* lpInputService = Services::GetManager()->GetService< CInputService >();
+    MAZ_ASSERT(nullptr != lpInputService, "");
 
     // Rectangle - Keyboard controlled
-    if (lInputService->IsKeyDown(GLFW_KEY_UP))
+    if (lpInputService->IsKeyDown(GLFW_KEY_UP))
     {
         mMixValue += 0.01f;
         if (mMixValue > 1.0f) mMixValue = 1.0f;
     }
-    else if (lInputService->IsKeyDown(GLFW_KEY_DOWN))
+    else if (lpInputService->IsKeyDown(GLFW_KEY_DOWN))
     {
         mMixValue -= 0.01f;
         if (mMixValue < 0.0f) mMixValue = 0.0f;
     }
 
-    if (lInputService->IsKeyDown(GLFW_KEY_Q))
+    if (lpInputService->IsKeyDown(GLFW_KEY_Q))
     {
         mTexture1.SetWrapMode(EAxis::X, EWrapMode::MIRRORED_REPEAT);
     }
-    else if (lInputService->IsKeyDown(GLFW_KEY_W))
+    else if (lpInputService->IsKeyDown(GLFW_KEY_W))
     {
         mTexture1.SetWrapMode(EAxis::X, EWrapMode::REPEAT);
     }
@@ -249,41 +249,41 @@ void CTestService::TestRender2()
 
 void CTestService::TestRender3()
 {
-    CInputService* lInputService = Services::GetManager()->GetService< CInputService >();
-    MAZ_ASSERT(nullptr != lInputService, "");
-    CTimeService* lTimeService = Services::GetManager()->GetService< CTimeService >();
-    MAZ_ASSERT(nullptr != lTimeService, "");
+    const CInputService* lpInputService = Services::GetManager()->GetService< CInputService >();
+    MAZ_ASSERT(nullptr != lpInputService, "");
+    const CTimeService* lpTimeService = Services::GetManager()->GetService< CTimeService >();
+    MAZ_ASSERT(nullptr != lpTimeService, "");
 
     // Texture mixing
-    if (lInputService->IsKeyDown(GLFW_KEY_UP))
+    if (lpInputService->IsKeyDown(GLFW_KEY_UP))
     {
         mMixValue += 0.01f;
         if (mMixValue > 1.0f) mMixValue = 1.0f;
     }
-    else if (lInputService->IsKeyDown(GLFW_KEY_DOWN))
+    else if (lpInputService->IsKeyDown(GLFW_KEY_DOWN))
     {
         mMixValue -= 0.01f;
         if (mMixValue < 0.0f) mMixValue = 0.0f;
     }
 
     // Texture wrap mode
-    if (lInputService->IsKeyDown(GLFW_KEY_X))
+    if (lpInputService->IsKeyDown(GLFW_KEY_X))
     {
         mTexture1.SetWrapMode(EAxis::X, EWrapMode::MIRRORED_REPEAT);
     }
-    else if (lInputService->IsKeyDown(GLFW_KEY_Z))
+    else if (lpInputService->IsKeyDown(GLFW_KEY_Z))
     {
         mTexture1.SetWrapMode(EAxis::X, EWrapMode::REPEAT);
     }
 
     // FOV
-    if (lInputService->IsKeyDown(GLFW_KEY_RIGHT))
+    if (lpInputService->IsKeyDown(GLFW_KEY_RIGHT))
     {
         mCamera.SetFov(mCamera.GetFov() + 1.0f);
         //if (mFov > 89.0f) mFov = 89.0f;
         MAZ_LOGGER("FOV up   to %f", mCamera.GetFov());
     }
-    else if (lInputService->IsKeyDown(GLFW_KEY_LEFT))
+    else if (lpInputService->IsKeyDown(GLFW_KEY_LEFT))
     {
         mCamera.SetFov(mCamera.GetFov() - 1.0f);
         //if (mFov < 1.0f) mFov = 1.0f;
@@ -310,52 +310,52 @@ void CTestService::TestRender3()
 
     // Camera
     // Mouse motion input
-    const float kSensitivity = 0.05f;
-    //lCameraYaw   += kSensitivity * lInputService->GetMousePosDelta(EMouseAxis::X_AXIS);
-    //lCameraPitch -= kSensitivity * lInputService->GetMousePosDelta(EMouseAxis::Y_AXIS);
-    //lCameraYaw   = (lCameraYaw < 0.0f) ? lCameraYaw + 360.0f : (lCameraYaw > 360.0f ? lCameraYaw - 360.0f : lCameraYaw);
-    //lCameraPitch = (lCameraPitch < -89.0f) ? -89.0f : (lCameraPitch > 89.0f ? 89.0f : lCameraPitch);
+    const float lSensitivity = 0.05f;
+    //sCameraYaw   += lSensitivity * lpInputService->GetMousePosDelta(EMouseAxis::X_AXIS);
+    //sCameraPitch -= lSensitivity * lpInputService->GetMousePosDelta(EMouseAxis::Y_AXIS);
+    //sCameraYaw   = (sCameraYaw < 0.0f) ? sCameraYaw + 360.0f : (sCameraYaw > 360.0f ? sCameraYaw - 360.0f : sCameraYaw);
+    //sCameraPitch = (sCameraPitch < -89.0f) ? -89.0f : (sCameraPitch > 89.0f ? 89.0f : sCameraPitch);
 
     TVec3 lCameraFront;
-    lCameraFront.x = cosf(glm::radians(lCameraYaw)) * cosf(glm::radians(lCameraPitch));
-    lCameraFront.y = sinf(glm::radians(lCameraPitch));
-    lCameraFront.z = sinf(glm::radians(lCameraYaw)) * cosf(glm::radians(lCameraPitch));
+    lCameraFront.x = cosf(glm::radians(sCameraYaw)) * cosf(glm::radians(sCameraPitch));
+    lCameraFront.y = sinf(glm::radians(sCameraPitch));
+    lCameraFront.z = sinf(glm::radians(sCameraYaw)) * cosf(glm::radians(sCameraPitch));
     lCameraFront = glm::normalize(lCameraFront);
 
-    const float kFovSensitivity = 1.0f;
-    float lFov = mCamera.GetFov() - kFovSensitivity * lInputService->GetMouseScrollDelta(EMouseAxis::Y_AXIS);
+    const float lFovSensitivity = 1.0f;
+    float lFov = mCamera.GetFov() - lFovSensitivity * lpInputService->GetMouseScrollDelta(EMouseAxis::Y_AXIS);
     lFov = (lFov < 1.0f) ? 1.0f : (lFov > 89.0f ? 89.0f : lFov);
     mCamera.SetFov(lFov);
 
     TVec3 lCamPos = mCamera.GetPosition();
     const float lCamSpeed = 2.5f;
-    const float lCamDistance = lCamSpeed * lTimeService->GetDeltaTime();
-    if (lInputService->IsKeyDown(GLFW_KEY_W))
+    const float lCamDistance = lCamSpeed * lpTimeService->GetDeltaTime();
+    if (lpInputService->IsKeyDown(GLFW_KEY_W))
     {
         lCamPos += lCamDistance * lCameraFront;
     }
-    else if (lInputService->IsKeyDown(GLFW_KEY_S))
+    else if (lpInputService->IsKeyDown(GLFW_KEY_S))
     {
         lCamPos -= lCamDistance * lCameraFront;
     }
 
-    TVec3 lCameraUp(0.0f, 1.0f, 0.0f);
-    if (lInputService->IsKeyDown(GLFW_KEY_A))
+    const TVec3 lCameraUp(0.0f, 1.0f, 0.0f);
+    if (lpInputService->IsKeyDown(GLFW_KEY_A))
     {
         const glm::vec3 lCameraRight = glm::normalize(glm::cross(lCameraFront, lCameraUp));
         lCamPos -= lCamDistance * lCameraRight;
     }
-    else if (lInputService->IsKeyDown(GLFW_KEY_D))
+    else if (lpInputService->IsKeyDown(GLFW_KEY_D))
     {
         const glm::vec3 lCameraRight = glm::normalize(glm::cross(lCameraFront, lCameraUp));
         lCamPos += lCamDistance * lCameraRight;
     }
-    if (lInputService->IsKeyDown(GLFW_KEY_R))
+    if (lpInputService->IsKeyDown(GLFW_KEY_R))
     {
         const glm::vec3 lCameraRight = glm::normalize(glm::cross(lCameraFront, lCameraUp));
         lCamPos += lCamDistance * lCameraUp;
     }
-    else if (lInputService->IsKeyDown(GLFW_KEY_F))
+    else if (lpInputService->IsKeyDown(GLFW_KEY_F))
     {
         const glm::vec3 lCameraRight = glm::normalize(glm::cross(lCameraFront, lCameraUp));
         lCamPos -= lCamDistance * lCameraUp;

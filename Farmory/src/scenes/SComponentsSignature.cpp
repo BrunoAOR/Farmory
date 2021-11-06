@@ -6,7 +6,7 @@ namespace maz
 
 SComponentsSignature::SComponentsSignature()
 {
-    for (uint8 i = 0; i < sSubSignaturesCount; ++i)
+    for (uint8 i = 0; i < kSubSignaturesCount; ++i)
     {
         mSubSignatures[i] = 0;
     }
@@ -15,40 +15,40 @@ SComponentsSignature::SComponentsSignature()
 
 void SComponentsSignature::AddComponent(EComponentType aComponentType)
 {
-    const uint8 componentTypeNumber = EnumToNumber(aComponentType);
-    const uint8 componentTypeSubSignatureIndex = componentTypeNumber / sBitsPerSubSignature;
-    const uint8 componentTypeBitIndex = componentTypeNumber % sBitsPerSubSignature;
+    const uint8 lComponentTypeNumber = EnumToNumber(aComponentType);
+    const uint8 lComponentTypeSubSignatureIndex = lComponentTypeNumber / kBitsPerSubSignature;
+    const uint8 lComponentTypeBitIndex = lComponentTypeNumber % kBitsPerSubSignature;
 
-    mSubSignatures[componentTypeSubSignatureIndex] = (mSubSignatures[componentTypeSubSignatureIndex] | (1 << componentTypeBitIndex));
+    mSubSignatures[lComponentTypeSubSignatureIndex] = (mSubSignatures[lComponentTypeSubSignatureIndex] | (1 << lComponentTypeBitIndex));
 }
 
 
 void SComponentsSignature::RemoveComponent(EComponentType aComponentType)
 {
-    const uint8 componentTypeNumber = EnumToNumber(aComponentType);
-    const uint8 componentTypeSubSignatureIndex = componentTypeNumber / sBitsPerSubSignature;
-    const uint8 componentTypeBitIndex = componentTypeNumber % sBitsPerSubSignature;
+    const uint8 lComponentTypeNumber = EnumToNumber(aComponentType);
+    const uint8 lComponentTypeSubSignatureIndex = lComponentTypeNumber / kBitsPerSubSignature;
+    const uint8 lComponentTypeBitIndex = lComponentTypeNumber % kBitsPerSubSignature;
 
-    mSubSignatures[componentTypeSubSignatureIndex] = (mSubSignatures[componentTypeSubSignatureIndex] & ~(1 << componentTypeBitIndex));
+    mSubSignatures[lComponentTypeSubSignatureIndex] = (mSubSignatures[lComponentTypeSubSignatureIndex] & ~(1 << lComponentTypeBitIndex));
 }
 
 
-bool SComponentsSignature::IsSupersetOf(const SComponentsSignature& aOtherSignature) const
+bool SComponentsSignature::IsSupersetOf(const SComponentsSignature& arOtherSignature) const
 {
-    bool isContainedWithin = true;
+    bool lIsContainedWithin = true;
 
-    for (uint8 i = 0; (i < sSubSignaturesCount) && isContainedWithin; ++i)
+    for (uint8 i = 0; (i < kSubSignaturesCount) && lIsContainedWithin; ++i)
     {
-        isContainedWithin = ((mSubSignatures[i] & aOtherSignature.mSubSignatures[i]) == aOtherSignature.mSubSignatures[i]);
+        lIsContainedWithin = ((mSubSignatures[i] & arOtherSignature.mSubSignatures[i]) == arOtherSignature.mSubSignatures[i]);
     }
 
-    return isContainedWithin;
+    return lIsContainedWithin;
 }
 
 
-bool SComponentsSignature::IsSubsetOf(const SComponentsSignature& aOtherSignature) const
+bool SComponentsSignature::IsSubsetOf(const SComponentsSignature& arOtherSignature) const
 {
-    return aOtherSignature.IsSupersetOf(*this);
+    return arOtherSignature.IsSupersetOf(*this);
 }
 
 } // maz

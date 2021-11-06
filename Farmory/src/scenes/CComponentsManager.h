@@ -22,9 +22,9 @@ private:
     
     
     template<typename COMPONENT_CLASS>
-    void setComponentThisReference(CReference<COMPONENT_CLASS>& aComponent)
+    void setComponentThisReference(CReference<COMPONENT_CLASS>& arComponent)
     {
-        aComponent->mThis = aComponent;
+        arComponent->mThis = arComponent;
     }
 
 
@@ -35,8 +35,8 @@ private:
         virtual ~CComponentManagerBase() { MAZ_LOGGER_VERBOSE("Called"); }
         EComponentType GetType() const { return mComponentType; }
         
-        virtual void Shutdown(CComponentsManager* aComponentsManager) = 0;
-        virtual void RefreshComponents(CComponentsManager* aComponentsManager) = 0;
+        virtual void Shutdown(CComponentsManager* apComponentsManager) = 0;
+        virtual void RefreshComponents(CComponentsManager* apComponentsManager) = 0;
         virtual bool RemoveComponent(const uint16 aComponentIndex) = 0;
 
     private:
@@ -63,49 +63,49 @@ private:
         }
 
 
-        void Shutdown(CComponentsManager* aComponentsManager)
+        void Shutdown(CComponentsManager* apComponentsManager)
         {
             typename CComponentBuffer::CBufferIterator iterator = mComponentsBuffer.GetIterator(CComponentBuffer::EIteratorFlags::ANY);
 
             while (iterator)
             {
-                aComponentsManager->updateComponentIdForGameObject(iterator.Get()->GetOwner(), COMPONENT_CLASS::GetType(), kInvalidComponentId);
+                apComponentsManager->updateComponentIdForGameObject(iterator.Get()->GetOwner(), COMPONENT_CLASS::GetType(), kInvalidComponentId);
                 ++iterator;
             }
             mComponentsBuffer.Clear();
         }
 
 
-        virtual void RefreshComponents(CComponentsManager* aComponentsManager) final
+        virtual void RefreshComponents(CComponentsManager* apComponentsManager) final
         {
-            typename CComponentBuffer::CBufferIterator iterator = mComponentsBuffer.GetIterator(static_cast<CComponentBuffer::EIteratorFlags>(CComponentBuffer::EIteratorFlags::PROCESS_ADD_PENDING | CComponentBuffer::EIteratorFlags::PROCESS_REMOVE_PENDING));
+            typename CComponentBuffer::CBufferIterator lIt = mComponentsBuffer.GetIterator(static_cast<CComponentBuffer::EIteratorFlags>(CComponentBuffer::EIteratorFlags::PROCESS_ADD_PENDING | CComponentBuffer::EIteratorFlags::PROCESS_REMOVE_PENDING));
 
-            while (iterator)
+            while (lIt)
             {
-                if (iterator.HasIteratorFlag(CComponentBuffer::EIteratorFlags::PROCESS_ADD_PENDING))
+                if (lIt.HasIteratorFlag(CComponentBuffer::EIteratorFlags::PROCESS_ADD_PENDING))
                 {
-                    aComponentsManager->updateComponentIdForGameObject(iterator.Get()->GetOwner(), COMPONENT_CLASS::GetType(), iterator.GetId());
-                    iterator.ClearIteratorFlag(CComponentBuffer::EIteratorFlags::PROCESS_ADD_PENDING);
+                    apComponentsManager->updateComponentIdForGameObject(lIt.Get()->GetOwner(), COMPONENT_CLASS::GetType(), lIt.GetId());
+                    lIt.ClearIteratorFlag(CComponentBuffer::EIteratorFlags::PROCESS_ADD_PENDING);
                 }
-                else if (iterator.HasIteratorFlag(CComponentBuffer::EIteratorFlags::PROCESS_REMOVE_PENDING))
+                else if (lIt.HasIteratorFlag(CComponentBuffer::EIteratorFlags::PROCESS_REMOVE_PENDING))
                 {
-                    aComponentsManager->updateComponentIdForGameObject(iterator.Get()->GetOwner(), COMPONENT_CLASS::GetType(), kInvalidComponentId);
-                    bool removed = iterator.RemoveElement();
-                    MAZ_ASSERT(removed, "Failed to remove component of type %hhu with id %hhu that was flagged for removal!", EnumToNumber(COMPONENT_CLASS::GetType()), iterator.GetId());
-                    iterator.ClearIteratorFlag(CComponentBuffer::EIteratorFlags::PROCESS_REMOVE_PENDING);
+                    apComponentsManager->updateComponentIdForGameObject(lIt.Get()->GetOwner(), COMPONENT_CLASS::GetType(), kInvalidComponentId);
+                    bool lRemoved = lIt.RemoveElement();
+                    MAZ_ASSERT(lRemoved, "Failed to remove component of type %hhu with id %hhu that was flagged for removal!", EnumToNumber(COMPONENT_CLASS::GetType()), lIt.GetId());
+                    lIt.ClearIteratorFlag(CComponentBuffer::EIteratorFlags::PROCESS_REMOVE_PENDING);
                 }
-                ++iterator;
+                ++lIt;
             }
         }
 
 
-        uint16 AddComponent(CComponentsManager* aComponentsManager, CReference<CGameObject>& aOwner)
+        uint16 AddComponent(CComponentsManager* apComponentsManager, CReference<CGameObject>& arOwner)
         {
-            const uint16 componentId = mComponentsBuffer.AddElement(aOwner);
-            CReference<COMPONENT_CLASS> component = mComponentsBuffer.GetElement(componentId);
-            aComponentsManager->setComponentThisReference(component);
+            const uint16 lComponentId = mComponentsBuffer.AddElement(arOwner);
+            CReference<COMPONENT_CLASS> lComponent = mComponentsBuffer.GetElement(lComponentId);
+            apComponentsManager->setComponentThisReference(lComponent);
 
-            return componentId;
+            return lComponentId;
         }
 
 
@@ -143,11 +143,11 @@ public:
 
 
     template<typename COMPONENT_CLASS>
-    uint16 AddComponent(CReference<CGameObject>& aOwner)
+    uint16 AddComponent(CReference<CGameObject>& arOwner)
     {
         MAZ_ASSERT(mComponentManagers[EnumToNumber(COMPONENT_CLASS::GetType())] != nullptr
             , "Component of the desired type have not been registered!");
-        return static_cast<CComponentManager<COMPONENT_CLASS>*>(mComponentManagers[EnumToNumber(COMPONENT_CLASS::GetType())])->AddComponent(this, aOwner);
+        return static_cast<CComponentManager<COMPONENT_CLASS>*>(mComponentManagers[EnumToNumber(COMPONENT_CLASS::GetType())])->AddComponent(this, arOwner);
     }
 
 

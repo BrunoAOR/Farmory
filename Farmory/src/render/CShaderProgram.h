@@ -13,7 +13,7 @@ public:
     CShaderProgram();
     ~CShaderProgram();
 
-    bool Init(const CFile& aVertexShaderFile, const CFile& aFragmentShaderFile);
+    bool Init(const CFile& arVertexShaderFile, const CFile& arFragmentShaderFile);
     void End();
 
     bool IsOk() const;
@@ -21,10 +21,10 @@ public:
 
     static void StopUse();
 
-    bool SetUniform1i(const char* aName, int aI);
-    bool SetUniform1f(const char* aName, float aF);
-    bool SetUniform4f(const char* aName, float aX, float aY, float aZ, float aW);
-    bool SetUniformMat4(const char* aName, const float* aMat4Ptr);
+    bool SetUniform1i(const char* apName, int aI);
+    bool SetUniform1f(const char* apName, float aF);
+    bool SetUniform4f(const char* apName, float aX, float aY, float aZ, float aW);
+    bool SetUniformMat4(const char* apName, const float* apMat4Ptr);
 
 private:
     unsigned int mId;

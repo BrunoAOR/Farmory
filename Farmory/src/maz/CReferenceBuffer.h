@@ -22,7 +22,7 @@ public:
     void Clear();
     uint16 GetNextAvailableId();
     template<typename ... ConstructionArgs>
-    uint16 AddElement(ConstructionArgs&& ... aArgs);
+    uint16 AddElement(ConstructionArgs&& ... arrArgs);
     bool FlagElementForRemoval(const uint16 aElementId);
     bool RemoveFlaggedElement(const uint16 aElementId);
     CReference<T> GetElement(const uint16 aElementId);
@@ -68,10 +68,10 @@ public:
 
     private:
         friend class CReferenceBuffer;
-        CBufferIterator(CReferenceBuffer* aManager, EBufferUseFlags aFlags);
-        void findNextValidIndex(uint16 startIndex);
+        CBufferIterator(CReferenceBuffer* apManager, EBufferUseFlags aFlags);
+        void findNextValidIndex(const uint16 aStartIndex);
 
-        CReferenceBuffer* mManager;
+        CReferenceBuffer* mpManager;
         EBufferUseFlags mFlags;
         uint16 mCurrentIndex;
     };
@@ -125,45 +125,45 @@ inline void CReferenceBuffer<T, BUFFER_SIZE>::Clear()
 template<typename T, uint16 BUFFER_SIZE>
 inline uint16 CReferenceBuffer<T, BUFFER_SIZE>::GetNextAvailableId()
 {
-    uint16 elementId = kInvalidElementId;
-    for (uint16 i = 0, iCount = static_cast<uint16>(mBufferUseFlags.size()); (i < iCount) && (elementId == kInvalidElementId); ++i)
+    uint16 lElementId = kInvalidElementId;
+    for (uint16 i = 0, iCount = static_cast<uint16>(mBufferUseFlags.size()); (i < iCount) && (lElementId == kInvalidElementId); ++i)
     {
         if (!IsFlagSet(mBufferUseFlags[i], EBufferUseFlags::IN_USE))
         {
-            elementId = i;
+            lElementId = i;
         }
     }
-    MAZ_ASSERT(elementId <= mStartOfInactiveRange, "The elementId to return (%hu) is greater than mStartOfInactiveRange (%hu)!", elementId, mStartOfInactiveRange);
-    return elementId;
+    MAZ_ASSERT(lElementId <= mStartOfInactiveRange, "The elementId to return (%hu) is greater than mStartOfInactiveRange (%hu)!", lElementId, mStartOfInactiveRange);
+    return lElementId;
 }
 
 
 template<typename T, uint16 BUFFER_SIZE>
 template<typename ...ConstructionArgs>
-inline uint16 CReferenceBuffer<T, BUFFER_SIZE>::AddElement(ConstructionArgs&& ...aArgs)
+inline uint16 CReferenceBuffer<T, BUFFER_SIZE>::AddElement(ConstructionArgs&& ...arrArgs)
 {
-    uint16 elementId = kInvalidElementId;
-    for (uint16 i = 0, iCount = static_cast<uint16>(mBufferUseFlags.size()); (i < iCount) && (elementId == kInvalidElementId); ++i)
+    uint16 lElementId = kInvalidElementId;
+    for (uint16 i = 0, iCount = static_cast<uint16>(mBufferUseFlags.size()); (i < iCount) && (lElementId == kInvalidElementId); ++i)
     {
         if (!IsFlagSet(mBufferUseFlags[i], EBufferUseFlags::IN_USE))
         {
             SetFlag(mBufferUseFlags[i], EBufferUseFlags::IN_USE);
             SetFlag(mBufferUseFlags[i], EBufferUseFlags::JUST_ADDED);
-            elementId = i;
+            lElementId = i;
         }
     }
-    MAZ_ASSERT(elementId != kInvalidElementId, "Failed to find an available slot for element!");
-    if (elementId != kInvalidElementId)
+    MAZ_ASSERT(lElementId != kInvalidElementId, "Failed to find an available slot for element!");
+    if (lElementId != kInvalidElementId)
     {
-        mElements[elementId] = CReferenceHolder<T>(MAZ_PLACEMENT_NEW(&(mBuffer[sizeof(T) * elementId]), T, std::forward<ConstructionArgs>(aArgs) ...));
-        MAZ_ASSERT(elementId <= mStartOfInactiveRange, "The elementId to return (%hu) is greater than mStartOfInactiveRange (%hu)!", elementId, mStartOfInactiveRange);
-        if (elementId == mStartOfInactiveRange)
+        mElements[lElementId] = CReferenceHolder<T>(MAZ_PLACEMENT_NEW(&(mBuffer[sizeof(T) * lElementId]), T, std::forward<ConstructionArgs>(arrArgs) ...));
+        MAZ_ASSERT(lElementId <= mStartOfInactiveRange, "The elementId to return (%hu) is greater than mStartOfInactiveRange (%hu)!", lElementId, mStartOfInactiveRange);
+        if (lElementId == mStartOfInactiveRange)
         {
             ++mStartOfInactiveRange;
         }
     }
 
-    return elementId;
+    return lElementId;
 }
 
 
@@ -201,11 +201,11 @@ inline bool CReferenceBuffer<T, BUFFER_SIZE>::RemoveFlaggedElement(const uint16 
             mStartOfInactiveRange = 0;
             for (uint16 i = aElementId; (i > 0) && (mStartOfInactiveRange == 0); --i)
             {
-                const uint16 queryIndex = i - 1; // This is NOT done in the for-increment to prevent i from overflowing through 0 to MAX_UINT16. We start before aElementId.
+                const uint16 lQueryIndex = i - 1; // This is NOT done in the for-increment to prevent i from overflowing through 0 to MAX_UINT16. We start before aElementId.
 
-                if (IsFlagSet(mBufferUseFlags[queryIndex], EBufferUseFlags::IN_USE))
+                if (IsFlagSet(mBufferUseFlags[lQueryIndex], EBufferUseFlags::IN_USE))
                 {
-                    mStartOfInactiveRange = queryIndex + 1;
+                    mStartOfInactiveRange = lQueryIndex + 1;
                 }
             }
             // Note that if no element had the IN_USE flag, then mStartOfInactiveRange will remain as 0, which is correct.
@@ -227,32 +227,32 @@ inline CReference<T> CReferenceBuffer<T, BUFFER_SIZE>::GetElement(const uint16 a
 template<typename T, uint16 BUFFER_SIZE>
 inline typename CReferenceBuffer<T, BUFFER_SIZE>::CBufferIterator CReferenceBuffer<T, BUFFER_SIZE>::GetIterator(EIteratorFlags aFlags)
 {
-    EBufferUseFlags bufferFlags = iteratorToBufferFlags(aFlags);
-    return CBufferIterator(this, bufferFlags);
+    EBufferUseFlags lBufferFlags = iteratorToBufferFlags(aFlags);
+    return CBufferIterator(this, lBufferFlags);
 }
 
 
 template<typename T, uint16 BUFFER_SIZE>
 inline typename CReferenceBuffer<T, BUFFER_SIZE>::EBufferUseFlags CReferenceBuffer<T, BUFFER_SIZE>::iteratorToBufferFlags(EIteratorFlags aIteratorFlags)
 {
-    EBufferUseFlags bufferFlags = EBufferUseFlags::NONE;
+    EBufferUseFlags lBufferFlags = EBufferUseFlags::NONE;
     if (IsFlagSet(aIteratorFlags, EIteratorFlags::ANY))
     {
         // If ANY is set, that means we don't care about any pending status, so we return an iterator to all valid Elements (the ones flagged as IN_USE)
-        SetFlag(bufferFlags, EBufferUseFlags::IN_USE);
+        SetFlag(lBufferFlags, EBufferUseFlags::IN_USE);
     }
     else
     {
         if (IsFlagSet(aIteratorFlags, EIteratorFlags::PROCESS_ADD_PENDING))
         {
-            SetFlag(bufferFlags, EBufferUseFlags::JUST_ADDED);
+            SetFlag(lBufferFlags, EBufferUseFlags::JUST_ADDED);
         }
         if (IsFlagSet(aIteratorFlags, EIteratorFlags::PROCESS_REMOVE_PENDING))
         {
-            SetFlag(bufferFlags, EBufferUseFlags::TO_REMOVE);
+            SetFlag(lBufferFlags, EBufferUseFlags::TO_REMOVE);
         }
     }
-    return bufferFlags;
+    return lBufferFlags;
 }
 
 
@@ -266,7 +266,7 @@ inline typename CReferenceBuffer<T, BUFFER_SIZE>::EBufferUseFlags CReferenceBuff
 template<typename T, uint16 BUFFER_SIZE>
 inline CReferenceBuffer<T, BUFFER_SIZE>::CBufferIterator::operator bool()
 {
-    return (mCurrentIndex != kInvalidElementId) && static_cast<bool>(mManager->mElements[mCurrentIndex]);
+    return (mCurrentIndex != kInvalidElementId) && static_cast<bool>(mpManager->mElements[mCurrentIndex]);
 }
 
 
@@ -283,23 +283,23 @@ inline void CReferenceBuffer<T, BUFFER_SIZE>::CBufferIterator::operator++()
 template<typename T, uint16 BUFFER_SIZE>
 inline bool CReferenceBuffer<T, BUFFER_SIZE>::CBufferIterator::HasIteratorFlag(EIteratorFlags aIteratorFlag)
 {
-    EBufferUseFlags bufferFlags = mManager->iteratorToBufferFlags(aIteratorFlag);
-    return IsFlagSet(mManager->mBufferUseFlags[mCurrentIndex], bufferFlags);
+    const EBufferUseFlags lBufferFlags = mpManager->iteratorToBufferFlags(aIteratorFlag);
+    return IsFlagSet(mpManager->mBufferUseFlags[mCurrentIndex], lBufferFlags);
 }
 
 
 template<typename T, uint16 BUFFER_SIZE>
 inline void CReferenceBuffer<T, BUFFER_SIZE>::CBufferIterator::ClearIteratorFlag(EIteratorFlags aIteratorFlag)
 {
-    EBufferUseFlags bufferFlags = mManager->iteratorToBufferFlags(aIteratorFlag);
-    ClearFlag(mManager->mBufferUseFlags[mCurrentIndex], bufferFlags);
+    const EBufferUseFlags lBufferFlags = mpManager->iteratorToBufferFlags(aIteratorFlag);
+    ClearFlag(mpManager->mBufferUseFlags[mCurrentIndex], lBufferFlags);
 }
 
 
 template<typename T, uint16 BUFFER_SIZE>
 inline CReference<T> CReferenceBuffer<T, BUFFER_SIZE>::CBufferIterator::Get()
 {
-    return mManager->mElements[mCurrentIndex].GetReference();
+    return mpManager->mElements[mCurrentIndex].GetReference();
 }
 
 
@@ -313,28 +313,28 @@ inline uint16 CReferenceBuffer<T, BUFFER_SIZE>::CBufferIterator::GetId()
 template<typename T, uint16 BUFFER_SIZE>
 inline bool CReferenceBuffer<T, BUFFER_SIZE>::CBufferIterator::RemoveElement()
 {
-    return mManager->RemoveFlaggedElement(mCurrentIndex);
+    return mpManager->RemoveFlaggedElement(mCurrentIndex);
 }
 
 
 template<typename T, uint16 BUFFER_SIZE>
-inline CReferenceBuffer<T, BUFFER_SIZE>::CBufferIterator::CBufferIterator(CReferenceBuffer* aManager, EBufferUseFlags aFlags)
-    : mManager(aManager)
+inline CReferenceBuffer<T, BUFFER_SIZE>::CBufferIterator::CBufferIterator(CReferenceBuffer* apManager, EBufferUseFlags aFlags)
+    : mpManager(apManager)
     , mFlags(aFlags)
     , mCurrentIndex(0)
 {
-    MAZ_ASSERT(mManager != nullptr, "Attempting to construct a CBufferIterator without providing a valid CReferenceBuffer pointer!");
+    MAZ_ASSERT(mpManager != nullptr, "Attempting to construct a CBufferIterator without providing a valid CReferenceBuffer pointer!");
     findNextValidIndex(0);
 }
 
 
 template<typename T, uint16 BUFFER_SIZE>
-inline void CReferenceBuffer<T, BUFFER_SIZE>::CBufferIterator::findNextValidIndex(uint16 startIndex)
+inline void CReferenceBuffer<T, BUFFER_SIZE>::CBufferIterator::findNextValidIndex(const uint16 aStartIndex)
 {
     mCurrentIndex = kInvalidElementId;
-    for (uint16 i = startIndex; (i < mManager->mStartOfInactiveRange) && (mCurrentIndex == kInvalidElementId); ++i)
+    for (uint16 i = aStartIndex; (i < mpManager->mStartOfInactiveRange) && (mCurrentIndex == kInvalidElementId); ++i)
     {
-        if(IsFlagSet(mManager->mBufferUseFlags[i], EBufferUseFlags::IN_USE) && IsAnyFlagSet(mManager->mBufferUseFlags[i], mFlags))
+        if(IsFlagSet(mpManager->mBufferUseFlags[i], EBufferUseFlags::IN_USE) && IsAnyFlagSet(mpManager->mBufferUseFlags[i], mFlags))
         {
             mCurrentIndex = i;
         }

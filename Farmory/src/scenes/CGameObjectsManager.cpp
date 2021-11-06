@@ -4,23 +4,23 @@
 namespace maz
 {
 
-CGameObjectsManager::CGameObjectsManager(CComponentsManager& aComponentsManager)
-    : mComponentsManager(aComponentsManager)
+CGameObjectsManager::CGameObjectsManager(CComponentsManager& arComponentsManager)
+    : mrComponentsManager(arComponentsManager)
 {}
 
 
 void CGameObjectsManager::Shutdown()
 {
-    typename CGameObjectsBuffer::CBufferIterator iterator = mGameObjectsBuffer.GetIterator(CGameObjectsBuffer::EIteratorFlags::ANY);
+    typename CGameObjectsBuffer::CBufferIterator lIt = mGameObjectsBuffer.GetIterator(CGameObjectsBuffer::EIteratorFlags::ANY);
 
-    while (iterator)
+    while (lIt)
     {
         // Remove all components
-        for (uint16 componentId = 0; componentId < EnumCount<EComponentType>(); ++componentId)
+        for (uint16 lComponentId = 0; lComponentId < EnumCount<EComponentType>(); ++lComponentId)
         {
-            iterator.Get()->RemoveComponent(static_cast<EComponentType>(componentId));
+            lIt.Get()->RemoveComponent(static_cast<EComponentType>(lComponentId));
         }
-        ++iterator;
+        ++lIt;
     }
     mGameObjectsBuffer.Clear();
 }
@@ -28,47 +28,47 @@ void CGameObjectsManager::Shutdown()
 
 void CGameObjectsManager::RefreshGameObjects()
 {
-    typename CGameObjectsBuffer::CBufferIterator iterator = mGameObjectsBuffer.GetIterator(CGameObjectsBuffer::EIteratorFlags::ANY);
+    typename CGameObjectsBuffer::CBufferIterator lIt = mGameObjectsBuffer.GetIterator(CGameObjectsBuffer::EIteratorFlags::ANY);
 
-    while (iterator)
+    while (lIt)
     {
-        if (iterator.HasIteratorFlag(CGameObjectsBuffer::EIteratorFlags::PROCESS_ADD_PENDING))
+        if (lIt.HasIteratorFlag(CGameObjectsBuffer::EIteratorFlags::PROCESS_ADD_PENDING))
         {
             // Nothing to do here other than clearing the flag
-            iterator.ClearIteratorFlag(CGameObjectsBuffer::EIteratorFlags::PROCESS_ADD_PENDING);
+            lIt.ClearIteratorFlag(CGameObjectsBuffer::EIteratorFlags::PROCESS_ADD_PENDING);
         }
-        else if (iterator.HasIteratorFlag(CGameObjectsBuffer::EIteratorFlags::PROCESS_REMOVE_PENDING))
+        else if (lIt.HasIteratorFlag(CGameObjectsBuffer::EIteratorFlags::PROCESS_REMOVE_PENDING))
         {
             // Remove all components
-            for (uint16 componentId = 0; componentId < EnumCount<EComponentType>(); ++componentId)
+            for (uint16 lComponentId = 0; lComponentId < EnumCount<EComponentType>(); ++lComponentId)
             {
-                iterator.Get()->RemoveComponent(static_cast<EComponentType>(componentId));
+                lIt.Get()->RemoveComponent(static_cast<EComponentType>(lComponentId));
             }
-            bool removed = iterator.RemoveElement();
-            MAZ_ASSERT(removed, "CGameObjectsManager::RefreshGameObjects - Failed to remove Gameobject with id %hhu that was flagged for removal!", iterator.GetId());
-            iterator.ClearIteratorFlag(CGameObjectsBuffer::EIteratorFlags::PROCESS_REMOVE_PENDING);
+            bool lRemoved = lIt.RemoveElement();
+            MAZ_ASSERT(lRemoved, "Failed to remove Gameobject with id %hhu that was flagged for removal!", lIt.GetId());
+            lIt.ClearIteratorFlag(CGameObjectsBuffer::EIteratorFlags::PROCESS_REMOVE_PENDING);
         }
         else
         {
             // Clean up signature state in preparation for updates coming from the ComponentsManager
-            CReference<CGameObject> gameObject = iterator.Get();
-            gameObject->mIsSignatureDirty = false;
-            gameObject->mPreviousSignature = gameObject->mSignature;
+            CReference<CGameObject> lGameObject = lIt.Get();
+            lGameObject->mIsSignatureDirty = false;
+            lGameObject->mPreviousSignature = lGameObject->mSignature;
         }
-        ++iterator;
+        ++lIt;
     }
 }
 
 
-CReference<CGameObject> CGameObjectsManager::CreateGameObject(const CFixedString32& aName)
+CReference<CGameObject> CGameObjectsManager::CreateGameObject(const CFixedString32& arName)
 {
     CReference<CGameObject> lGameObject;
-    const uint16 gameObjectId = mGameObjectsBuffer.GetNextAvailableId();
-    if (gameObjectId != kInvalidElementId)
+    const uint16 lGameObjectId = mGameObjectsBuffer.GetNextAvailableId();
+    if (lGameObjectId != kInvalidElementId)
     {
-        const uint16 actualGameObjectId = mGameObjectsBuffer.AddElement(gameObjectId, mComponentsManager, aName);
-        MAZ_ASSERT(gameObjectId == actualGameObjectId, "CGameObjectsManager::CreateGameObject - The next available id in the GameObjectsBuffer does not match the actual id used for the creation of the gameobject!");
-        lGameObject = mGameObjectsBuffer.GetElement(actualGameObjectId);
+        const uint16 lActualGameObjectId = mGameObjectsBuffer.AddElement(lGameObjectId, mrComponentsManager, arName);
+        MAZ_ASSERT(lGameObjectId == lActualGameObjectId, "The next available id in the GameObjectsBuffer does not match the actual id used for the creation of the gameobject!");
+        lGameObject = mGameObjectsBuffer.GetElement(lActualGameObjectId);
         lGameObject->mThis = lGameObject;
     }
 
@@ -84,8 +84,8 @@ bool CGameObjectsManager::RequestDestroyGameObject(const uint16 aGameObjectId)
 
 CGameObjectsManager::CModifiedGameObjectsIterator CGameObjectsManager::GetModifiedGameObjectsIterator()
 {
-    const typename CGameObjectsBuffer::CBufferIterator iterator = mGameObjectsBuffer.GetIterator(CGameObjectsBuffer::EIteratorFlags::ANY);
-    return CModifiedGameObjectsIterator(iterator);
+    const typename CGameObjectsBuffer::CBufferIterator lIt = mGameObjectsBuffer.GetIterator(CGameObjectsBuffer::EIteratorFlags::ANY);
+    return CModifiedGameObjectsIterator(lIt);
 }
 
 
@@ -111,8 +111,8 @@ CReference<CGameObject> CGameObjectsManager::CModifiedGameObjectsIterator::Get()
 }
 
 
-CGameObjectsManager::CModifiedGameObjectsIterator::CModifiedGameObjectsIterator(const CGameObjectsBuffer::CBufferIterator& aIterator)
-    : mInternalIterator(aIterator)
+CGameObjectsManager::CModifiedGameObjectsIterator::CModifiedGameObjectsIterator(const CGameObjectsBuffer::CBufferIterator& arIterator)
+    : mInternalIterator(arIterator)
 {
     while (mInternalIterator && !mInternalIterator.Get()->mIsSignatureDirty)
     {

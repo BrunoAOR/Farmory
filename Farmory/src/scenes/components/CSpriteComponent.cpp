@@ -4,8 +4,8 @@
 namespace maz
 {
 
-CSpriteComponent::CSpriteComponent(CReference<CGameObject>& aOwner)
-    : CComponentBase(aOwner)
+CSpriteComponent::CSpriteComponent(CReference<CGameObject>& arOwner)
+    : CComponentBase(arOwner)
 {
     //TODO: Should provide methods to set up Shader, texture (and mesh type?) from outside the Component
     mShader.Init(CFile("data/default.vs"), CFile("data/default.fs"));

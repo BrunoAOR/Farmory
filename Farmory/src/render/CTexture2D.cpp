@@ -28,7 +28,7 @@ CTexture2D::CTexture2D()
 
 CTexture2D::~CTexture2D()
 {
-    MAZ_ASSERT(!IsOk(), "[CTexture2D]::~CTexture2D - Destructor called on an initialized Texture2D without having called 'End'!");
+    MAZ_ASSERT(!IsOk(), "Destructor called on an initialized Texture2D without having called 'End'!");
 }
 
 
@@ -64,15 +64,15 @@ bool CTexture2D::IsOk() const
 }
 
 
-bool CTexture2D::SetImage(const CFile& aImageFile, bool aGenerateMipmaps)
+bool CTexture2D::SetImage(const CFile& arImageFile, bool aGenerateMipmaps)
 {
     bool lOk = true;
     lOk = lOk && IsOk();
-    lOk = lOk && aImageFile.IsOk();
+    lOk = lOk && arImageFile.IsOk();
 
     if (lOk)
     {
-        CImageData lData = CImageData::FromFile(aImageFile);
+        CImageData lData = CImageData::FromFile(arImageFile);
         lOk = lOk && lData.IsOk();
         if (lOk)
         {
@@ -107,7 +107,7 @@ EWrapMode CTexture2D::GetWrapMode(EAxis aAxis) const
     {
         return mYWrapMode;
     }
-    MAZ_ASSERT(false, "[CTexture2D]::GetWrapMode - Invalid axis received as argument. Will return 'EWrapMode::REPEAT'!");
+    MAZ_ASSERT(false, "Invalid axis received as argument. Will return 'EWrapMode::REPEAT'!");
     return EWrapMode::REPEAT;
 }
 
@@ -127,7 +127,7 @@ EMagFilterMode CTexture2D::GetMagFiletrMode() const
 bool CTexture2D::SetWrapMode(EAxis aAxis, EWrapMode aWrapMode)
 {
     bool lOk = IsOk();
-    MAZ_ASSERT(lOk, "[CTexture2D]::SetWrapMode - Failed due to CTexture2D not being initialized!");
+    MAZ_ASSERT(lOk, "Failed due to CTexture2D not being initialized!");
     if (lOk)
     {
         if (EAxis::X == aAxis)
@@ -152,7 +152,7 @@ bool CTexture2D::SetWrapMode(EAxis aAxis, EWrapMode aWrapMode)
 bool CTexture2D::SetMinFilterMode(EMinFilterMode aMinFilterMode)
 {
     bool lOk = IsOk();
-    MAZ_ASSERT(lOk, "[CTexture2D]::SetMinFilterMode - Failed due to CTexture2D not being initialized!");
+    MAZ_ASSERT(lOk, "Failed due to CTexture2D not being initialized!");
     if (lOk)
     {
         mMinFilterMode = aMinFilterMode;
@@ -167,7 +167,7 @@ bool CTexture2D::SetMinFilterMode(EMinFilterMode aMinFilterMode)
 bool CTexture2D::SetMagFilterMode(EMagFilterMode aMagFilterMode)
 {
     bool lOk = IsOk();
-    MAZ_ASSERT(lOk, "[CTexture2D]::SetMagFilterMode - Failed due to CTexture2D not being initialized!");
+    MAZ_ASSERT(lOk, "Failed due to CTexture2D not being initialized!");
     if (lOk)
     {
         mMagFilterMode = aMagFilterMode;

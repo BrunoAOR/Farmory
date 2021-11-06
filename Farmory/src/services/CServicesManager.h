@@ -9,6 +9,7 @@ namespace maz
 {
 
 class CServicesManager;
+
 namespace Services
 {
     
@@ -45,14 +46,14 @@ private:
 template< typename T >
 T* CServicesManager::GetService()
 {
-    T* lService = nullptr;
+    T* lpService = nullptr;
 
-    for (size_t i = 0, iCount = mServices.size(); (i < iCount) && (nullptr == lService); ++i)
+    for (size_t i = 0, iCount = mServices.size(); (i < iCount) && (nullptr == lpService); ++i)
     {
-        lService = dynamic_cast< T* >(mServices[i]);
+        lpService = dynamic_cast< T* >(mServices[i]);
     }
 
-    return lService;
+    return lpService;
 }
 
 } // maz

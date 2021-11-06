@@ -8,13 +8,13 @@ namespace maz
 IComponent::IComponent(CReference<CGameObject>& aOwner)
     : mOwner(aOwner)
 {
-    MAZ_LOGGER_VERBOSE("IComponent::IComponent called");
+    MAZ_LOGGER_VERBOSE("Called");
 }
 
 
 IComponent::~IComponent()
 {
-    MAZ_LOGGER_VERBOSE("IComponent::~IComponent called");
+    MAZ_LOGGER_VERBOSE("Called");
 }
 
 

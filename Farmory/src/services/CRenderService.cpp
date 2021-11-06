@@ -23,7 +23,7 @@ const char* kWindowName   = "Test";
 } // anonymous
 
 
-CRenderService::CRenderService() : mWindow(nullptr)
+CRenderService::CRenderService() : mpWindow(nullptr)
 {
 }
 
@@ -50,8 +50,8 @@ bool CRenderService::Init()
 
     if (lOk)
     {
-        mWindow = CGlfwHandler::GetWindow();
-        lOk = (nullptr != mWindow);
+        mpWindow = CGlfwHandler::GetWindow();
+        lOk = (nullptr != mpWindow);
     }
 
     return lOk;
@@ -66,7 +66,7 @@ void CRenderService::End()
 
 bool CRenderService::IsOk() const
 {
-    return (nullptr != mWindow) && (mWindow == CGlfwHandler::GetWindow());
+    return (nullptr != mpWindow) && (mpWindow == CGlfwHandler::GetWindow());
 }
 
 
@@ -86,7 +86,7 @@ void CRenderService::Update()
 
 void CRenderService::PostUpdate()
 {
-    glfwSwapBuffers(mWindow);
+    glfwSwapBuffers(mpWindow);
 }
 
 

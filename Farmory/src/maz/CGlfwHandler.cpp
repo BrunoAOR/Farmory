@@ -8,7 +8,7 @@ namespace maz
 {
 
 bool            CGlfwHandler::sOk       = false;
-GLFWwindow*     CGlfwHandler::sWindow   = nullptr;
+GLFWwindow*     CGlfwHandler::spWindow  = nullptr;
 std::vector< CGlfwHandler::FramebufferResizedCallback > CGlfwHandler::sWindowResizedCallbacks;
 std::vector< CGlfwHandler::KeyboardStateCallback      > CGlfwHandler::sKeyboardStateCallbacks;
 std::vector< CGlfwHandler::MousePositionCallback      > CGlfwHandler::sMousePositionCallbacks;
@@ -54,20 +54,21 @@ bool CGlfwHandler::IsOk()
 }
 
 
-bool CGlfwHandler::CreateGlWindow(int aWindowWidth, int aWindowHeight, const char* aWindowName)
+bool CGlfwHandler::CreateGlWindow(int aWindowWidth, int aWindowHeight, const char* apWindowName)
 {
-    if (sOk && (sWindow == nullptr))
+    MAZ_ASSERT(apWindowName != nullptr, "nullptr passed in as apWindowName!");
+    if (sOk && (spWindow == nullptr))
     {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         // See https://www.glfw.org/docs/latest/window.html#window_hints for more hints
 
-        sWindow = glfwCreateWindow(aWindowWidth, aWindowHeight, aWindowName, nullptr, nullptr);
-        sOk = sOk && sWindow;
+        spWindow = glfwCreateWindow(aWindowWidth, aWindowHeight, apWindowName, nullptr, nullptr);
+        sOk = sOk && spWindow;
         if (sOk)
         {
-            glfwMakeContextCurrent(sWindow);
+            glfwMakeContextCurrent(spWindow);
         }
         else
         {
@@ -95,13 +96,13 @@ bool CGlfwHandler::CreateGlWindow(int aWindowWidth, int aWindowHeight, const cha
 
 GLFWwindow* CGlfwHandler::GetWindow()
 {
-    return sWindow;
+    return spWindow;
 }
 
 
 bool CGlfwHandler::IsWindowCloseRequested()
 {
-    return (sWindow && glfwWindowShouldClose(sWindow));
+    return (spWindow && glfwWindowShouldClose(spWindow));
 }
 
 
@@ -115,7 +116,7 @@ bool CGlfwHandler::GetFramebufferSize(int& aOutWidth, int& aOutHeight)
 {
     if (sOk)
     {
-        glfwGetFramebufferSize(sWindow, &aOutWidth, &aOutHeight);
+        glfwGetFramebufferSize(spWindow, &aOutWidth, &aOutHeight);
     }
 
     return sOk;
@@ -131,13 +132,13 @@ bool CGlfwHandler::SetCursorMode(ECursorMode aCursorMode)
         switch (aCursorMode)
         {
         case maz::ECursorMode::NORMAL:
-            glfwSetInputMode(sWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+            glfwSetInputMode(spWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
             break;
         case maz::ECursorMode::HIDDEN:
-            glfwSetInputMode(sWindow, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+            glfwSetInputMode(spWindow, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
             break;
         case maz::ECursorMode::DISABLED:
-            glfwSetInputMode(sWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+            glfwSetInputMode(spWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
             break;
         default:
             lOk = false;
@@ -300,17 +301,17 @@ void CGlfwHandler::LogInfo()
 
 void CGlfwHandler::SetCallbacks()
 {
-    glfwSetFramebufferSizeCallback(sWindow, &CGlfwHandler::OnFramebufferResized);
-    glfwSetKeyCallback(sWindow, &CGlfwHandler::OnKeyboardState);
-    glfwSetCursorPosCallback(sWindow, &CGlfwHandler::OnMousePosition);
-    glfwSetScrollCallback(sWindow, &CGlfwHandler::OnMouseScroll);
+    glfwSetFramebufferSizeCallback(spWindow, &CGlfwHandler::OnFramebufferResized);
+    glfwSetKeyCallback(spWindow, &CGlfwHandler::OnKeyboardState);
+    glfwSetCursorPosCallback(spWindow, &CGlfwHandler::OnMousePosition);
+    glfwSetScrollCallback(spWindow, &CGlfwHandler::OnMouseScroll);
 }
 
 
-void CGlfwHandler::OnFramebufferResized(GLFWwindow* aWindow, int aWidth, int aHeight)
+void CGlfwHandler::OnFramebufferResized(GLFWwindow* apWindow, int aWidth, int aHeight)
 {
-    MAZ_UNUSED_VAR(aWindow);
-    MAZ_ASSERT(sWindow == aWindow, "Callback received for a window other that the managed one!");
+    MAZ_UNUSED_VAR(apWindow);
+    MAZ_ASSERT(spWindow == apWindow, "Callback received for a window other that the managed one!");
 
     for (size_t i = 0, iCount = sWindowResizedCallbacks.size(); (i < iCount); ++i)
     {
@@ -319,10 +320,10 @@ void CGlfwHandler::OnFramebufferResized(GLFWwindow* aWindow, int aWidth, int aHe
 }
 
 
-void CGlfwHandler::OnKeyboardState(GLFWwindow* aWindow, int aKey, int aScancode, int aAction, int aModifierBits)
+void CGlfwHandler::OnKeyboardState(GLFWwindow* apWindow, int aKey, int aScancode, int aAction, int aModifierBits)
 {
-    MAZ_UNUSED_VAR(aWindow);
-    MAZ_ASSERT(sWindow == aWindow, "Callback received for a window other that the managed one!");
+    MAZ_UNUSED_VAR(apWindow);
+    MAZ_ASSERT(spWindow == apWindow, "Callback received for a window other that the managed one!");
 
     for (size_t i = 0, iCount = sKeyboardStateCallbacks.size(); (i < iCount); ++i)
     {
@@ -331,10 +332,10 @@ void CGlfwHandler::OnKeyboardState(GLFWwindow* aWindow, int aKey, int aScancode,
 }
 
 
-void CGlfwHandler::OnMousePosition(GLFWwindow* aWindow, double aXPos, double aYPos)
+void CGlfwHandler::OnMousePosition(GLFWwindow* apWindow, double aXPos, double aYPos)
 {
-    MAZ_UNUSED_VAR(aWindow);
-    MAZ_ASSERT(sWindow == aWindow, "Callback received for a window other that the managed one!");
+    MAZ_UNUSED_VAR(apWindow);
+    MAZ_ASSERT(spWindow == apWindow, "Callback received for a window other that the managed one!");
 
     for (size_t i = 0, iCount = sMousePositionCallbacks.size(); (i < iCount); ++i)
     {
@@ -343,10 +344,10 @@ void CGlfwHandler::OnMousePosition(GLFWwindow* aWindow, double aXPos, double aYP
 }
 
 
-void CGlfwHandler::OnMouseScroll(GLFWwindow* aWindow, double aXOffset, double aYOffset)
+void CGlfwHandler::OnMouseScroll(GLFWwindow* apWindow, double aXOffset, double aYOffset)
 {
-    MAZ_UNUSED_VAR(aWindow);
-    MAZ_ASSERT(sWindow == aWindow, "Callback received for a window other that the managed one!");
+    MAZ_UNUSED_VAR(apWindow);
+    MAZ_ASSERT(spWindow == apWindow, "Callback received for a window other that the managed one!");
 
     for (size_t i = 0, iCount = sMouseScrollCallbacks.size(); (i < iCount); ++i)
     {

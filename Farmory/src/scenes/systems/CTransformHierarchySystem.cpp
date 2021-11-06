@@ -9,54 +9,54 @@ namespace maz
 namespace
 {
 
-TVec2 calculateWorldPosition(const STransform2D& aParentWorldTransform, const STransform2D& aLocalTransform)
+TVec2 calculateWorldPosition(const STransform2D& arParentWorldTransform, const STransform2D& arLocalTransform)
 {
-    TVec2 worldPosition(0.0f, 0.0f);
+    TVec2 lWorldPosition(0.0f, 0.0f);
 
     //	1. Solve the rotation
-    //		1.1 Get polar coordinates for localPosition (r and theta)
-    const TVec2& localPosition = aLocalTransform.GetTranslation();
-    const float r = sqrt(localPosition.x * localPosition.x + localPosition.y * localPosition.y);
-    const float theta = atan2(localPosition.y, localPosition.x);
+    //		1.1 Get polar coordinates for lLocalPosition (lR and lTheta)
+    const TVec2& lLocalPosition = arLocalTransform.GetTranslation();
+    const float lR = sqrt(lLocalPosition.x * lLocalPosition.x + lLocalPosition.y * lLocalPosition.y);
+    const float lTheta = atan2(lLocalPosition.y, lLocalPosition.x);
 
     //		1.2 use the polar coordinate to recalculate the x and y coordinates
-    const float parentWorldRotation = aParentWorldTransform.GetRotation();
-    worldPosition.x = r * cosf(theta + (static_cast<float>(M_PI) / 180 * parentWorldRotation));
-    worldPosition.y = r * sinf(theta + (static_cast<float>(M_PI) / 180 * parentWorldRotation));
+    const float lParentWorldRotation = arParentWorldTransform.GetRotation();
+    lWorldPosition.x = lR * cosf(lTheta + (static_cast<float>(M_PI) / 180 * lParentWorldRotation));
+    lWorldPosition.y = lR * sinf(lTheta + (static_cast<float>(M_PI) / 180 * lParentWorldRotation));
 
     //	2. Solve the scale (if 0, the effect of the rotation will be eliminated, but that's expected)
-    const TVec2& parentWorldScale = aParentWorldTransform.GetScale();
-    worldPosition.x *= parentWorldScale.x;
-    worldPosition.y *= parentWorldScale.y;
+    const TVec2& lParentWorldScale = arParentWorldTransform.GetScale();
+    lWorldPosition.x *= lParentWorldScale.x;
+    lWorldPosition.y *= lParentWorldScale.y;
 
     //	3. Solve the position
-    const TVec2& parentWorldPosition = aParentWorldTransform.GetTranslation();
-    worldPosition.x += parentWorldPosition.x;
-    worldPosition.y += parentWorldPosition.y;
+    const TVec2& lParentWorldPosition = arParentWorldTransform.GetTranslation();
+    lWorldPosition.x += lParentWorldPosition.x;
+    lWorldPosition.y += lParentWorldPosition.y;
 
-    return worldPosition;
+    return lWorldPosition;
 }
 
 
 float calculateWorldRotation(const float aParentWorldRotation, const float aLocalRotation)
 {
-    float worldRotation = aLocalRotation + aParentWorldRotation;
+    float lWorldRotation = aLocalRotation + aParentWorldRotation;
     // Clamp between 0 and 360
     // Note that rotations are always clamped between 0-360, so this algorythm works in the expected range.
     MAZ_ASSERT(aParentWorldRotation >= 0.0f && aParentWorldRotation < 360.0f, "aParentWorldRotation argument outside of expected range [0, 360[ !");
     MAZ_ASSERT(aLocalRotation >= 0.0f && aLocalRotation < 360.0f, "aLocalRotation argument outside of expected range [0, 360[ !");
-    worldRotation -= 360 * (int)(worldRotation / 360);
-    return (worldRotation);
+    lWorldRotation -= 360 * (int)(lWorldRotation / 360);
+    return (lWorldRotation);
 }
 
 
 TVec2 calculateWorldScale(const TVec2& aParentWorldScale, const TVec2& aLocalScale)
 {
     // For scale, one only needs to multiply the parent scale
-    TVec2 worldScale;
-    worldScale.x = aLocalScale.x * aParentWorldScale.x;
-    worldScale.y = aLocalScale.y * aParentWorldScale.y;
-    return worldScale;
+    TVec2 lWorldScale;
+    lWorldScale.x = aLocalScale.x * aParentWorldScale.x;
+    lWorldScale.y = aLocalScale.y * aParentWorldScale.y;
+    return lWorldScale;
 }
 
 } // anonymous
@@ -75,27 +75,27 @@ CTransformHierarchySystem::~CTransformHierarchySystem()
 
 void CTransformHierarchySystem::Update()
 {
-    for (CReference<CGameObject>& gameObject : mGameObjects)
+    for (CReference<CGameObject>& lrGameObject : mGameObjects)
     {
-        if (gameObject)
+        if (lrGameObject)
         {
-            CReference<CTransform2DComponent> hierarchyRootTransformComponent = gameObject->GetComponent<CTransform2DComponent>();
+            CReference<CTransform2DComponent> lHierarchyRootTransformComponent = lrGameObject->GetComponent<CTransform2DComponent>();
 
             // Update top-down full hierarchy only for the origin of any hierarchy
 
-            if (!hierarchyRootTransformComponent->GetParentTransform())
+            if (!lHierarchyRootTransformComponent->GetParentTransform())
             {
                 // Hierarchy root update
 
-                // firstDirtyParentTransformComponent stores a reference to the first dirtyParent so that when going back up/sideways through the hierarchy, 
+                // lFirstDirtyParentTransformComponent stores a reference to the first dirtyParent so that when going back up/sideways through the hierarchy, 
                 //   we may know at which point we are back in "clean" territory 
-                CReference<CTransform2DComponent> firstDirtyParentTransformComponent;
+                CReference<CTransform2DComponent> lFirstDirtyParentTransformComponent;
 
-                if (hierarchyRootTransformComponent->IsWorldTransformDirty())
+                if (lHierarchyRootTransformComponent->IsWorldTransformDirty())
                 {
-                    firstDirtyParentTransformComponent = hierarchyRootTransformComponent;
-                    hierarchyRootTransformComponent->SetWorldTransform(hierarchyRootTransformComponent->GetLocalTransform());
-                    hierarchyRootTransformComponent->RebuildModelMatrix();
+                    lFirstDirtyParentTransformComponent = lHierarchyRootTransformComponent;
+                    lHierarchyRootTransformComponent->SetWorldTransform(lHierarchyRootTransformComponent->GetLocalTransform());
+                    lHierarchyRootTransformComponent->RebuildModelMatrix();
                 }
 
                 // Update Children
@@ -112,70 +112,70 @@ void CTransformHierarchySystem::Update()
                 // 4.1 If a Parent is available (already updated), go back to step 3.
                 // 4.2 If NO Parent is available, we're done.
                 
-                CReference<CTransform2DComponent> currentChildTransformComponent = hierarchyRootTransformComponent->GetFirstChildTransform();
-                while (currentChildTransformComponent)
+                CReference<CTransform2DComponent> lCurrentChildTransformComponent = lHierarchyRootTransformComponent->GetFirstChildTransform();
+                while (lCurrentChildTransformComponent)
                 {
                     // Step 1
-                    const bool currentChildTransformDirty = currentChildTransformComponent->IsWorldTransformDirty();
-                    if (!firstDirtyParentTransformComponent && currentChildTransformDirty)
+                    const bool lCurrentChildTransformDirty = lCurrentChildTransformComponent->IsWorldTransformDirty();
+                    if (!lFirstDirtyParentTransformComponent && lCurrentChildTransformDirty)
                     {
-                        firstDirtyParentTransformComponent = currentChildTransformComponent;
+                        lFirstDirtyParentTransformComponent = lCurrentChildTransformComponent;
                     }
                     
-                    if (firstDirtyParentTransformComponent)
+                    if (lFirstDirtyParentTransformComponent)
                     {
-                        MAZ_ASSERT(currentChildTransformComponent->GetParentTransform(), "Failed to find a Parent Transform, when one was expected!");
-                        const STransform2D& currentParentWorldTransform = currentChildTransformComponent->GetParentTransform()->GetWorldTransform();
-                        const STransform2D& currentChildTransform = currentChildTransformComponent->GetLocalTransform();
+                        MAZ_ASSERT(lCurrentChildTransformComponent->GetParentTransform(), "Failed to find a Parent Transform, when one was expected!");
+                        const STransform2D& lCurrentParentWorldTransform = lCurrentChildTransformComponent->GetParentTransform()->GetWorldTransform();
+                        const STransform2D& lCurrentChildTransform = lCurrentChildTransformComponent->GetLocalTransform();
                         
-                        STransform2D newChildWorldTransform;
-                        newChildWorldTransform.SetTranslation(calculateWorldPosition(currentParentWorldTransform, currentChildTransform));
-                        newChildWorldTransform.SetRotation(calculateWorldRotation(currentParentWorldTransform.GetRotation(), currentChildTransform.GetRotation()));
-                        newChildWorldTransform.SetScale(calculateWorldScale(currentParentWorldTransform.GetScale(), currentChildTransform.GetScale()));
+                        STransform2D lNewChildWorldTransform;
+                        lNewChildWorldTransform.SetTranslation(calculateWorldPosition(lCurrentParentWorldTransform, lCurrentChildTransform));
+                        lNewChildWorldTransform.SetRotation(calculateWorldRotation(lCurrentParentWorldTransform.GetRotation(), lCurrentChildTransform.GetRotation()));
+                        lNewChildWorldTransform.SetScale(calculateWorldScale(lCurrentParentWorldTransform.GetScale(), lCurrentChildTransform.GetScale()));
 
-                        currentChildTransformComponent->SetWorldTransform(newChildWorldTransform);
-                        currentChildTransformComponent->RebuildModelMatrix();
+                        lCurrentChildTransformComponent->SetWorldTransform(lNewChildWorldTransform);
+                        lCurrentChildTransformComponent->RebuildModelMatrix();
                     }
 
                     // Now we navigate
-                    CReference<CTransform2DComponent> candidateTransform = currentChildTransformComponent->GetFirstChildTransform(); // 2
-                    if (candidateTransform)
+                    CReference<CTransform2DComponent> lCandidateTransform = lCurrentChildTransformComponent->GetFirstChildTransform(); // 2
+                    if (lCandidateTransform)
                     {   // 2.1
-                        currentChildTransformComponent = candidateTransform;
+                        lCurrentChildTransformComponent = lCandidateTransform;
                     }
                     else
                     {   // 2.2
                         // If we are moving sideways/up and the current Transform was the first dirty parent, then we are out of dirty territory
-                        if (firstDirtyParentTransformComponent == currentChildTransformComponent)
+                        if (lFirstDirtyParentTransformComponent == lCurrentChildTransformComponent)
                         {
-                            firstDirtyParentTransformComponent = CReference<CTransform2DComponent>();
+                            lFirstDirtyParentTransformComponent = CReference<CTransform2DComponent>();
                         }
-                        candidateTransform = currentChildTransformComponent->GetNextSiblingTransform(); // 3
-                        if (candidateTransform)
+                        lCandidateTransform = lCurrentChildTransformComponent->GetNextSiblingTransform(); // 3
+                        if (lCandidateTransform)
                         {   // 3.1
-                            currentChildTransformComponent = candidateTransform;
+                            lCurrentChildTransformComponent = lCandidateTransform;
                         }
                         else
                         {   // 3.2 We start going up
-                            CReference<CTransform2DComponent> parentTransform = currentChildTransformComponent->GetParentTransform(); // 4
-                            MAZ_ASSERT(parentTransform, "First search for parent should always be successful!");
-                            while (parentTransform)
+                            CReference<CTransform2DComponent> lParentTransform = lCurrentChildTransformComponent->GetParentTransform(); // 4
+                            MAZ_ASSERT(lParentTransform, "First search for parent should always be successful!");
+                            while (lParentTransform)
                             {   // 4.1
-                                candidateTransform = parentTransform->GetNextSiblingTransform(); // 3
-                                if (candidateTransform)
+                                lCandidateTransform = lParentTransform->GetNextSiblingTransform(); // 3
+                                if (lCandidateTransform)
                                 {   // 3.1
-                                    currentChildTransformComponent = candidateTransform;
-                                    parentTransform = CReference<CTransform2DComponent>(); // This will exit the inner while-loop
+                                    lCurrentChildTransformComponent = lCandidateTransform;
+                                    lParentTransform = CReference<CTransform2DComponent>(); // This will exit the inner while-loop
                                 }
                                 else
                                 {   // 3.2
-                                    parentTransform = parentTransform->GetParentTransform(); // 4
+                                    lParentTransform = lParentTransform->GetParentTransform(); // 4
                                 }
                             }
 
-                            if (!candidateTransform)
+                            if (!lCandidateTransform)
                             {   // 4.2
-                                currentChildTransformComponent = CReference<CTransform2DComponent>(); // This will exit the loop
+                                lCurrentChildTransformComponent = CReference<CTransform2DComponent>(); // This will exit the loop
                             }
                         }
                     }

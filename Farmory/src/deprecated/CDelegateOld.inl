@@ -1,12 +1,13 @@
 #include <new>
 
+
 namespace maz
 {
 
 template< typename R, typename P >
 inline CDelegateHolder< R, P >::CDelegateHolder()
 {
-    MAZ_LOGGER("Construct CDelegateHolder");
+    MAZ_LOGGER("Called");
     memset(mDelegateBuffer, 0, sizeof(mDelegateBuffer));
 }
 
@@ -14,37 +15,37 @@ inline CDelegateHolder< R, P >::CDelegateHolder()
 template< typename R, typename P >
 inline CDelegateHolder< R, P >::~CDelegateHolder()
 {
-    MAZ_LOGGER("Destroy CDelegateHolder");
+    MAZ_LOGGER("Called");
     reinterpret_cast<impl::CDelegateBase< R, P >*>(mDelegateBuffer)->~CDelegateBase();
 }
 
 
 template< typename R, typename P >
-inline CDelegateHolder< R, P >::CDelegateHolder(R(*aFct)(P))
+inline CDelegateHolder< R, P >::CDelegateHolder(R(*apFct)(P))
 {
-    MAZ_PLACEMENT_NEW(mDelegateBuffer, (impl::CDelegateBase< R, P >), aFct);
+    MAZ_PLACEMENT_NEW(mDelegateBuffer, (impl::CDelegateBase< R, P >), apFct);
 }
 
 
 template< typename R, typename P >
 template< typename T >
-inline CDelegateHolder< R, P >::CDelegateHolder(T* aObj, R(T::* aFct)(P))
+inline CDelegateHolder< R, P >::CDelegateHolder(T* apObj, R(T::* apFct)(P))
 {
-    MAZ_PLACEMENT_NEW(mDelegateBuffer, (impl::CMethodDelegate< T, R, P >), aObj, aFct);
+    MAZ_PLACEMENT_NEW(mDelegateBuffer, (impl::CMethodDelegate< T, R, P >), apObj, apFct);
 }
 
 
 template< typename R, typename P >
-inline CDelegateHolder< R, P >::CDelegateHolder(CDelegateHolder&& aOther)
+inline CDelegateHolder< R, P >::CDelegateHolder(CDelegateHolder&& arrOther)
 {
-    memmove_s(mDelegateBuffer, sizeof(mDelegateBuffer), aOther.mDelegateBuffer, sizeof(aOther.mDelegateBuffer));
+    memmove_s(mDelegateBuffer, sizeof(mDelegateBuffer), arrOther.mDelegateBuffer, sizeof(arrOther.mDelegateBuffer));
 }
 
 
 template< typename R, typename P >
-inline CDelegateHolder< R, P>& CDelegateHolder< R, P >::operator=(CDelegateHolder&& aOther)
+inline CDelegateHolder< R, P>& CDelegateHolder< R, P >::operator=(CDelegateHolder&& arrOther)
 {
-    memmove_s(mDelegateBuffer, sizeof(mDelegateBuffer), aOther.mDelegateBuffer, sizeof(aOther.mDelegateBuffer));
+    memmove_s(mDelegateBuffer, sizeof(mDelegateBuffer), arrOther.mDelegateBuffer, sizeof(arrOther.mDelegateBuffer));
 }
 
 
@@ -53,6 +54,5 @@ inline R CDelegateHolder< R, P >::operator()(P aParam)
 {
     return reinterpret_cast<impl::CDelegateBase< R, P >*>(mDelegateBuffer)->Invoke(aParam);
 }
-
 
 } // maz

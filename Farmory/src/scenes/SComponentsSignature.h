@@ -16,13 +16,13 @@ public:
     void AddComponent(EComponentType aComponentType);
     void RemoveComponent(EComponentType aComponentType);
 
-    bool IsSupersetOf(const SComponentsSignature& aOtherSignature) const;
-    bool IsSubsetOf(const SComponentsSignature& aOtherSignature) const;
+    bool IsSupersetOf(const SComponentsSignature& arOtherSignature) const;
+    bool IsSubsetOf(const SComponentsSignature& arOtherSignature) const;
 
 private:
-    static constexpr uint8 sBitsPerSubSignature = 32u;
-    static constexpr uint8 sSubSignaturesCount = (EnumCount<EComponentType>() - 1) / sBitsPerSubSignature + 1;
-    uint32 mSubSignatures[sSubSignaturesCount];
+    static constexpr uint8 kBitsPerSubSignature = 32u;
+    static constexpr uint8 kSubSignaturesCount = (EnumCount<EComponentType>() - 1) / kBitsPerSubSignature + 1;
+    uint32 mSubSignatures[kSubSignaturesCount];
 };
 
 } // maz

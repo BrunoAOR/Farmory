@@ -6,6 +6,7 @@
 
 namespace maz
 {
+
 class CImGuiService
     : public IService
 {

@@ -24,9 +24,10 @@ bool CImGuiService::Init()
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
-    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+    ImGuiIO& lIo = ImGui::GetIO();
+    MAZ_UNUSED_VAR(lIo);
+    //lIo.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+    //lIo.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
@@ -46,12 +47,12 @@ bool CImGuiService::Init()
     // - The fonts will be rasterized at a given size (w/ oversampling) and stored into a texture when calling ImFontAtlas::Build()/GetTexDataAsXXXX(), which ImGui_ImplXXXX_NewFrame below will call.
     // - Read 'docs/FONTS.md' for more instructions and details.
     // - Remember that in C/C++ if you want to include a backslash \ in a string literal you need to write a double backslash \\ !
-    //io.Fonts->AddFontDefault();
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Roboto-Medium.ttf", 16.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Cousine-Regular.ttf", 15.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/DroidSans.ttf", 16.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/ProggyTiny.ttf", 10.0f);
-    //ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
+    //lIo.Fonts->AddFontDefault();
+    //lIo.Fonts->AddFontFromFileTTF("../../misc/fonts/Roboto-Medium.ttf", 16.0f);
+    //lIo.Fonts->AddFontFromFileTTF("../../misc/fonts/Cousine-Regular.ttf", 15.0f);
+    //lIo.Fonts->AddFontFromFileTTF("../../misc/fonts/DroidSans.ttf", 16.0f);
+    //lIo.Fonts->AddFontFromFileTTF("../../misc/fonts/ProggyTiny.ttf", 10.0f);
+    //ImFont* font = lIo.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, lIo.Fonts->GetGlyphRangesJapanese());
     //IM_ASSERT(font != NULL);
 
     return lOk;
@@ -84,8 +85,8 @@ void CImGuiService::PreUpdate()
 
 void CImGuiService::Update()
 {
-    static bool lShowDemoWindow = false;
-    static bool lShowOpenGlWindow = false;
+    static bool sShowDemoWindow = false;
+    static bool sShowOpenGlWindow = false;
     float lMainMenuBarHeight;
 
     if (ImGui::BeginMainMenuBar())
@@ -94,7 +95,7 @@ void CImGuiService::Update()
         
         if (ImGui::BeginMenu("Main"))
         {
-            ImGui::MenuItem("Show demo window", nullptr, &lShowDemoWindow);
+            ImGui::MenuItem("Show demo window", nullptr, &sShowDemoWindow);
             ImGui::Separator();
 
             ImGui::EndMenu();
@@ -102,21 +103,21 @@ void CImGuiService::Update()
 
         if (ImGui::BeginMenu("Configuration"))
         {
-            ImGui::MenuItem("OpenGL", nullptr, &lShowOpenGlWindow);
+            ImGui::MenuItem("OpenGL", nullptr, &sShowOpenGlWindow);
             ImGui::EndMenu();
         }
 
         ImGui::EndMainMenuBar();
     }
 
-    if (lShowDemoWindow)
+    if (sShowDemoWindow)
     {
-        ImGui::ShowDemoWindow(&lShowDemoWindow);
+        ImGui::ShowDemoWindow(&sShowDemoWindow);
     }
 
-    if (lShowOpenGlWindow)
+    if (sShowOpenGlWindow)
     {
-        //ShowOpenGLWindow(lMainMenuBarHeight, &lShowOpenGlWindow);
+        //ShowOpenGLWindow(lMainMenuBarHeight, &sShowOpenGlWindow);
     }
 
     ImGui::Render();

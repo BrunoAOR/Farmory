@@ -5,11 +5,11 @@
 namespace maz
 {
 
-CGameObject::CGameObject(uint16 aId, CComponentsManager& aComponentsManager, const CFixedString32& aName)
+CGameObject::CGameObject(uint16 aId, CComponentsManager& arComponentsManager, const CFixedString32& arName)
     : mId(aId)
-    , mComponentsManager(aComponentsManager)
+    , mrComponentsManager(arComponentsManager)
     , mIsSignatureDirty(false)
-    , mName(aName)
+    , mName(arName)
 {
     MAZ_LOGGER_VERBOSE("Called");
     for (uint16 i = 0, iCount = static_cast<uint16>(mComponents.max_size()); i < iCount; ++i)
@@ -62,9 +62,9 @@ const CFixedString32& CGameObject::GetName() const
 bool CGameObject::RemoveComponent(EComponentType aComponentType)
 {
     bool lOk = true;
-    const uint16 componentId = mComponents[EnumToNumber(aComponentType)];
-    lOk = (componentId != kInvalidComponentId);
-    lOk = lOk && mComponentsManager.RemoveComponent(aComponentType, componentId);
+    const uint16 lComponentId = mComponents[EnumToNumber(aComponentType)];
+    lOk = (lComponentId != kInvalidComponentId);
+    lOk = lOk && mrComponentsManager.RemoveComponent(aComponentType, lComponentId);
     // Even though the component has been flagged for removal (if it was present), its ID is NOT cleared from the gameObject until the ComponentsManager is updated
 
     return lOk;

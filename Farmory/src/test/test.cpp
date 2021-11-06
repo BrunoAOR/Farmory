@@ -52,9 +52,9 @@ float test()
 }
 
 
-CDelegate< int, float > GetDel(const CDelegateTest* aObj)
+CDelegate< int, float > GetDel(const CDelegateTest* apObj)
 {
-    return CDelegate< int, float >::Create< CDelegateTest, &CDelegateTest::myFunc >(aObj);
+    return CDelegate< int, float >::Create< CDelegateTest, &CDelegateTest::myFunc >(apObj);
 }
 
 
@@ -68,19 +68,19 @@ void TestMain()
     MAZ_LOGGER("long uint     : %u", sizeof(unsigned long int));
     MAZ_LOGGER("long long int : %u", sizeof(long long int));
     MAZ_LOGGER("long long uint: %u", sizeof(unsigned long long int));
-    MAZ_LOGGER("uint8  max:  %hhu", MAX_UINT8);
-    MAZ_LOGGER(" int8  min: %hhd", MIN_INT8);
-    MAZ_LOGGER(" int8  max:  %hhd", MAX_INT8);
-    MAZ_LOGGER("uint16 max:  %hu", MAX_UINT16);
-    MAZ_LOGGER(" int16 min: %hd", MIN_INT16);
-    MAZ_LOGGER(" int16 max:  %hd", MAX_INT16);
-    MAZ_LOGGER("uint32 max:  %u", MAX_UINT32);
-    MAZ_LOGGER(" int32 min: %d", MIN_INT32);
-    MAZ_LOGGER(" int32 max:  %d", MAX_INT32);
-    MAZ_LOGGER("uint64 max:  %llu", MAX_UINT64);
-    MAZ_LOGGER(" int64 min: %lld", MIN_INT64);
-    MAZ_LOGGER(" int64 max:  %lld", MAX_INT64);
-    MAZ_LOGGER(" float max:  %f", MAX_FLOAT);
+    MAZ_LOGGER("uint8  max: %hhu",  MAX_UINT8);
+    MAZ_LOGGER(" int8  min: %hhd",  MIN_INT8);
+    MAZ_LOGGER(" int8  max: %hhd",  MAX_INT8);
+    MAZ_LOGGER("uint16 max: %hu",   MAX_UINT16);
+    MAZ_LOGGER(" int16 min: %hd",   MIN_INT16);
+    MAZ_LOGGER(" int16 max: %hd",   MAX_INT16);
+    MAZ_LOGGER("uint32 max: %u",    MAX_UINT32);
+    MAZ_LOGGER(" int32 min: %d",    MIN_INT32);
+    MAZ_LOGGER(" int32 max: %d",    MAX_INT32);
+    MAZ_LOGGER("uint64 max: %llu",  MAX_UINT64);
+    MAZ_LOGGER(" int64 min: %lld",  MIN_INT64);
+    MAZ_LOGGER(" int64 max: %lld",  MAX_INT64);
+    MAZ_LOGGER(" float max: %f",    MAX_FLOAT);
 
     {
         CDelegateTest l5(5);
@@ -104,19 +104,19 @@ void TestMain()
         //TMyOldDel lDel3(&l10, &CDelegateTest::myConstFunc);
         TMyOldDel lDel4(&CDelegateTest::myStaticFunc);
 
-        int i1 = lDel1(1.5);
-        int i2 = lDel2(1.5);
-        //int i3 = lDel3(1.5);
-        int i4 = lDel4(1.5);
-        MAZ_UNUSED_VAR(i1);
-        MAZ_UNUSED_VAR(i2);
-        //MAZ_UNUSED_VAR(i3);
-        MAZ_UNUSED_VAR(i4);
+        int lRes1 = lDel1(1.5);
+        int lRes2 = lDel2(1.5);
+        //int lRes3 = lDel3(1.5);
+        int lRes4 = lDel4(1.5);
+        MAZ_UNUSED_VAR(lRes1);
+        MAZ_UNUSED_VAR(lRes2);
+        //MAZ_UNUSED_VAR(lRes3);
+        MAZ_UNUSED_VAR(lRes4);
 
         using TFunc = int(CDelegateTest::*)(float);
         TFunc lF = &CDelegateTest::myFunc;
-        int asd = ((*(&l5)).*lF)(5.0f);
-        MAZ_UNUSED_VAR(asd);
+        int lFuncRes = ((*(&l5)).*lF)(5.0f);
+        MAZ_UNUSED_VAR(lFuncRes);
 
         TMyNewDel lNDel1 = TMyNewDel::Create< CDelegateTest, &CDelegateTest::myFunc >(&l10);
         TMyNewDel lNDel2 = TMyNewDel::Create< &test >();
@@ -125,18 +125,18 @@ void TestMain()
         TMyNewDel lNDel5 = TMyNewDel::CreateConst< CDelegateTest, &CDelegateTest::myFunc >(&l10);
         TMyNewDel lNDel6 = GetDel(&l10);
 
-        int in1 = lNDel1(1.5);
-        int in2 = lNDel2(1.5);
-        int in3 = lNDel3(1.5);
-        int in4 = lNDel4(1.5);
-        int in5 = lNDel5(1.5);
-        int in6 = lNDel6(1.5);
-        MAZ_UNUSED_VAR(in1);
-        MAZ_UNUSED_VAR(in2);
-        MAZ_UNUSED_VAR(in3);
-        MAZ_UNUSED_VAR(in4);
-        MAZ_UNUSED_VAR(in5);
-        MAZ_UNUSED_VAR(in6);
+        int lNewRes1 = lNDel1(1.5);
+        int lNewRes2 = lNDel2(1.5);
+        int lNewRes3 = lNDel3(1.5);
+        int lNewRes4 = lNDel4(1.5);
+        int lNewRes5 = lNDel5(1.5);
+        int lNewRes6 = lNDel6(1.5);
+        MAZ_UNUSED_VAR(lNewRes1);
+        MAZ_UNUSED_VAR(lNewRes2);
+        MAZ_UNUSED_VAR(lNewRes3);
+        MAZ_UNUSED_VAR(lNewRes4);
+        MAZ_UNUSED_VAR(lNewRes5);
+        MAZ_UNUSED_VAR(lNewRes6);
 
         TMyNewDel lNDelX1 = TMyNewDel::Create< CDelegateTest, &CDelegateTest::myFunc >(&l5);
         TMyNewDel lNDelX2 = TMyNewDel::Create< &test >();
@@ -144,28 +144,28 @@ void TestMain()
         TMyNewDel lNDelX4 = TMyNewDel::Create< &CDelegateTest::myStaticFunc >();
         TMyNewDel lNDelX5 = TMyNewDel::CreateConst< CDelegateTest, &CDelegateTest::myFunc >(&l5);
 
-        bool cmp01 = lNDel1 == lNDel1;
-        bool cmp02 = lNDel2 == lNDel2;
-        bool cmp03 = lNDel3 == lNDel3;
-        bool cmp04 = lNDel4 == lNDel4;
-        bool cmp05 = lNDel1 == lNDelX1;
-        bool cmp06 = lNDel2 == lNDelX2;
-        bool cmp07 = lNDel3 == lNDelX3;
-        bool cmp08 = lNDel4 == lNDelX4;
-        bool cmp09 = lNDel1 == lNDel3;
-        bool cmp10 = lNDel1 == lNDel5;
-        bool cmp11 = lNDel1 == lNDel6;
-        MAZ_UNUSED_VAR(cmp01);
-        MAZ_UNUSED_VAR(cmp02);
-        MAZ_UNUSED_VAR(cmp03);
-        MAZ_UNUSED_VAR(cmp04);
-        MAZ_UNUSED_VAR(cmp05);
-        MAZ_UNUSED_VAR(cmp06);
-        MAZ_UNUSED_VAR(cmp07);
-        MAZ_UNUSED_VAR(cmp08);
-        MAZ_UNUSED_VAR(cmp09);
-        MAZ_UNUSED_VAR(cmp10);
-        MAZ_UNUSED_VAR(cmp11);
+        bool lCmp01 = lNDel1 == lNDel1;
+        bool lCmp02 = lNDel2 == lNDel2;
+        bool lCmp03 = lNDel3 == lNDel3;
+        bool lCmp04 = lNDel4 == lNDel4;
+        bool lCmp05 = lNDel1 == lNDelX1;
+        bool lCmp06 = lNDel2 == lNDelX2;
+        bool lCmp07 = lNDel3 == lNDelX3;
+        bool lCmp08 = lNDel4 == lNDelX4;
+        bool lCmp09 = lNDel1 == lNDel3;
+        bool lCmp10 = lNDel1 == lNDel5;
+        bool lCmp11 = lNDel1 == lNDel6;
+        MAZ_UNUSED_VAR(lCmp01);
+        MAZ_UNUSED_VAR(lCmp02);
+        MAZ_UNUSED_VAR(lCmp03);
+        MAZ_UNUSED_VAR(lCmp04);
+        MAZ_UNUSED_VAR(lCmp05);
+        MAZ_UNUSED_VAR(lCmp06);
+        MAZ_UNUSED_VAR(lCmp07);
+        MAZ_UNUSED_VAR(lCmp08);
+        MAZ_UNUSED_VAR(lCmp09);
+        MAZ_UNUSED_VAR(lCmp10);
+        MAZ_UNUSED_VAR(lCmp11);
     }
 }
 

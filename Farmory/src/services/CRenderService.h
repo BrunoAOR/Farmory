@@ -5,8 +5,10 @@
 
 
 struct GLFWwindow;
+
 namespace maz
 {
+
 class CRenderService
     : public IService
 {
@@ -26,7 +28,7 @@ private:
     void OnFramebufferResized(int aWidth, int aHeight);
 
 private:
-    GLFWwindow* mWindow;
+    GLFWwindow* mpWindow;
 };
 
 } // maz

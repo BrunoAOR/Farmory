@@ -12,7 +12,7 @@ class CDelegate
 {
 public:
     CDelegate()
-        : mObj (nullptr)
+        : mpObj (nullptr)
         , mFunc(nullptr)
     { ; }
     
@@ -27,20 +27,20 @@ public:
 
 
     template< typename T, R(T:: * Method)(P...) >
-    static CDelegate Create(const T* aObj)
+    static CDelegate Create(const T* apObj)
     {
         CDelegate lDelegate;
-        lDelegate.mObj = const_cast< T* >(aObj);
+        lDelegate.mpObj = const_cast< T* >(apObj);
         lDelegate.mFunc = &HelperFunc< T, Method >;
         return lDelegate;
     }
 
 
     template< typename T, R(T:: * Method)(P...) const >
-    static CDelegate CreateConst(const T* aObj)
+    static CDelegate CreateConst(const T* apObj)
     {
         CDelegate lDelegate;
-        lDelegate.mObj = const_cast< T* >(aObj);
+        lDelegate.mpObj = const_cast< T* >(apObj);
         lDelegate.mFunc = &HelperFunc< T, Method >;
         return lDelegate;
     }
@@ -48,19 +48,19 @@ public:
 
     R operator()(P... aParams)
     {
-        return (*mFunc)(mObj, aParams...);
+        return (*mFunc)(mpObj, aParams...);
     }
 
 
-    bool operator== (const CDelegate& aOther)
+    bool operator== (const CDelegate& arOther)
     {
-        return (mObj == aOther.mObj) && (mFunc == aOther.mFunc);
+        return (mpObj == arOther.mpObj) && (mFunc == arOther.mFunc);
     }
 
 
-    bool operator!= (const CDelegate& aOther)
+    bool operator!= (const CDelegate& arOther)
     {
-        return !(operator==(aOther));
+        return !(operator==(arOther));
     }
 
 
@@ -69,28 +69,29 @@ private:
     
     
     template< R(*Function)(P...) >
-    static R HelperFunc(void* aObj, P... aParams)
+    static R HelperFunc(void* apObj, P... aParams)
     {
-        MAZ_UNUSED_VAR(aObj);
+        MAZ_UNUSED_VAR(apObj);
         return (*Function)(aParams...);
     }
 
 
     template< typename T, R(T::* Method)(P...) >
-    static R HelperFunc(void* aObj, P... aParams)
+    static R HelperFunc(void* apObj, P... aParams)
     {
-        return ((static_cast< T* >(aObj))->*Method)(aParams...);
+        MAZ_ASSERT(apObj != nullptr, "nullptr passed as apObj!");
+        return ((static_cast< T* >(apObj))->*Method)(aParams...);
     }
 
 
     template< typename T, R(T::* Method)(P...) const >
-    static R HelperFunc(void* aObj, P... aParams)
+    static R HelperFunc(void* apObj, P... aParams)
     {
-        return ((static_cast< T* >(aObj))->*Method)(aParams...);
+        return ((static_cast< T* >(apObj))->*Method)(aParams...);
     }
 
 
-    void* mObj;
+    void* mpObj;
     THelperFunc mFunc;
 };
 

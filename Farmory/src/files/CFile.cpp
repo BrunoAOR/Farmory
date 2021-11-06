@@ -8,7 +8,7 @@
 namespace maz
 {
 
-CFile::CFile(const char* aFullPath) : mPath(aFullPath) { ; }
+CFile::CFile(const char* apFullPath) : mpPath(apFullPath) { ; }
 
 
 CFile::~CFile() { ; }
@@ -16,22 +16,22 @@ CFile::~CFile() { ; }
 
 bool CFile::IsOk() const
 {
-	return (nullptr != mPath);
+	return (nullptr != mpPath);
 }
 
 
 const char* CFile::GetFullPath() const
 {
-    return mPath;
+    return mpPath;
 }
 
 
-CTextData CTextData::FromFile(const CFile& aFile)
+CTextData CTextData::FromFile(const CFile& arFile)
 {
 	std::string lContent;
 	std::string lLine;
-	std::ifstream lFStream(aFile.GetFullPath(), std::ifstream::in);
-	MAZ_LOGGER_IF(!lFStream.good(), "[CTextData]::FromFile - Failed to load text file at path '%s'", aFile);
+	std::ifstream lFStream(arFile.GetFullPath(), std::ifstream::in);
+	MAZ_LOGGER_IF(!lFStream.good(), "Failed to load text file at path '%s'", arFile);
 	if (lFStream.good() && lFStream.is_open())
 	{
 		std::stringstream lSStream;
@@ -47,7 +47,7 @@ CTextData CTextData::FromFile(const CFile& aFile)
 
 
 CTextData::CTextData() { ; }
-CTextData::CTextData(const std::string& aData) : mData(aData) { ; }
+CTextData::CTextData(const std::string& arData) : mData(arData) { ; }
 CTextData::~CTextData() { ; }
 
 
@@ -63,54 +63,54 @@ const char* CTextData::GetData() const
 }
 
 
-CImageData CImageData::FromFile(const CFile& aFile)
+CImageData CImageData::FromFile(const CFile& arFile)
 {
 	CImageData lImageData;
-	if (aFile.IsOk())
+	if (arFile.IsOk())
 	{
 		stbi_set_flip_vertically_on_load(true);
-		lImageData.mData = stbi_load(aFile.GetFullPath(), &lImageData.mWidth, &lImageData.mHeight, &lImageData.mChannelsCount, 0);
-		MAZ_LOGGER_IF(nullptr == lImageData.mData, "[CImageData]::FromFile - Failed to load image file at path '%s'. Error: %s", aFile, stbi_failure_reason());
+		lImageData.mpData = stbi_load(arFile.GetFullPath(), &lImageData.mWidth, &lImageData.mHeight, &lImageData.mChannelsCount, 0);
+		MAZ_LOGGER_IF(nullptr == lImageData.mpData, "Failed to load image file at path '%s'. Error: %s", arFile, stbi_failure_reason());
 	}
 	return lImageData;
 }
 
 
-CImageData::CImageData() : mData(nullptr), mWidth(0), mHeight(0), mChannelsCount(0) { ; }
-CImageData::CImageData(unsigned char* aData) : mData(aData), mWidth(0), mHeight(0), mChannelsCount(0) { ; }
+CImageData::CImageData() : mpData(nullptr), mWidth(0), mHeight(0), mChannelsCount(0) { ; }
+CImageData::CImageData(unsigned char* apData) : mpData(apData), mWidth(0), mHeight(0), mChannelsCount(0) { ; }
 
 
-CImageData::CImageData(CImageData&& aOther) : mData(aOther.mData), mWidth(aOther.mWidth), mHeight(aOther.mHeight), mChannelsCount(aOther.mChannelsCount)
+CImageData::CImageData(CImageData&& arrOther) : mpData(arrOther.mpData), mWidth(arrOther.mWidth), mHeight(arrOther.mHeight), mChannelsCount(arrOther.mChannelsCount)
 {
-	if (this != &aOther)
+	if (this != &arrOther)
 	{ 
-		aOther.mData = nullptr;
-		aOther.mWidth = 0;
-		aOther.mHeight = 0;
-		aOther.mChannelsCount = 0;
+		arrOther.mpData = nullptr;
+		arrOther.mWidth = 0;
+		arrOther.mHeight = 0;
+		arrOther.mChannelsCount = 0;
 	}
 }
 
 
 CImageData::~CImageData()
 {
-    if (nullptr != mData)
+    if (nullptr != mpData)
     {
-        stbi_image_free(mData);
-        mData = nullptr;
+        stbi_image_free(mpData);
+        mpData = nullptr;
     }
 }
 
 
 bool CImageData::IsOk() const
 {
-	return (nullptr != mData);
+	return (nullptr != mpData);
 }
 
 
 unsigned char* CImageData::GetData() const
 {
-    return mData;
+    return mpData;
 }
 
 

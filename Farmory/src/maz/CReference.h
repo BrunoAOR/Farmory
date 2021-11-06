@@ -1,10 +1,7 @@
 #ifndef _H_C_REFERENCE_
 #define _H_C_REFERENCE_
 
-#define MAZ_LOG_VERBOSE
-
 #include "CReferenceBase.h"
-#include "globals.h"
 
 
 namespace maz
@@ -22,10 +19,10 @@ class CReference
 public:
 	CReference();
 	virtual ~CReference();
-	CReference(const CReference& source);
+	CReference(const CReference& arSource);
 	template<typename U>
-	CReference(const CReference<U>& source);
-	CReference& operator=(const CReference& source);
+	CReference(const CReference<U>& arSource);
+	CReference& operator=(const CReference& arSource);
 
 	template<typename U>
 	bool is_castable_as() const;
@@ -41,7 +38,7 @@ public:
 	T* operator->();
 
 private:
-	CReference(std::list<CReferenceBase*>* referencesList, void* dataPtr);
+	CReference(std::list<CReferenceBase*>* apReferencesList, void* apDataPtr);
 };
 
 
@@ -49,56 +46,56 @@ template<typename T>
 CReference<T>::CReference()
 	: CReferenceBase()
 {
-	REFERENCE_LOG("[CReference]::CReference - default constructor");
+	REFERENCE_LOG("Default constructor");
 }
 
 
 template<typename T>
-CReference<T>::CReference(std::list<CReferenceBase*>* referencesList, void* dataPtr)
-	: CReferenceBase(referencesList, dataPtr)
+CReference<T>::CReference(std::list<CReferenceBase*>* apReferencesList, void* apDataPtr)
+	: CReferenceBase(apReferencesList, apDataPtr)
 {
-	REFERENCE_LOG("[CReference]::CReference - params constructor");
+	REFERENCE_LOG("Params constructor");
 }
 
 
 template<typename T>
 CReference<T>::~CReference()
 {
-	REFERENCE_LOG("[CReference]::~CReference - destructor");
+	REFERENCE_LOG("Destructor");
 	// CReferenceBase will call removeReference upon destruction.
 }
 
 
 template<typename T>
-CReference<T>::CReference(const CReference& source)
-	: CReferenceBase(source.m_referencesList, source.m_dataPtr)
+CReference<T>::CReference(const CReference& arSource)
+	: CReferenceBase(arSource.mpReferencesList, arSource.mpData)
 {
-	REFERENCE_LOG("[CReference]::CReference - copy constructor");
+	REFERENCE_LOG("Copy constructor");
 }
 
 
 template<typename T>
 template<typename U>
-CReference<T>::CReference(const CReference<U>& source)
-	: CReferenceBase(source.m_referencesList, source.m_dataPtr)
+CReference<T>::CReference(const CReference<U>& arSource)
+	: CReferenceBase(arSource.mpReferencesList, arSource.mpData)
 {
-	REFERENCE_LOG("[CReference]::CReference - generalized copy constructor");
+	REFERENCE_LOG("Generalized copy constructor");
 	// This is only added to cause a compile-time error in case no implicit conversion exists to convert a U* into a T*
-	const T* ptr = static_cast<U*>(source.m_dataPtr);
+	const T* ptr = static_cast<U*>(arSource.mpData);
 }
 
 
 template<typename T>
-CReference<T>& CReference<T>::operator=(const CReference& source)
+CReference<T>& CReference<T>::operator=(const CReference& arSource)
 {
-	REFERENCE_LOG("[CReference]::operator= - copy assignment");
-	if (&source == this)
+	REFERENCE_LOG("Copy assignment");
+	if (&arSource == this)
 	{
 		return *this;
 	}
 	reset();
-	m_referencesList = source.m_referencesList;
-	m_dataPtr = source.m_dataPtr;
+	mpReferencesList = arSource.mpReferencesList;
+	mpData = arSource.mpData;
 	addReference();
 	return *this;
 }
@@ -108,7 +105,7 @@ template<typename T>
 template<typename U>
 bool CReference<T>::is_castable_as() const
 {
-	return (dynamic_cast<U*>(static_cast<T*>(this->m_dataPtr)));
+	return (dynamic_cast<U*>(static_cast<T*>(this->mpData)));
 }
 
 
@@ -116,7 +113,7 @@ template<typename T>
 template<typename U>
 CReference<U> CReference<T>::static_reference_cast() const
 {
-	return CReference<U>(this->m_referencesList, this->m_dataPtr);
+	return CReference<U>(this->mpReferencesList, this->mpData);
 }
 
 
@@ -124,9 +121,9 @@ template<typename T>
 template<typename U>
 CReference<U> CReference<T>::dynamic_reference_cast() const
 {
-	if (dynamic_cast<U*>(static_cast<T*>(this->m_dataPtr)))
+	if (dynamic_cast<U*>(static_cast<T*>(this->mpData)))
 	{
-		return CReference<U>(this->m_referencesList, this->m_dataPtr);
+		return CReference<U>(this->mpReferencesList, this->mpData);
 	}
 	else
 	{
@@ -138,34 +135,34 @@ CReference<U> CReference<T>::dynamic_reference_cast() const
 template<typename T>
 T* CReference<T>::get()
 {
-	return static_cast<T*>(m_dataPtr);
+	return static_cast<T*>(mpData);
 }
 
 template<typename T>
 const T& CReference<T>::operator*() const
 {
-	return *(static_cast<T*>(m_dataPtr));
+	return *(static_cast<T*>(mpData));
 }
 
 
 template<typename T>
 T& CReference<T>::operator*()
 {
-	return *(static_cast<T*>(m_dataPtr));
+	return *(static_cast<T*>(mpData));
 }
 
 
 template<typename T>
 const T* CReference<T>::operator->() const
 {
-	return static_cast<T*>(m_dataPtr);
+	return static_cast<T*>(mpData);
 }
 
 
 template<typename T>
 T* CReference<T>::operator->()
 {
-	return static_cast<T*>(m_dataPtr);
+	return static_cast<T*>(mpData);
 }
 
 } // maz

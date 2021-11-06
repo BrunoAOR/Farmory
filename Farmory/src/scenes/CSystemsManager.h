@@ -13,7 +13,7 @@ class CGameObjectsManager;
 class CSystemsManager
 {
 public:
-    CSystemsManager(CGameObjectsManager& aGameObjectsManager);
+    CSystemsManager(CGameObjectsManager& arGameObjectsManager);
     ~CSystemsManager();
 
     void Shutdown();
@@ -22,7 +22,7 @@ public:
     bool RegisterSystem();
 
 private:
-    CGameObjectsManager& mGameObjectsManager;
+    CGameObjectsManager& mrGameObjectsManager;
     std::array<ISystem*, kMaxSystemsCount> mSystems;
     uint16 mSystemsCount;
 };

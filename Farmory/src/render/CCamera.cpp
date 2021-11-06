@@ -93,27 +93,27 @@ void CCamera::SetCameraMode(ECameraMode aCameraMode)
 }
 
 
-void CCamera::SetPosition(const TVec3& aPosition)
+void CCamera::SetPosition(const TVec3& arPosition)
 {
-    mPos = aPosition;
+    mPos = arPosition;
     RebuildViewMatrix();
 }
 
 
-bool CCamera::SetLookAt(const TVec3& aFront, const TVec3& aUp)
+bool CCamera::SetLookAt(const TVec3& arFront, const TVec3& arUp)
 {
     bool lOk = true;
-    MAZ_ASSERT(!IsZero(aFront), "[CCamera]::SetLookAt - Argument aFront is a zero vector. Operation will not proceed!");
-    lOk = lOk && !IsZero(aFront);
-    MAZ_ASSERT(!IsZero(aUp), "[CCamera]::SetLookAt - Argument aUp is a zero vector. Operation will not proceed!");
-    lOk = lOk && !IsZero(aUp);
-    MAZ_ASSERT(!lOk || (!IsApproxEq(1, std::abs(glm::dot(aFront, aUp)))), "[CCamera]::SetLookAt - Arguments aFront and aUp shall not be parallel to each other! Operation will not proceed!");
-    lOk = lOk && !IsApproxEq(1, std::abs(glm::dot(aFront, aUp)));
+    MAZ_ASSERT(!IsZero(arFront), "Argument aFront is a zero vector. Operation will not proceed!");
+    lOk = lOk && !IsZero(arFront);
+    MAZ_ASSERT(!IsZero(arUp), "Argument aUp is a zero vector. Operation will not proceed!");
+    lOk = lOk && !IsZero(arUp);
+    MAZ_ASSERT(!lOk || (!IsApproxEq(1, std::abs(glm::dot(arFront, arUp)))), "Arguments aFront and aUp shall not be parallel to each other! Operation will not proceed!");
+    lOk = lOk && !IsApproxEq(1, std::abs(glm::dot(arFront, arUp)));
 
     if (lOk)
     {
-        mFront = aFront;
-        mUp = aUp;
+        mFront = arFront;
+        mUp = arUp;
         RebuildViewMatrix();
     }
 
@@ -124,9 +124,9 @@ bool CCamera::SetLookAt(const TVec3& aFront, const TVec3& aUp)
 bool CCamera::SetClippingPlanes(float aNearDistance, float aFarDistance)
 {
     bool lOk = true;
-    MAZ_ASSERT((aNearDistance >= 0), "[CCamera]::SetClippingPlanes - Argument aNearDistance must be equal or larger than zero. Operation will not proceed!")
+    MAZ_ASSERT((aNearDistance >= 0), "Argument aNearDistance must be equal or larger than zero. Operation will not proceed!")
     lOk = lOk && (aNearDistance >= 0);
-    MAZ_ASSERT((aNearDistance < aFarDistance), "[CCamera]::SetClippingPlanes - Argument aFarDistance must be larger than aNearDistance. Operation will not proceed!")
+    MAZ_ASSERT((aNearDistance < aFarDistance), "Argument aFarDistance must be larger than aNearDistance. Operation will not proceed!")
     lOk = lOk && (aNearDistance < aFarDistance);
     
     if (lOk)
@@ -192,7 +192,7 @@ void CCamera::RebuildProjMatrix(ECameraMode aMode)
 
 void CCamera::OnFramebufferResized(int aWidth, int aHeight)
 {
-    MAZ_LOGGER("CCamera::OnFramebufferResized - Old: %.0fx%.0f | New: %dx%d", mWidth, mHeight, aWidth, aHeight);
+    MAZ_LOGGER("Old: %.0fx%.0f | New: %dx%d", mWidth, mHeight, aWidth, aHeight);
     mWidth  = static_cast< float >(aWidth);
     mHeight = static_cast< float >(aHeight);
     RebuildProjMatrix(mMode);

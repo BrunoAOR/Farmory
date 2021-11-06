@@ -12,9 +12,9 @@ class CFixedSizeString
 {
 public:
     CFixedSizeString();
-    CFixedSizeString(const char* aSource);
+    CFixedSizeString(const char* apSource);
     template<uint8 OTHER_SIZE>
-    CFixedSizeString(CFixedSizeString<OTHER_SIZE> aSource);
+    CFixedSizeString(const CFixedSizeString<OTHER_SIZE>& arSource);
     ~CFixedSizeString();
 
     uint8 GetSize() const;
@@ -36,25 +36,25 @@ inline CFixedSizeString<SIZE>::CFixedSizeString()
 
 
 template<uint8 SIZE>
-CFixedSizeString<SIZE>::CFixedSizeString(const char* aSource)
+CFixedSizeString<SIZE>::CFixedSizeString(const char* apSource)
 {
-    MAZ_ASSERT(aSource != nullptr, "[CFixedSizeString]::CFixedSizeString - Called with a nullptr source!");
-    const uint32 lSourceSize = static_cast<uint32>(strlen(aSource));
+    MAZ_ASSERT(apSource != nullptr, "Called with a nullptr source!");
+    const uint32 lSourceSize = static_cast<uint32>(strlen(apSource));
     MAZ_ASSERT(lSourceSize < SIZE - 1, "The size of the source string (%u) may not be larger than the size of the CFixedSizeString (%hhu) (minus the null terminator). The source string will be clamped!", lSourceSize, SIZE);
     const uint8 lCharsToCopy = static_cast<uint8>(Min<uint32>(lSourceSize, SIZE - 1));
-    strncpy_s(mBuffer, aSource, lCharsToCopy);
+    strncpy_s(mBuffer, apSource, lCharsToCopy);
     mBuffer[lCharsToCopy] = '\0';
 }
 
 
 template<uint8 SIZE>
 template<uint8 OTHER_SIZE>
-inline CFixedSizeString<SIZE>::CFixedSizeString(CFixedSizeString<OTHER_SIZE> aSource)
+inline CFixedSizeString<SIZE>::CFixedSizeString(const CFixedSizeString<OTHER_SIZE>& arSource)
 {
-    const uint8 lSourceSize = aSource.GetSize();
+    const uint8 lSourceSize = arSource.GetSize();
     MAZ_ASSERT(lSourceSize < SIZE - 1, "The size of the source string (%hhu) may not be larger than the size of the CFixedSizeString (%hhu) (minus the null terminator). The source string will be clamped!", lSourceSize, SIZE);
     const uint8 lCharsToCopy = Min<uint32>(lSourceSize, SIZE - 1);
-    strncpy(mBuffer, aSource.c_str(), lCharsToCopy);
+    strncpy(mBuffer, arSource.c_str(), lCharsToCopy);
     mBuffer[lCharsToCopy] = '\0';
 }
 

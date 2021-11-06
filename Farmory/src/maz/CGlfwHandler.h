@@ -26,7 +26,7 @@ public:
     static bool IsOk();
 
     // Windows
-    static bool CreateGlWindow(int aWindowWidth, int aWindowHeight, const char* aWindowName);
+    static bool CreateGlWindow(int aWindowWidth, int aWindowHeight, const char* apWindowName);
     static GLFWwindow* GetWindow();
     static bool IsWindowCloseRequested();
     static void PollEvents();
@@ -56,14 +56,14 @@ private:
 
     static void LogInfo();
     static void SetCallbacks();
-    static void OnFramebufferResized(GLFWwindow* aWindow, int aWidth, int aHeight);
-    static void OnKeyboardState(GLFWwindow* aWindow, int aKey, int aScancode, int aAction, int aModifierBits);
-    static void OnMousePosition(GLFWwindow* aWindow, double aXPos, double aYPos);
-    static void OnMouseScroll  (GLFWwindow* aWindow, double aXOffset, double aYOffset);
+    static void OnFramebufferResized(GLFWwindow* apWindow, int aWidth, int aHeight);
+    static void OnKeyboardState(GLFWwindow* apWindow, int aKey, int aScancode, int aAction, int aModifierBits);
+    static void OnMousePosition(GLFWwindow* apWindow, double aXPos, double aYPos);
+    static void OnMouseScroll  (GLFWwindow* apWindow, double aXOffset, double aYOffset);
 
 private:
     static bool sOk;
-    static GLFWwindow* sWindow;
+    static GLFWwindow* spWindow;
     
     static std::vector< FramebufferResizedCallback > sWindowResizedCallbacks;
     static std::vector< KeyboardStateCallback      > sKeyboardStateCallbacks;

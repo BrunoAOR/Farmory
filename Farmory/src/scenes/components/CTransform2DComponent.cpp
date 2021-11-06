@@ -5,8 +5,8 @@
 namespace maz
 {
 
-CTransform2DComponent::CTransform2DComponent(CReference<CGameObject>& aOwner)
-    : CComponentBase(aOwner)
+CTransform2DComponent::CTransform2DComponent(CReference<CGameObject>& arOwner)
+    : CComponentBase(arOwner)
     , mWorldTransformDirty(true)
     , mModelMatrix(1.0f)
 {
@@ -26,11 +26,11 @@ const TVec2& CTransform2DComponent::GetTranslation() const
 }
 
 
-void CTransform2DComponent::SetTranslation(const TVec2& aTranslation)
+void CTransform2DComponent::SetTranslation(const TVec2& arTranslation)
 {
-    if (mLocalTransform.GetTranslation() != aTranslation)
+    if (mLocalTransform.GetTranslation() != arTranslation)
     {
-        mLocalTransform.SetTranslation(aTranslation);
+        mLocalTransform.SetTranslation(arTranslation);
         mWorldTransformDirty = true;
     }
 }
@@ -58,17 +58,17 @@ const TVec2& CTransform2DComponent::GetScale() const
 }
 
 
-void CTransform2DComponent::SetScale(const TVec2& aScale)
+void CTransform2DComponent::SetScale(const TVec2& arScale)
 {
-    if (mLocalTransform.GetScale() != aScale)
+    if (mLocalTransform.GetScale() != arScale)
     {
-        mLocalTransform.SetScale(aScale);
+        mLocalTransform.SetScale(arScale);
         mWorldTransformDirty = true;
     }
 }
 
 
-void CTransform2DComponent::SetParentTransform(CReference<CTransform2DComponent>& aParentTransform)
+void CTransform2DComponent::SetParentTransform(CReference<CTransform2DComponent>& arParentTransform)
 {
     // Setting the current parent as parent is an acceptable request, which results in the transform being moved to the end of the parent's hierarchy
 
@@ -79,9 +79,9 @@ void CTransform2DComponent::SetParentTransform(CReference<CTransform2DComponent>
     }
 
     // Update new hierarchy info
-    if (aParentTransform)
+    if (arParentTransform)
     {
-        aParentTransform->addChildTransform(GetThis());
+        arParentTransform->addChildTransform(GetThis());
     }
 }
 
@@ -132,76 +132,76 @@ bool CTransform2DComponent::IsWorldTransformDirty() const
 }
 
 
-bool CTransform2DComponent::addChildTransform(CReference<CTransform2DComponent>& aChildTransform)
+bool CTransform2DComponent::addChildTransform(CReference<CTransform2DComponent>& arChildTransform)
 {
     if (mNumChildren == 0)
     {
-        mFirstChild = aChildTransform;
+        mFirstChild = arChildTransform;
     }
     else
     {
-        CReference<CTransform2DComponent> lastChild = mFirstChild;
+        CReference<CTransform2DComponent> lLastChild = mFirstChild;
 
-        for (uint16 childIdx = 0; childIdx < mNumChildren - 1; ++childIdx)
+        for (uint16 lChildIdx = 0; lChildIdx < mNumChildren - 1; ++lChildIdx)
         {
-            lastChild = lastChild->mNextSibling;
+            lLastChild = lLastChild->mNextSibling;
         }
 
-        MAZ_ASSERT(!lastChild->mNextSibling, "The last child already has a nextSibling!");
-        lastChild->mNextSibling = aChildTransform;
+        MAZ_ASSERT(!lLastChild->mNextSibling, "The last child already has a nextSibling!");
+        lLastChild->mNextSibling = arChildTransform;
     }
 
-    aChildTransform->mParent = GetThis();
+    arChildTransform->mParent = GetThis();
     ++mNumChildren;
 
     return true;
 }
 
 
-bool CTransform2DComponent::removeChildTransform(CReference<CTransform2DComponent>& aChildTransform)
+bool CTransform2DComponent::removeChildTransform(CReference<CTransform2DComponent>& arChildTransform)
 {
     MAZ_ASSERT(mFirstChild, "Attempting to remove a child from a CTransform2DComponent which has no children!");
-    CReference<CTransform2DComponent> previousChild;
-    CReference<CTransform2DComponent> currentChild = mFirstChild;
+    CReference<CTransform2DComponent> lPreviousChild;
+    CReference<CTransform2DComponent> lCurrentChild = mFirstChild;
 
-    bool found = false;
-    for (uint16 childIdx = 0; (childIdx < mNumChildren) && !found; ++childIdx)
+    bool lFound = false;
+    for (uint16 childIdx = 0; (childIdx < mNumChildren) && !lFound; ++childIdx)
     {
-        found = (currentChild == aChildTransform);
-        if (found)
+        lFound = (lCurrentChild == arChildTransform);
+        if (lFound)
         {
             // Reconnect siblings chain
-            if (previousChild)
+            if (lPreviousChild)
             {
-                previousChild->mNextSibling = currentChild->mNextSibling;
+                lPreviousChild->mNextSibling = lCurrentChild->mNextSibling;
             }
             else
             {
-                MAZ_ASSERT(currentChild == mFirstChild, "Child transform to remove is not the mFirstChild, but there is not previousChild!");
-                mFirstChild = aChildTransform->mNextSibling;
+                MAZ_ASSERT(lCurrentChild == mFirstChild, "Child transform to remove is not the mFirstChild, but there is not previousChild!");
+                mFirstChild = arChildTransform->mNextSibling;
             }
             
             // Update child counter
             --mNumChildren;
 
             // Clean up removed child
-            aChildTransform->mParent = CReference<CTransform2DComponent>();
-            aChildTransform->mNextSibling = CReference<CTransform2DComponent>();
-            aChildTransform->mWorldTransformDirty = true;
+            arChildTransform->mParent = CReference<CTransform2DComponent>();
+            arChildTransform->mNextSibling = CReference<CTransform2DComponent>();
+            arChildTransform->mWorldTransformDirty = true;
         }
 
         // Move forward in children hierarchy
-        previousChild = currentChild;
-        currentChild = currentChild->mNextSibling;
+        lPreviousChild = lCurrentChild;
+        lCurrentChild = lCurrentChild->mNextSibling;
     }
 
-    return found;
+    return lFound;
 }
 
 
-void CTransform2DComponent::SetWorldTransform(const STransform2D& aTransform)
+void CTransform2DComponent::SetWorldTransform(const STransform2D& arTransform)
 {
-    mWorldTransform = aTransform;
+    mWorldTransform = arTransform;
 }
 
 

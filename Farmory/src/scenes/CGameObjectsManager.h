@@ -24,7 +24,7 @@ public:
         CReference<CGameObject> Get();
 
     private:
-        CModifiedGameObjectsIterator(const CGameObjectsBuffer::CBufferIterator& aIterator);
+        CModifiedGameObjectsIterator(const CGameObjectsBuffer::CBufferIterator& arIterator);
 
     private:
         CGameObjectsBuffer::CBufferIterator mInternalIterator;
@@ -32,16 +32,16 @@ public:
 
 
 public:
-    CGameObjectsManager(CComponentsManager& aComponentsManager);
+    CGameObjectsManager(CComponentsManager& arComponentsManager);
 
     void Shutdown();
     void RefreshGameObjects();
-    CReference<CGameObject> CreateGameObject(const CFixedString32& aName);
+    CReference<CGameObject> CreateGameObject(const CFixedString32& arName);
     bool RequestDestroyGameObject(const uint16 aGameObjectId);
     CModifiedGameObjectsIterator GetModifiedGameObjectsIterator();
 
 private:
-    CComponentsManager& mComponentsManager;
+    CComponentsManager& mrComponentsManager;
     CGameObjectsBuffer mGameObjectsBuffer;
 };
 

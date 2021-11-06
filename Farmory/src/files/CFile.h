@@ -10,21 +10,21 @@ namespace maz
 class CFile
 {
 public:
-    explicit CFile(const char* aFullPath);
+    explicit CFile(const char* apFullPath);
     ~CFile();
 
     bool IsOk() const;
     const char* GetFullPath() const;
 
 private:
-    const char* mPath;
+    const char* mpPath;
 };
 
 
 class CTextData
 {
 public:
-    static CTextData FromFile(const CFile& aFile);
+    static CTextData FromFile(const CFile& arFile);
     ~CTextData();
 
     bool IsOk() const;
@@ -32,7 +32,7 @@ public:
 
 private:
     CTextData();
-    explicit CTextData(const std::string& aData);
+    explicit CTextData(const std::string& arData);
 
 private:
     std::string mData;
@@ -42,8 +42,8 @@ private:
 class CImageData
 {
 public:
-    static CImageData FromFile(const CFile& aFile);
-    CImageData(CImageData&& aOther);
+    static CImageData FromFile(const CFile& arFile);
+    CImageData(CImageData&& arrOther);
     ~CImageData();
 
     bool IsOk() const;
@@ -54,10 +54,10 @@ public:
 
 private:
     CImageData();
-    explicit CImageData(unsigned char* aData);
+    explicit CImageData(unsigned char* apData);
 
 private:
-    unsigned char* mData;
+    unsigned char* mpData;
     int mWidth;
     int mHeight;
     int mChannelsCount;

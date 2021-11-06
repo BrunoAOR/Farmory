@@ -1,20 +1,18 @@
 #include "CReferenceBase.h"
 
-#include <assert.h>
-
 
 namespace maz
 {
 
-bool operator==(const CReferenceBase& lhs, const CReferenceBase& rhs)
+bool operator==(const CReferenceBase& arLhs, const CReferenceBase& arRhs)
 {
-	return (lhs.m_referencesList && rhs.m_referencesList && (lhs.m_referencesList == rhs.m_referencesList));
+	return (arLhs.mpReferencesList && arRhs.mpReferencesList && (arLhs.mpReferencesList == arRhs.mpReferencesList));
 }
 
 
-bool operator!=(const CReferenceBase& lhs, const CReferenceBase& rhs)
+bool operator!=(const CReferenceBase& arLhs, const CReferenceBase& arRhs)
 {
-	return !operator==(lhs, rhs);
+	return !operator==(arLhs, arRhs);
 }
 
 
@@ -23,8 +21,8 @@ CReferenceBase::CReferenceBase()
 }
 
 
-CReferenceBase::CReferenceBase(std::list<CReferenceBase*>* referencesList, void* dataPtr)
-	: m_referencesList(referencesList), m_dataPtr(dataPtr)
+CReferenceBase::CReferenceBase(std::list<CReferenceBase*>* apReferencesList, void* apData)
+	: mpReferencesList(apReferencesList), mpData(apData)
 {
 	addReference();
 }
@@ -38,32 +36,32 @@ CReferenceBase::~CReferenceBase()
 
 CReferenceBase::operator bool() const
 {
-	return m_dataPtr != nullptr;
+	return mpData != nullptr;
 }
 
 
 void CReferenceBase::addReference()
 {
-	if (m_referencesList != nullptr)
+	if (mpReferencesList != nullptr)
 	{
-		m_referencesList->push_back(this);
+		mpReferencesList->push_back(this);
 	}
 }
 
 
 void CReferenceBase::reset()
 {
-	if (m_referencesList != nullptr)
+	if (mpReferencesList != nullptr)
 	{
-		std::list<CReferenceBase*>::iterator it = std::find(m_referencesList->begin(), m_referencesList->end(), this);
-		assert(it != m_referencesList->end());
-		m_referencesList->erase(it);
-		if (m_referencesList->size() == 0)
+		std::list<CReferenceBase*>::iterator it = std::find(mpReferencesList->begin(), mpReferencesList->end(), this);
+		MAZ_ASSERT(it != mpReferencesList->end(), "Couldn't find the current CReferenceBase in the mpReferenceList!");
+		mpReferencesList->erase(it);
+		if (mpReferencesList->size() == 0)
 		{
-			delete m_referencesList;
+			delete mpReferencesList;
 		}
-		m_referencesList = nullptr;
-		m_dataPtr = nullptr;
+		mpReferencesList = nullptr;
+		mpData = nullptr;
 	}
 }
 

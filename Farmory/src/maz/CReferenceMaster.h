@@ -2,7 +2,6 @@
 #define _H_C_REFERENCE_OWNER_
 
 #include <list>
-#include <assert.h>
 #include "globals.h"
 #include "CReference.h"
 #include "CReferenceBase.h"
@@ -17,14 +16,14 @@ class CReferenceMaster final
 {
 public:
 	CReferenceMaster();
-	CReferenceMaster(T* dataPtr);
+	CReferenceMaster(T* apData);
 	~CReferenceMaster();
-	CReferenceMaster(const CReferenceMaster& source) = delete;
-	CReferenceMaster(CReferenceMaster&& source);
+	CReferenceMaster(const CReferenceMaster& arSource) = delete;
+	CReferenceMaster(CReferenceMaster&& arrSource);
 	template<typename U>
-	CReferenceMaster(CReferenceMaster<U>&& source);
-	CReferenceMaster& operator=(const CReferenceMaster& source) = delete;
-	CReferenceMaster& operator=(CReferenceMaster&& source);
+	CReferenceMaster(CReferenceMaster<U>&& arrSource);
+	CReferenceMaster& operator=(const CReferenceMaster& arSource) = delete;
+	CReferenceMaster& operator=(CReferenceMaster&& arrSource);
 
 	int GetRefCount() const;
 	CReference<T> GetReference() const;
@@ -40,64 +39,64 @@ template<typename T, bool MEMORY_OWNER>
 CReferenceMaster<T, MEMORY_OWNER>::CReferenceMaster()
 	: CReference<T>()
 {
-	REFERENCE_LOG("[CReferenceMaster]::CReferenceMaster - default constructor");
+	REFERENCE_LOG("Default constructor");
 }
 
 
 template<typename T, bool MEMORY_OWNER>
-CReferenceMaster<T, MEMORY_OWNER>::CReferenceMaster(T* dataPtr)
-	: CReference<T>(MAZ_NEW(std::list<CReferenceBase*>), static_cast<void*>(dataPtr))
+CReferenceMaster<T, MEMORY_OWNER>::CReferenceMaster(T* apData)
+	: CReference<T>(MAZ_NEW(std::list<CReferenceBase*>), static_cast<void*>(apData))
 {
-	REFERENCE_LOG("[CReferenceMaster]::CReferenceMaster - params constructor");
+	REFERENCE_LOG("Params constructor");
 }
 
 
 template<typename T, bool MEMORY_OWNER>
 CReferenceMaster<T, MEMORY_OWNER>::~CReferenceMaster()
 {
-	REFERENCE_LOG("[CReferenceMaster]::~CReferenceMaster - destructor");
+	REFERENCE_LOG("Destructor");
 	this->DeleteReferences();
 }
 
 
 template<typename T, bool MEMORY_OWNER>
-CReferenceMaster<T, MEMORY_OWNER>::CReferenceMaster(CReferenceMaster&& source)
-	: CReference<T>(source.m_referencesList, source.m_dataPtr)
+CReferenceMaster<T, MEMORY_OWNER>::CReferenceMaster(CReferenceMaster&& arrSource)
+	: CReference<T>(arrSource.mpReferencesList, arrSource.mpData)
 {
-	REFERENCE_LOG("[CReferenceMaster]::CReferenceMaster - move constructor");
-	source.reset();
+	REFERENCE_LOG("Move constructor");
+	arrSource.reset();
 }
 
 
 template<typename T, bool MEMORY_OWNER>
 template<typename U>
-CReferenceMaster<T, MEMORY_OWNER>::CReferenceMaster(CReferenceMaster<U>&& source)
-	: CReference<T>(source.m_referencesList, source.m_dataPtr)
+CReferenceMaster<T, MEMORY_OWNER>::CReferenceMaster(CReferenceMaster<U>&& arrSource)
+	: CReference<T>(arrSource.mpReferencesList, arrSource.mpData)
 {
-	REFERENCE_LOG("[CReferenceMaster]::CReferenceMaster - generalized move constructor");
+	REFERENCE_LOG("Generalized move constructor");
 	// This is only added to cause a compile-time error in case no implicit conversion exists to convert a U* into a T*
-	T* ptr = source.get();
-	MAZ_UNUSED_VAR(ptr);
+	T* pData = arrSource.get();
+	MAZ_UNUSED_VAR(pData);
 
 	// This, however IS important
-	source.reset();
+	arrSource.reset();
 }
 
 
 template<typename T, bool MEMORY_OWNER>
-CReferenceMaster<T, MEMORY_OWNER>& CReferenceMaster<T, MEMORY_OWNER>::operator=(CReferenceMaster&& source)
+CReferenceMaster<T, MEMORY_OWNER>& CReferenceMaster<T, MEMORY_OWNER>::operator=(CReferenceMaster&& arrSource)
 {
-	REFERENCE_LOG("[CReferenceMaster]::operator= - move assignment");
-	if (&source == this)
+	REFERENCE_LOG("Move assignment");
+	if (&arrSource == this)
 	{
 		return *this;
 	}
 	this->DeleteReferences();
 
-	this->m_referencesList = source.m_referencesList;
-	this->m_dataPtr = source.m_dataPtr;
+	this->mpReferencesList = arrSource.mpReferencesList;
+	this->mpData = arrSource.mpData;
 	this->addReference();
-	source.reset();
+	arrSource.reset();
 
 	return *this;
 }
@@ -106,14 +105,14 @@ CReferenceMaster<T, MEMORY_OWNER>& CReferenceMaster<T, MEMORY_OWNER>::operator=(
 template<typename T, bool MEMORY_OWNER>
 int CReferenceMaster<T, MEMORY_OWNER>::GetRefCount() const
 {
-	return this->m_referencesList != nullptr ? this->m_referencesList->size() : 0;
+	return this->mpReferencesList != nullptr ? this->mpReferencesList->size() : 0;
 }
 
 
 template<typename T, bool MEMORY_OWNER>
 CReference<T> CReferenceMaster<T, MEMORY_OWNER>::GetReference() const
 {
-	return CReference<T>(this->m_referencesList, this->m_dataPtr);
+	return CReference<T>(this->mpReferencesList, this->mpData);
 }
 
 
@@ -136,29 +135,29 @@ CReference<U> CReferenceMaster<T, MEMORY_OWNER>::GetDynamicCastedReference() con
 template<typename T, bool MEMORY_OWNER>
 void CReferenceMaster<T, MEMORY_OWNER>::DeleteReferences()
 {
-	if (this->m_dataPtr == nullptr || this->m_referencesList == nullptr)
+	if (this->mpData == nullptr || this->mpReferencesList == nullptr)
 	{
-		assert(!this->m_dataPtr && !this->m_referencesList);
+		MAZ_ASSERT(!this->mpData && !this->mpReferencesList, "If mpData is nullptr, then mpREferencesList MUST also be nullptr (and vice versa)!");
 		return;
 	}
 
 	if constexpr (MEMORY_OWNER)
 	{
-		delete static_cast<T*>(this->m_dataPtr);
+		delete static_cast<T*>(this->mpData);
 	}
 
-	for (CReferenceBase* ref : *(this->m_referencesList))
+	for (CReferenceBase* lRef : *(this->mpReferencesList))
 	{
-		if (this != ref)
+		if (this != lRef)
 		{
-			ref->m_dataPtr = nullptr;
-			ref->m_referencesList = nullptr;
+			lRef->mpData = nullptr;
+			lRef->mpReferencesList = nullptr;
 		}
 	}
 	
-	delete this->m_referencesList;
-	this->m_referencesList = nullptr;
-	this->m_dataPtr = nullptr;
+	delete this->mpReferencesList;
+	this->mpReferencesList = nullptr;
+	this->mpData = nullptr;
 }
 
 

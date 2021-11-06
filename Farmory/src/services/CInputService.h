@@ -59,7 +59,7 @@ private:
         TAxisInfo mYAxis;
     };
 
-    void UpdateMouseAxis(TMouseInfo::TAxisInfo& aAxisInfo);
+    void UpdateMouseAxis(TMouseInfo::TAxisInfo& arAxisInfo);
 
     TMouseInfo mMouseInfo;
 };

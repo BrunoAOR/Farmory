@@ -87,7 +87,7 @@ float CInputService::GetMousePosDelta(EMouseAxis aMouseAxis) const
         lDelta = mMouseInfo.mYAxis.mPosOffset;
         break;
     default:
-        MAZ_ERROR("[CInputService]::GetMousePosDelta - Unsupported EMouseAxis value!");
+        MAZ_ERROR("Unsupported EMouseAxis value!");
         break;
     }
     return lDelta;
@@ -106,7 +106,7 @@ float CInputService::GetMouseScrollDelta(EMouseAxis aMouseAxis) const
         lDelta = mMouseInfo.mYAxis.mLastScrollOffset;
         break;
     default:
-        MAZ_ERROR("[CInputService]::GetMouseScrollDelta - Unsupported EMouseAxis value!");
+        MAZ_ERROR("Unsupported EMouseAxis value!");
         break;
     }
     return lDelta;

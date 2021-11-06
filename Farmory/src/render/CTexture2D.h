@@ -24,7 +24,7 @@ public:
 
     bool IsOk() const;
 
-    bool SetImage(const CFile& aImageFile, bool aGenerateMipmaps);
+    bool SetImage(const CFile& arImageFile, bool aGenerateMipmaps);
     
     EWrapMode GetWrapMode(EAxis aAxis) const;
     EMinFilterMode GetMinFilterMode() const;
@@ -38,7 +38,7 @@ public:
     void UnbindTexture();
 
 private:
-    bool Apply(const CImageData& aImageData);
+    bool Apply(const CImageData& arImageData);
 
 private:
     uint32 mId;

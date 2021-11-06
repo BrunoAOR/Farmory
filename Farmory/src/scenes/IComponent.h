@@ -11,7 +11,7 @@ class CGameObject;
 class IComponent
 {
 public:
-    IComponent(CReference<CGameObject>& aOwner);
+    IComponent(CReference<CGameObject>& arOwner);
     virtual ~IComponent();
 
     const CReference<CGameObject> GetOwner() const;
@@ -31,7 +31,7 @@ class CComponentBase
     friend class CComponentManager;
 
 public:
-    CComponentBase(CReference<CGameObject>& aOwner);
+    CComponentBase(CReference<CGameObject>& arOwner);
     virtual ~CComponentBase();
 
 protected:
@@ -43,8 +43,8 @@ private:
 
 
 template<typename COMPONENT_CLASS>
-inline CComponentBase<COMPONENT_CLASS>::CComponentBase(CReference<CGameObject>& aOwner)
-    : IComponent(aOwner)
+inline CComponentBase<COMPONENT_CLASS>::CComponentBase(CReference<CGameObject>& arOwner)
+    : IComponent(arOwner)
 {}
 
 

@@ -18,19 +18,19 @@ namespace Services
 
 namespace
 {
-CServicesManager* gServiceManager = nullptr;
+CServicesManager* gpServiceManager = nullptr;
 } // anonymous
 
 
 bool StartUp()
 {
-    bool lOk = nullptr == gServiceManager;
+    bool lOk = nullptr == gpServiceManager;
     
-    MAZ_ASSERT(nullptr == gServiceManager, "Called for a second time after successful initialization. No action will be performed!");
+    MAZ_ASSERT(nullptr == gpServiceManager, "Called for a second time after successful initialization. No action will be performed!");
     if (lOk)
     {
-        gServiceManager = MAZ_NEW(CServicesManager);
-        lOk = gServiceManager->Init();
+        gpServiceManager = MAZ_NEW(CServicesManager);
+        lOk = gpServiceManager->Init();
     }
     
     return lOk;
@@ -39,19 +39,19 @@ bool StartUp()
 
 void Shutdown()
 {
-    MAZ_ASSERT(nullptr != gServiceManager, "Called without having called StartUp before hand. No action will be performed!");
-    if (nullptr != gServiceManager)
+    MAZ_ASSERT(nullptr != gpServiceManager, "Called without having called StartUp before hand. No action will be performed!");
+    if (nullptr != gpServiceManager)
     {
-        gServiceManager->End();
-        MAZ_DELETE(gServiceManager);
-        gServiceManager = nullptr;
+        gpServiceManager->End();
+        MAZ_DELETE(gpServiceManager);
+        gpServiceManager = nullptr;
     }
 }
 
 
 CServicesManager* GetManager()
 {
-    return gServiceManager;
+    return gpServiceManager;
 }
 
 } // Services

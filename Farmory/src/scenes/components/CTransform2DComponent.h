@@ -20,7 +20,7 @@ struct STransform2D
     {}
 
     const TVec2& GetTranslation() const { return mTranslation; }
-    void SetTranslation(const TVec2& aTranslation) { mTranslation = aTranslation; }
+    void SetTranslation(const TVec2& arTranslation) { mTranslation = arTranslation; }
 
     float GetRotation() const { return mRotation; }
     void SetRotation(const float aRotation)
@@ -37,7 +37,7 @@ struct STransform2D
     }
 
     const TVec2& GetScale() const { return mScale; }
-    void SetScale(const TVec2& aScale) { mScale = aScale; }
+    void SetScale(const TVec2& arScale) { mScale = arScale; }
 
 private:
     TVec2 mTranslation;
@@ -50,7 +50,7 @@ class CTransform2DComponent
     : public CComponentBase<CTransform2DComponent>
 {
 public:
-    CTransform2DComponent(CReference<CGameObject>& aOwner);
+    CTransform2DComponent(CReference<CGameObject>& arOwner);
     ~CTransform2DComponent();
 
     static constexpr EComponentType GetType()
@@ -59,17 +59,17 @@ public:
     }
 
     const TVec2& GetTranslation() const;
-    void SetTranslation(const TVec2& aPosition);
+    void SetTranslation(const TVec2& arPosition);
 
     // Note that CW rotation is negative and CCW rotation is positive
     float GetRotation() const;
     void SetRotation(float aRotation);
 
     const TVec2& GetScale() const;
-    void SetScale(const TVec2& aScale);
+    void SetScale(const TVec2& arScale);
 
     const CReference<CTransform2DComponent>& GetParentTransform() const;
-    void SetParentTransform(CReference<CTransform2DComponent>& aParentTransform);
+    void SetParentTransform(CReference<CTransform2DComponent>& arParentTransform);
 
     const CReference<CTransform2DComponent>& GetNextSiblingTransform() const;
     const CReference<CTransform2DComponent>& GetFirstChildTransform() const;
@@ -81,13 +81,13 @@ public:
     bool IsWorldTransformDirty() const;
 
     // The following public methods should only be accessed by CTransformHierarchySystem
-    void SetWorldTransform(const STransform2D& aTransform);
+    void SetWorldTransform(const STransform2D& arTransform);
     void RebuildModelMatrix();
 
 
 private:
-    bool addChildTransform(CReference<CTransform2DComponent>& aChildTransform);
-    bool removeChildTransform(CReference<CTransform2DComponent>& aChildTransform);
+    bool addChildTransform(CReference<CTransform2DComponent>& arChildTransform);
+    bool removeChildTransform(CReference<CTransform2DComponent>& arChildTransform);
 
 private:
     STransform2D mLocalTransform;

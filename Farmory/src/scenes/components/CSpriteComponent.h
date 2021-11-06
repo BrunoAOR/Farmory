@@ -18,7 +18,7 @@ class CSpriteComponent
     : public CComponentBase<CSpriteComponent>
 {
 public:
-    CSpriteComponent(CReference<CGameObject>& aOwner);
+    CSpriteComponent(CReference<CGameObject>& arOwner);
     ~CSpriteComponent();
 
     static constexpr EComponentType GetType()

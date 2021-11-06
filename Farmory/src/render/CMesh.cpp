@@ -16,7 +16,7 @@ CMesh::CMesh()
 
 CMesh::~CMesh()
 {
-    MAZ_ASSERT(!IsOk(), "[CMesh]::~CMesh - Destructor called on an initialized Mesh without having called 'End'!");
+    MAZ_ASSERT(!IsOk(), "Destructor called on an initialized Mesh without having called 'End'!");
 }
 
 

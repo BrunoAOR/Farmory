@@ -23,15 +23,15 @@ inline bool IsApproxEq(float aLhs, float aRhs, float aMaxDiff = EPSILON_FLOAT)
 }
 
 
-inline bool IsZero(const TVec2& aVec)
+inline bool IsZero(const TVec2& arVec)
 {
-    return (IsApproxEq(aVec.x, 0) && IsApproxEq(aVec.y, 0));
+    return (IsApproxEq(arVec.x, 0) && IsApproxEq(arVec.y, 0));
 }
 
 
-inline bool IsZero(const TVec3& aVec)
+inline bool IsZero(const TVec3& arVec)
 {
-    return (IsApproxEq(aVec.x, 0) && IsApproxEq(aVec.y, 0) && IsApproxEq(aVec.z, 0));
+    return (IsApproxEq(arVec.x, 0) && IsApproxEq(arVec.y, 0) && IsApproxEq(arVec.z, 0));
 }
 
 

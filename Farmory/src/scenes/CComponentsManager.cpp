@@ -48,10 +48,10 @@ void CComponentsManager::RefreshComponents()
 
 bool CComponentsManager::RemoveComponent(EComponentType aComponentType, const uint16 aComponentIndex)
 {
-    CComponentManagerBase* componentManager = mComponentManagers[EnumToNumber(aComponentType)];
-    MAZ_ASSERT(componentManager != nullptr
+    CComponentManagerBase* lpComponentManager = mComponentManagers[EnumToNumber(aComponentType)];
+    MAZ_ASSERT(lpComponentManager != nullptr
         , "Component manager of the desired type (%hu) has not been created been registered!", EnumToNumber(aComponentType));
-    return componentManager->RemoveComponent(aComponentIndex);
+    return lpComponentManager->RemoveComponent(aComponentIndex);
 }
 
 } // maz
