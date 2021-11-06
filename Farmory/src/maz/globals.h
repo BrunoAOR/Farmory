@@ -10,21 +10,21 @@
 
 
 #define MAZ_UNUSED_VAR(var) (var);
-#ifdef DEBUG
+#ifdef MAZ_DEBUG
 #define MAZ_DBG_UNUSED_VAR(var) (var);
 #else
 #define MAZ_DBG_UNUSED_VAR(var) ((void)0);
-#endif // DEBUG
+#endif // MAZ_DEBUG
 
 
 #define MAZ_REL_LOGGER(format, ...) maz::Logger(__FILE__, __LINE__, __FUNCTION__, format, __VA_ARGS__);
-#ifdef DEBUG
+#ifdef MAZ_DEBUG
 #define MAZ_LOGGER(format, ...) maz::Logger(__FILE__, __LINE__, __FUNCTION__, format, __VA_ARGS__);
 #define MAZ_LOGGER_IF(expression, format, ...) if(expression) { maz::Logger(__FILE__, __LINE__, __FUNCTION__, format, __VA_ARGS__); }
 #else
 #define MAZ_LOGGER(format, ...) ((void)0);
 #define MAZ_LOGGER_IF(expression, format, ...) ((void)0);
-#endif // DEBUG
+#endif // MAZ_DEBUG
 
 
 #ifdef MAZ_LOG_VERBOSE
@@ -36,7 +36,7 @@
 #endif
 
 
-#ifdef DEBUG
+#ifdef MAZ_DEBUG
 #define MAZ_NEW(klass, ...) new klass( ## __VA_ARGS__)
 #define MAZ_PLACEMENT_NEW(ptr, klass, ...) new (ptr) klass( ## __VA_ARGS__)
 #define MAZ_DELETE(ptr) delete ptr
@@ -44,16 +44,16 @@
 #define MAZ_NEW(klass, ...) new klass( ## __VA_ARGS__)
 #define MAZ_PLACEMENT_NEW(ptr, klass, ...) new (ptr) klass( ## __VA_ARGS__)
 #define MAZ_DELETE(ptr) delete ptr
-#endif // DEBUG
+#endif // MAZ_DEBUG
 
 
-#ifdef DEBUG
+#ifdef MAZ_DEBUG
 #define MAZ_ASSERT(expression, format, ...) if(!(expression)) maz::Logger(__FILE__, __LINE__, __FUNCTION__, "%s" format, "ASSERT: ", __VA_ARGS__); assert(expression);
 #define MAZ_ERROR(format, ...) maz::Logger(__FILE__, __LINE__, __FUNCTION__, "%s" format, "ERROR: ", __VA_ARGS__); assert(false);
 #else
 #define MAZ_ASSERT(expression, format, ...) ((void)0);
 #define MAZ_ERROR(format, ...) ((void)0);
-#endif // DEBUG
+#endif // MAZ_DEBUG
 
 
 #define EDITOR

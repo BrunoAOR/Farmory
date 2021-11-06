@@ -16,17 +16,17 @@
 #undef  IS_X64
 #endif
 
-#ifdef DEBUG
-#undef DEBUG
-#endif // DEBUG
-#ifdef RELEASE
-#undef RELEASE
-#endif //RELEASE 
+#ifdef MAZ_DEBUG
+#undef MAZ_DEBUG
+#endif // MAZ_DEBUG
+#ifdef MAZ_RELEASE
+#undef MAZ_RELEASE
+#endif //MAZ_RELEASE 
 
 #ifdef _DEBUG
-#define DEBUG
+#define MAZ_DEBUG
 #elif defined (NDEBUG)
-#define RELEASE
+#define MAZ_RELEASE
 #endif // _DEBUG
 
 #endif // !_H_CONFIG_
