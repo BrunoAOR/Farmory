@@ -58,7 +58,7 @@ CDelegate< int, float > GetDel(const CDelegateTest* apObj)
 }
 
 
-void TestMain()
+void LogTypeSizes()
 {
     MAZ_LOGGER("char          : %u", sizeof(char));
     MAZ_LOGGER("short         : %u", sizeof(short));
@@ -81,92 +81,107 @@ void TestMain()
     MAZ_LOGGER(" int64 min: %lld",  MIN_INT64);
     MAZ_LOGGER(" int64 max: %lld",  MAX_INT64);
     MAZ_LOGGER(" float max: %f",    MAX_FLOAT);
+}
 
-    {
-        CDelegateTest l5(5);
-        CDelegateTest l10(10);
 
-        using TMyOldDel = CDelegateHolder< int, float >;
-        using TMyNewDel = CDelegate< int, float >;
-        using TTestDel = CDelegate< float, float, int >;
-        using TEmptyDel = CDelegate< float >;
-        TTestDel lHopeful = TTestDel::Create< &test >();
-        float lHopefulRes = lHopeful(1.5, 3);
-        MAZ_UNUSED_VAR(lHopefulRes);
-        TEmptyDel lEmpty = TEmptyDel::Create< &test >();
-        float lEmptyRes = lEmpty();
-        MAZ_UNUSED_VAR(lEmptyRes);
+void TestDelegates()
+{
+    CDelegateTest l5(5);
+    CDelegateTest l10(10);
 
-        //CDelegateHolder< int, float > lDelx;
-        //CDelegateHolder< int, float > lDel5 = BindMethod(&l5, &CDelegateTest::myFunc);
-        TMyOldDel lDel1(&l10, &CDelegateTest::myFunc);
-        TMyOldDel lDel2(test);
-        //TMyOldDel lDel3(&l10, &CDelegateTest::myConstFunc);
-        TMyOldDel lDel4(&CDelegateTest::myStaticFunc);
+    using TMyOldDel = CDelegateHolder< int, float >;
+    using TMyNewDel = CDelegate< int, float >;
+    using TTestDel = CDelegate< float, float, int >;
+    using TEmptyDel = CDelegate< float >;
+    TTestDel lHopeful = TTestDel::Create< &test >();
+    float lHopefulRes = lHopeful(1.5, 3);
+    MAZ_UNUSED_VAR(lHopefulRes);
+    TEmptyDel lEmpty = TEmptyDel::Create< &test >();
+    float lEmptyRes = lEmpty();
+    MAZ_UNUSED_VAR(lEmptyRes);
 
-        int lRes1 = lDel1(1.5);
-        int lRes2 = lDel2(1.5);
-        //int lRes3 = lDel3(1.5);
-        int lRes4 = lDel4(1.5);
-        MAZ_UNUSED_VAR(lRes1);
-        MAZ_UNUSED_VAR(lRes2);
-        //MAZ_UNUSED_VAR(lRes3);
-        MAZ_UNUSED_VAR(lRes4);
+    //CDelegateHolder< int, float > lDelx;
+    //CDelegateHolder< int, float > lDel5 = BindMethod(&l5, &CDelegateTest::myFunc);
+    TMyOldDel lDel1(&l10, &CDelegateTest::myFunc);
+    TMyOldDel lDel2(test);
+    //TMyOldDel lDel3(&l10, &CDelegateTest::myConstFunc);
+    TMyOldDel lDel4(&CDelegateTest::myStaticFunc);
 
-        using TFunc = int(CDelegateTest::*)(float);
-        TFunc lF = &CDelegateTest::myFunc;
-        int lFuncRes = ((*(&l5)).*lF)(5.0f);
-        MAZ_UNUSED_VAR(lFuncRes);
+    int lRes1 = lDel1(1.5);
+    int lRes2 = lDel2(1.5);
+    //int lRes3 = lDel3(1.5);
+    int lRes4 = lDel4(1.5);
+    MAZ_UNUSED_VAR(lRes1);
+    MAZ_UNUSED_VAR(lRes2);
+    //MAZ_UNUSED_VAR(lRes3);
+    MAZ_UNUSED_VAR(lRes4);
 
-        TMyNewDel lNDel1 = TMyNewDel::Create< CDelegateTest, &CDelegateTest::myFunc >(&l10);
-        TMyNewDel lNDel2 = TMyNewDel::Create< &test >();
-        TMyNewDel lNDel3 = TMyNewDel::CreateConst< CDelegateTest, &CDelegateTest::myConstFunc >(&l10);
-        TMyNewDel lNDel4 = TMyNewDel::Create< &CDelegateTest::myStaticFunc >();
-        TMyNewDel lNDel5 = TMyNewDel::CreateConst< CDelegateTest, &CDelegateTest::myFunc >(&l10);
-        TMyNewDel lNDel6 = GetDel(&l10);
+    using TFunc = int(CDelegateTest::*)(float);
+    TFunc lF = &CDelegateTest::myFunc;
+    int lFuncRes = ((*(&l5)).*lF)(5.0f);
+    MAZ_UNUSED_VAR(lFuncRes);
 
-        int lNewRes1 = lNDel1(1.5);
-        int lNewRes2 = lNDel2(1.5);
-        int lNewRes3 = lNDel3(1.5);
-        int lNewRes4 = lNDel4(1.5);
-        int lNewRes5 = lNDel5(1.5);
-        int lNewRes6 = lNDel6(1.5);
-        MAZ_UNUSED_VAR(lNewRes1);
-        MAZ_UNUSED_VAR(lNewRes2);
-        MAZ_UNUSED_VAR(lNewRes3);
-        MAZ_UNUSED_VAR(lNewRes4);
-        MAZ_UNUSED_VAR(lNewRes5);
-        MAZ_UNUSED_VAR(lNewRes6);
+    TMyNewDel lNDel1 = TMyNewDel::Create< CDelegateTest, &CDelegateTest::myFunc >(&l10);
+    TMyNewDel lNDel2 = TMyNewDel::Create< &test >();
+    TMyNewDel lNDel3 = TMyNewDel::CreateConst< CDelegateTest, &CDelegateTest::myConstFunc >(&l10);
+    TMyNewDel lNDel4 = TMyNewDel::Create< &CDelegateTest::myStaticFunc >();
+    TMyNewDel lNDel5 = TMyNewDel::CreateConst< CDelegateTest, &CDelegateTest::myFunc >(&l10);
+    TMyNewDel lNDel6 = GetDel(&l10);
 
-        TMyNewDel lNDelX1 = TMyNewDel::Create< CDelegateTest, &CDelegateTest::myFunc >(&l5);
-        TMyNewDel lNDelX2 = TMyNewDel::Create< &test >();
-        TMyNewDel lNDelX3 = TMyNewDel::CreateConst< CDelegateTest, &CDelegateTest::myConstFunc >(&l5);
-        TMyNewDel lNDelX4 = TMyNewDel::Create< &CDelegateTest::myStaticFunc >();
-        TMyNewDel lNDelX5 = TMyNewDel::CreateConst< CDelegateTest, &CDelegateTest::myFunc >(&l5);
+    int lNewRes1 = lNDel1(1.5);
+    int lNewRes2 = lNDel2(1.5);
+    int lNewRes3 = lNDel3(1.5);
+    int lNewRes4 = lNDel4(1.5);
+    int lNewRes5 = lNDel5(1.5);
+    int lNewRes6 = lNDel6(1.5);
+    MAZ_UNUSED_VAR(lNewRes1);
+    MAZ_UNUSED_VAR(lNewRes2);
+    MAZ_UNUSED_VAR(lNewRes3);
+    MAZ_UNUSED_VAR(lNewRes4);
+    MAZ_UNUSED_VAR(lNewRes5);
+    MAZ_UNUSED_VAR(lNewRes6);
 
-        bool lCmp01 = lNDel1 == lNDel1;
-        bool lCmp02 = lNDel2 == lNDel2;
-        bool lCmp03 = lNDel3 == lNDel3;
-        bool lCmp04 = lNDel4 == lNDel4;
-        bool lCmp05 = lNDel1 == lNDelX1;
-        bool lCmp06 = lNDel2 == lNDelX2;
-        bool lCmp07 = lNDel3 == lNDelX3;
-        bool lCmp08 = lNDel4 == lNDelX4;
-        bool lCmp09 = lNDel1 == lNDel3;
-        bool lCmp10 = lNDel1 == lNDel5;
-        bool lCmp11 = lNDel1 == lNDel6;
-        MAZ_UNUSED_VAR(lCmp01);
-        MAZ_UNUSED_VAR(lCmp02);
-        MAZ_UNUSED_VAR(lCmp03);
-        MAZ_UNUSED_VAR(lCmp04);
-        MAZ_UNUSED_VAR(lCmp05);
-        MAZ_UNUSED_VAR(lCmp06);
-        MAZ_UNUSED_VAR(lCmp07);
-        MAZ_UNUSED_VAR(lCmp08);
-        MAZ_UNUSED_VAR(lCmp09);
-        MAZ_UNUSED_VAR(lCmp10);
-        MAZ_UNUSED_VAR(lCmp11);
-    }
+    TMyNewDel lNDelX1 = TMyNewDel::Create< CDelegateTest, &CDelegateTest::myFunc >(&l5);
+    TMyNewDel lNDelX2 = TMyNewDel::Create< &test >();
+    TMyNewDel lNDelX3 = TMyNewDel::CreateConst< CDelegateTest, &CDelegateTest::myConstFunc >(&l5);
+    TMyNewDel lNDelX4 = TMyNewDel::Create< &CDelegateTest::myStaticFunc >();
+    TMyNewDel lNDelX5 = TMyNewDel::CreateConst< CDelegateTest, &CDelegateTest::myFunc >(&l5);
+
+    bool lCmp01 = lNDel1 == lNDel1;
+    bool lCmp02 = lNDel2 == lNDel2;
+    bool lCmp03 = lNDel3 == lNDel3;
+    bool lCmp04 = lNDel4 == lNDel4;
+    bool lCmp05 = lNDel1 == lNDelX1;
+    bool lCmp06 = lNDel2 == lNDelX2;
+    bool lCmp07 = lNDel3 == lNDelX3;
+    bool lCmp08 = lNDel4 == lNDelX4;
+    bool lCmp09 = lNDel1 == lNDel3;
+    bool lCmp10 = lNDel1 == lNDel5;
+    bool lCmp11 = lNDel1 == lNDel6;
+    MAZ_UNUSED_VAR(lCmp01);
+    MAZ_UNUSED_VAR(lCmp02);
+    MAZ_UNUSED_VAR(lCmp03);
+    MAZ_UNUSED_VAR(lCmp04);
+    MAZ_UNUSED_VAR(lCmp05);
+    MAZ_UNUSED_VAR(lCmp06);
+    MAZ_UNUSED_VAR(lCmp07);
+    MAZ_UNUSED_VAR(lCmp08);
+    MAZ_UNUSED_VAR(lCmp09);
+    MAZ_UNUSED_VAR(lCmp10);
+    MAZ_UNUSED_VAR(lCmp11);
+}
+
+
+struct STypeRefA { virtual ~STypeRefA() {} };
+struct STypeRefChildOfA : public STypeRefA { virtual ~STypeRefChildOfA() {}  };
+struct STypeRefB {};
+struct STypeRefChildOfB : public STypeRefB {};
+
+
+void TestMain()
+{
+    LogTypeSizes();
+    TestDelegates();
 }
 
 } // maz

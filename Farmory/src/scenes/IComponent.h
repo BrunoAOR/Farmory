@@ -2,6 +2,7 @@
 #define _H_I_COMPONENT_
 
 #include<maz/CReference.h>
+#include<scenes/CGameObject.h>
 
 
 namespace maz
