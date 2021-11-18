@@ -172,12 +172,6 @@ void TestDelegates()
 }
 
 
-struct STypeRefA { virtual ~STypeRefA() {} };
-struct STypeRefChildOfA : public STypeRefA { virtual ~STypeRefChildOfA() {}  };
-struct STypeRefB {};
-struct STypeRefChildOfB : public STypeRefB {};
-
-
 void TestMain()
 {
     LogTypeSizes();

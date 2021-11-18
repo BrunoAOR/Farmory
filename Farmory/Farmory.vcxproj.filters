@@ -290,6 +290,9 @@
     <ClCompile Include="src\scenes\systems\CTransformHierarchySystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\services\IService.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\deprecated\CDelegateOld.inl">

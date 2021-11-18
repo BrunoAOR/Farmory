@@ -25,11 +25,13 @@ public:
 	CReference& operator=(const CReference& arSource);
 
 	template<typename U>
+	CReference<U> static_reference_cast() const;
+#ifdef MAZ_RTTI
+	template<typename U>
 	bool is_castable_as() const;
 	template<typename U>
-	CReference<U> static_reference_cast() const;
-	template<typename U>
 	CReference<U> dynamic_reference_cast() const;
+#endif // MAZ_RTTI
 
 	T* get();
 	const T& operator*() const;
@@ -80,8 +82,8 @@ CReference<T>::CReference(const CReference<U>& arSource)
 	: CReferenceBase(arSource.mpReferencesList, arSource.mpData)
 {
 	REFERENCE_LOG("Generalized copy constructor");
-	// This is only added to cause a compile-time error in case no implicit conversion exists to convert a U* into a T*
-	const T* ptr = static_cast<U*>(arSource.mpData);
+	// Ensure type T is base class of U. If U is base class of T, then static_reference_cast should be used to obtain a CReference.
+	static_assert(std::is_base_of<T, U>());
 }
 
 
@@ -103,6 +105,17 @@ CReference<T>& CReference<T>::operator=(const CReference& arSource)
 
 template<typename T>
 template<typename U>
+CReference<U> CReference<T>::static_reference_cast() const
+{
+	// If static_casting, either U should be a base of T (safe cast) or T should be a base of U (and the user better be sure of that!)
+	static_assert(std::is_base_of<U, T>() || std::is_base_of<T, U>());
+	return CReference<U>(this->mpReferencesList, this->mpData);
+}
+
+
+#ifdef MAZ_RTTI
+template<typename T>
+template<typename U>
 bool CReference<T>::is_castable_as() const
 {
 	return (dynamic_cast<U*>(static_cast<T*>(this->mpData)));
@@ -111,25 +124,18 @@ bool CReference<T>::is_castable_as() const
 
 template<typename T>
 template<typename U>
-CReference<U> CReference<T>::static_reference_cast() const
-{
-	return CReference<U>(this->mpReferencesList, this->mpData);
-}
-
-
-template<typename T>
-template<typename U>
 CReference<U> CReference<T>::dynamic_reference_cast() const
 {
-	if (dynamic_cast<U*>(static_cast<T*>(this->mpData)))
+	if (is_castable_as<U>())
 	{
-		return CReference<U>(this->mpReferencesList, this->mpData);
+		return static_reference_cast<U>();
 	}
 	else
 	{
 		return CReference<U>();
 	}
 }
+#endif // MAZ_RTTI
 
 
 template<typename T>
@@ -137,6 +143,7 @@ T* CReference<T>::get()
 {
 	return static_cast<T*>(mpData);
 }
+
 
 template<typename T>
 const T& CReference<T>::operator*() const

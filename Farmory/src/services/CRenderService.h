@@ -10,7 +10,7 @@ namespace maz
 {
 
 class CRenderService
-    : public IService
+    : public CServiceBase<CRenderService>
 {
 public:
     CRenderService();

@@ -8,7 +8,7 @@ namespace maz
 {
 
 class CImGuiService
-    : public IService
+    : public CServiceBase<CImGuiService>
 {
 public:
     CImGuiService();

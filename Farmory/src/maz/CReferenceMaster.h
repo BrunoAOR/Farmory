@@ -29,8 +29,10 @@ public:
 	CReference<T> GetReference() const;
 	template<typename U>
 	CReference<U> GetStaticCastedReference() const;
+#ifdef MAZ_RTTI
 	template<typename U>
 	CReference<U> GetDynamicCastedReference() const;
+#endif // MAZ_RTTI
 	void DeleteReferences();
 };
 
@@ -124,12 +126,14 @@ CReference<U> CReferenceMaster<T, MEMORY_OWNER>::GetStaticCastedReference() cons
 }
 
 
+#ifdef MAZ_RTTI
 template<typename T, bool MEMORY_OWNER>
 template<typename U>
 CReference<U> CReferenceMaster<T, MEMORY_OWNER>::GetDynamicCastedReference() const
 {
 	return this->dynamic_reference_cast<U>();
 }
+#endif // MAZ_RTTI
 
 
 template<typename T, bool MEMORY_OWNER>

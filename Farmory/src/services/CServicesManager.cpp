@@ -144,4 +144,20 @@ void CServicesManager::PostUpdate()
     }
 }
 
+
+IService* CServicesManager::GetService(const uint16 aServiceId)
+{
+    IService* lpService = nullptr;
+
+    for (size_t i = 0, iCount = mServices.size(); (i < iCount) && (nullptr == lpService); ++i)
+    {
+        if (aServiceId == mServices[i]->GetId())
+        {
+            lpService = mServices[i];
+        }
+    }
+
+    return lpService;
+}
+
 } // maz

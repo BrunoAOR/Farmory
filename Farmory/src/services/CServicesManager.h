@@ -39,6 +39,9 @@ public:
     T* GetService();
 
 private:
+    IService* GetService(const uint16 aServiceId);
+
+private:
     std::vector< IService* > mServices;
 };
 
@@ -46,12 +49,14 @@ private:
 template< typename T >
 T* CServicesManager::GetService()
 {
-    T* lpService = nullptr;
+    T* lpService = static_cast<T*>(GetService(T::GetSystemId()));
 
+    /*
     for (size_t i = 0, iCount = mServices.size(); (i < iCount) && (nullptr == lpService); ++i)
     {
-        lpService = dynamic_cast< T* >(mServices[i]);
-    }
+        MAZ_LOGGER("%hu", mServices[i]->GetId());
+        //lpService = dynamic_cast< T* >(mServices[i]);
+    }*/
 
     return lpService;
 }

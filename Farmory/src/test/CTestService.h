@@ -12,7 +12,7 @@ namespace maz
 {
 
 class CTestService
-    : public IService
+    : public CServiceBase<CTestService>
 {
 public:
     CTestService();

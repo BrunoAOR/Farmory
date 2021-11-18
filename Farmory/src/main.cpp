@@ -4,10 +4,12 @@
 #include <maz/mazApp.h>
 
 
-#if defined(IS_X86)
+#if defined(MAZ_IS_X86)
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR pCmdLine, _In_ int nCmdShow)
-#elif defined(IS_X64)
+#elif defined(MAZ_IS_X64)
 int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR pCmdLine, _In_ int nCmdShow)
+#else
+#error "Invalid compilation target"
 #endif
 {
     MAZ_UNUSED_VAR(hInstance);

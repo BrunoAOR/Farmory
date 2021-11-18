@@ -11,7 +11,7 @@ namespace maz
 {
 
 class CScenesService
-    : public IService
+    : public CServiceBase<CScenesService>
 {
 public:
     CScenesService();

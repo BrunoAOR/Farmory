@@ -16,7 +16,7 @@ enum class EMouseAxis : uint32
 
 
 class CInputService
-    : public IService
+    : public CServiceBase<CInputService>
 {
 public:
     CInputService();

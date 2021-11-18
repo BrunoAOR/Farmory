@@ -8,7 +8,7 @@ namespace maz
 {
 
 class CTimeService
-    : public IService
+    : public CServiceBase<CTimeService>
 {
 public:
     CTimeService();
