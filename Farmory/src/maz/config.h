@@ -39,4 +39,14 @@
 #define MAZ_RELEASE
 #endif // _DEBUG
 
+#ifdef MAZ_FUNC_NAME
+#undef MAZ_FUNC_NAME
+#endif // MAZ_FUNC_NAME
+#define MAZ_FUNC_NAME __FUNCTION__
+
+#ifdef MAZ_FUNC_SIG
+#undef MAZ_FUNC_SIG
+#endif // MAZ_FUNC_SIG
+#define MAZ_FUNC_SIG __FUNCSIG__
+
 #endif // !_H_CONFIG_

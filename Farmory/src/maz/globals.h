@@ -17,10 +17,10 @@
 #endif // MAZ_DEBUG
 
 
-#define MAZ_REL_LOGGER(format, ...) maz::Logger(__FILE__, __LINE__, __FUNCTION__, format, __VA_ARGS__);
+#define MAZ_REL_LOGGER(format, ...) maz::Logger(__FILE__, __LINE__, MAZ_FUNC_SIG, format, __VA_ARGS__);
 #ifdef MAZ_DEBUG
-#define MAZ_LOGGER(format, ...) maz::Logger(__FILE__, __LINE__, __FUNCTION__, format, __VA_ARGS__);
-#define MAZ_LOGGER_IF(expression, format, ...) if(expression) { maz::Logger(__FILE__, __LINE__, __FUNCTION__, format, __VA_ARGS__); }
+#define MAZ_LOGGER(format, ...) maz::Logger(__FILE__, __LINE__, MAZ_FUNC_SIG, format, __VA_ARGS__);
+#define MAZ_LOGGER_IF(expression, format, ...) if(expression) { maz::Logger(__FILE__, __LINE__, MAZ_FUNC_SIG, format, __VA_ARGS__); }
 #else
 #define MAZ_LOGGER(format, ...) ((void)0);
 #define MAZ_LOGGER_IF(expression, format, ...) ((void)0);
@@ -28,8 +28,8 @@
 
 
 #ifdef MAZ_LOG_VERBOSE
-#define MAZ_LOGGER_VERBOSE(format, ...) maz::Logger(__FILE__, __LINE__, __FUNCTION__, format, __VA_ARGS__);
-#define MAZ_LOGGER_VERBOSE_IF(expression, format, ...) if(expression) { maz::Logger(__FILE__, __LINE__, __FUNCTION__, format, __VA_ARGS__); }
+#define MAZ_LOGGER_VERBOSE(format, ...) maz::Logger(__FILE__, __LINE__, MAZ_FUNC_SIG, format, __VA_ARGS__);
+#define MAZ_LOGGER_VERBOSE_IF(expression, format, ...) if(expression) { maz::Logger(__FILE__, __LINE__, MAZ_FUNC_SIG, format, __VA_ARGS__); }
 #else
 #define MAZ_LOGGER_VERBOSE(format, ...) ((void)0);
 #define MAZ_LOGGER_VERBOSE_IF(expression, format, ...) ((void)0);
@@ -48,8 +48,8 @@
 
 
 #ifdef MAZ_DEBUG
-#define MAZ_ASSERT(expression, format, ...) if(!(expression)) maz::Logger(__FILE__, __LINE__, __FUNCTION__, "%s" format, "ASSERT: ", __VA_ARGS__); assert(expression);
-#define MAZ_ERROR(format, ...) maz::Logger(__FILE__, __LINE__, __FUNCTION__, "%s" format, "ERROR: ", __VA_ARGS__); assert(false);
+#define MAZ_ASSERT(expression, format, ...) if(!(expression)) maz::Logger(__FILE__, __LINE__, MAZ_FUNC_SIG, "%s" format, "ASSERT: ", __VA_ARGS__); assert(expression);
+#define MAZ_ERROR(format, ...) maz::Logger(__FILE__, __LINE__, MAZ_FUNC_SIG, "%s" format, "ERROR: ", __VA_ARGS__); assert(false);
 #else
 #define MAZ_ASSERT(expression, format, ...) ((void)0);
 #define MAZ_ERROR(format, ...) ((void)0);
