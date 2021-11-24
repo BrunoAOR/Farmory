@@ -9,11 +9,11 @@
 namespace maz
 {
 
-class CGameObjectsManager;
+class CEntitiesManager;
 class CSystemsManager
 {
 public:
-    CSystemsManager(CGameObjectsManager& arGameObjectsManager);
+    CSystemsManager(CEntitiesManager& arEntitiesManager);
     ~CSystemsManager();
 
     void Shutdown();
@@ -22,7 +22,7 @@ public:
     bool RegisterSystem();
 
 private:
-    CGameObjectsManager& mrGameObjectsManager;
+    CEntitiesManager& mrEntitiesManager;
     std::array<ISystem*, kMaxSystemsCount> mSystems;
     uint16 mSystemsCount;
 };

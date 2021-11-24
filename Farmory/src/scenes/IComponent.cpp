@@ -5,7 +5,7 @@
 namespace maz
 {
 
-IComponent::IComponent(CReference<CGameObject>& aOwner)
+IComponent::IComponent(CReference<CEntity>& aOwner)
     : mOwner(aOwner)
 {
     MAZ_LOGGER_VERBOSE("Called");
@@ -18,13 +18,13 @@ IComponent::~IComponent()
 }
 
 
-const CReference<CGameObject> IComponent::GetOwner() const
+const CReference<CEntity> IComponent::GetOwner() const
 {
     return mOwner;
 }
 
 
-CReference<CGameObject> IComponent::GetOwner()
+CReference<CEntity> IComponent::GetOwner()
 {
     return mOwner;
 }

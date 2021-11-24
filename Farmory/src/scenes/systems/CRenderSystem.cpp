@@ -26,12 +26,12 @@ void CRenderSystem::Update()
     // Later, the RenderService can sort all the elements to render and do the actual render calls.
 
     const CCamera& lrCamera = Services::GetManager()->GetService<CTestService>()->GetCamera();
-    for (CReference<CGameObject>& lrGameObject : mGameObjects)
+    for (CReference<CEntity>& lrEntity : mEntities)
     {
-        if (lrGameObject)
+        if (lrEntity)
         {
-            CReference<CTransform2DComponent> lTransformComponent = lrGameObject->GetComponent<CTransform2DComponent>();
-            CReference<CSpriteComponent> lSpriteComponent = lrGameObject->GetComponent<CSpriteComponent>();
+            CReference<CTransform2DComponent> lTransformComponent = lrEntity->GetComponent<CTransform2DComponent>();
+            CReference<CSpriteComponent> lSpriteComponent = lrEntity->GetComponent<CSpriteComponent>();
 
             lSpriteComponent->mShader.Use();
             lSpriteComponent->mShader.SetUniformMat4("aViewMatrix", lrCamera.GetViewMatrixPtr());

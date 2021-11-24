@@ -4,7 +4,7 @@
 namespace maz
 {
 
-CSpriteComponent::CSpriteComponent(CReference<CGameObject>& arOwner)
+CSpriteComponent::CSpriteComponent(CReference<CEntity>& arOwner)
     : CComponentBase(arOwner)
 {
     //TODO: Should provide methods to set up Shader, texture (and mesh type?) from outside the Component

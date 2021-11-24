@@ -4,14 +4,14 @@
 namespace maz
 {
 
-CGameObjectsManager::CGameObjectsManager(CComponentsManager& arComponentsManager)
+CEntitiesManager::CEntitiesManager(CComponentsManager& arComponentsManager)
     : mrComponentsManager(arComponentsManager)
 {}
 
 
-void CGameObjectsManager::Shutdown()
+void CEntitiesManager::Shutdown()
 {
-    typename CGameObjectsBuffer::CBufferIterator lIt = mGameObjectsBuffer.GetIterator(CGameObjectsBuffer::EIteratorFlags::ANY);
+    typename CEntitiesBuffer::CBufferIterator lIt = mEntitiesBuffer.GetIterator(CEntitiesBuffer::EIteratorFlags::ANY);
 
     while (lIt)
     {
@@ -22,22 +22,22 @@ void CGameObjectsManager::Shutdown()
         }
         ++lIt;
     }
-    mGameObjectsBuffer.Clear();
+    mEntitiesBuffer.Clear();
 }
 
 
-void CGameObjectsManager::RefreshGameObjects()
+void CEntitiesManager::RefreshEntities()
 {
-    typename CGameObjectsBuffer::CBufferIterator lIt = mGameObjectsBuffer.GetIterator(CGameObjectsBuffer::EIteratorFlags::ANY);
+    typename CEntitiesBuffer::CBufferIterator lIt = mEntitiesBuffer.GetIterator(CEntitiesBuffer::EIteratorFlags::ANY);
 
     while (lIt)
     {
-        if (lIt.HasIteratorFlag(CGameObjectsBuffer::EIteratorFlags::PROCESS_ADD_PENDING))
+        if (lIt.HasIteratorFlag(CEntitiesBuffer::EIteratorFlags::PROCESS_ADD_PENDING))
         {
             // Nothing to do here other than clearing the flag
-            lIt.ClearIteratorFlag(CGameObjectsBuffer::EIteratorFlags::PROCESS_ADD_PENDING);
+            lIt.ClearIteratorFlag(CEntitiesBuffer::EIteratorFlags::PROCESS_ADD_PENDING);
         }
-        else if (lIt.HasIteratorFlag(CGameObjectsBuffer::EIteratorFlags::PROCESS_REMOVE_PENDING))
+        else if (lIt.HasIteratorFlag(CEntitiesBuffer::EIteratorFlags::PROCESS_REMOVE_PENDING))
         {
             // Remove all components
             for (uint16 lComponentId = 0; lComponentId < EnumCount<EComponentType>(); ++lComponentId)
@@ -45,57 +45,57 @@ void CGameObjectsManager::RefreshGameObjects()
                 lIt.Get()->RemoveComponent(static_cast<EComponentType>(lComponentId));
             }
             bool lRemoved = lIt.RemoveElement();
-            MAZ_ASSERT(lRemoved, "Failed to remove Gameobject with id %hhu that was flagged for removal!", lIt.GetId());
-            lIt.ClearIteratorFlag(CGameObjectsBuffer::EIteratorFlags::PROCESS_REMOVE_PENDING);
+            MAZ_ASSERT(lRemoved, "Failed to remove Entity with id %hhu that was flagged for removal!", lIt.GetId());
+            lIt.ClearIteratorFlag(CEntitiesBuffer::EIteratorFlags::PROCESS_REMOVE_PENDING);
         }
         else
         {
             // Clean up signature state in preparation for updates coming from the ComponentsManager
-            CReference<CGameObject> lGameObject = lIt.Get();
-            lGameObject->mIsSignatureDirty = false;
-            lGameObject->mPreviousSignature = lGameObject->mSignature;
+            CReference<CEntity> lEntity = lIt.Get();
+            lEntity->mIsSignatureDirty = false;
+            lEntity->mPreviousSignature = lEntity->mSignature;
         }
         ++lIt;
     }
 }
 
 
-CReference<CGameObject> CGameObjectsManager::CreateGameObject(const CFixedString32& arName)
+CReference<CEntity> CEntitiesManager::CreateEntity(const CFixedString32& arName)
 {
-    CReference<CGameObject> lGameObject;
-    const uint16 lGameObjectId = mGameObjectsBuffer.GetNextAvailableId();
-    if (lGameObjectId != kInvalidElementId)
+    CReference<CEntity> lEntity;
+    const uint16 lEntityId = mEntitiesBuffer.GetNextAvailableId();
+    if (lEntityId != kInvalidElementId)
     {
-        const uint16 lActualGameObjectId = mGameObjectsBuffer.AddElement(lGameObjectId, mrComponentsManager, arName);
-        MAZ_ASSERT(lGameObjectId == lActualGameObjectId, "The next available id in the GameObjectsBuffer does not match the actual id used for the creation of the gameobject!");
-        lGameObject = mGameObjectsBuffer.GetElement(lActualGameObjectId);
-        lGameObject->mThis = lGameObject;
+        const uint16 lActualEntityId = mEntitiesBuffer.AddElement(lEntityId, mrComponentsManager, arName);
+        MAZ_ASSERT(lEntityId == lActualEntityId, "The next available id in the EntitiesBuffer does not match the actual id used for the creation of the entity!");
+        lEntity = mEntitiesBuffer.GetElement(lActualEntityId);
+        lEntity->mThis = lEntity;
     }
 
-    return lGameObject;
+    return lEntity;
 }
 
 
-bool CGameObjectsManager::RequestDestroyGameObject(const uint16 aGameObjectId)
+bool CEntitiesManager::RequestDestroyEntity(const uint16 aEntityId)
 {
-    return mGameObjectsBuffer.FlagElementForRemoval(aGameObjectId);
+    return mEntitiesBuffer.FlagElementForRemoval(aEntityId);
 }
 
 
-CGameObjectsManager::CModifiedGameObjectsIterator CGameObjectsManager::GetModifiedGameObjectsIterator()
+CEntitiesManager::CModifiedEntitiesIterator CEntitiesManager::GetModifiedEntitiesIterator()
 {
-    const typename CGameObjectsBuffer::CBufferIterator lIt = mGameObjectsBuffer.GetIterator(CGameObjectsBuffer::EIteratorFlags::ANY);
-    return CModifiedGameObjectsIterator(lIt);
+    const typename CEntitiesBuffer::CBufferIterator lIt = mEntitiesBuffer.GetIterator(CEntitiesBuffer::EIteratorFlags::ANY);
+    return CModifiedEntitiesIterator(lIt);
 }
 
 
-CGameObjectsManager::CModifiedGameObjectsIterator::operator bool()
+CEntitiesManager::CModifiedEntitiesIterator::operator bool()
 {
     return static_cast<bool>(mInternalIterator);
 }
 
 
-void CGameObjectsManager::CModifiedGameObjectsIterator::operator++()
+void CEntitiesManager::CModifiedEntitiesIterator::operator++()
 {
     ++mInternalIterator;
     while (mInternalIterator && !mInternalIterator.Get()->mIsSignatureDirty)
@@ -105,13 +105,13 @@ void CGameObjectsManager::CModifiedGameObjectsIterator::operator++()
 }
 
 
-CReference<CGameObject> CGameObjectsManager::CModifiedGameObjectsIterator::Get()
+CReference<CEntity> CEntitiesManager::CModifiedEntitiesIterator::Get()
 {
     return mInternalIterator.Get();
 }
 
 
-CGameObjectsManager::CModifiedGameObjectsIterator::CModifiedGameObjectsIterator(const CGameObjectsBuffer::CBufferIterator& arIterator)
+CEntitiesManager::CModifiedEntitiesIterator::CModifiedEntitiesIterator(const CEntitiesBuffer::CBufferIterator& arIterator)
     : mInternalIterator(arIterator)
 {
     while (mInternalIterator && !mInternalIterator.Get()->mIsSignatureDirty)

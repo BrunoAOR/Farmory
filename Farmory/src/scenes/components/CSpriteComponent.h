@@ -11,14 +11,14 @@
 namespace maz
 {
 
-class CGameObject;
+class CEntity;
 
 
 class CSpriteComponent
     : public CComponentBase<CSpriteComponent>
 {
 public:
-    CSpriteComponent(CReference<CGameObject>& arOwner);
+    CSpriteComponent(CReference<CEntity>& arOwner);
     ~CSpriteComponent();
 
     static constexpr EComponentType GetType()

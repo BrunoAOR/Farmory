@@ -11,11 +11,11 @@ CComponentsManager::CComponentsManager()
 }
 
 
-void CComponentsManager::updateComponentIdForGameObject(CReference<CGameObject> aGameObject, EComponentType aComponentType, uint16 aId)
+void CComponentsManager::updateComponentIdForEntity(CReference<CEntity> aEntity, EComponentType aComponentType, uint16 aId)
 {
-    if (aGameObject)
+    if (aEntity)
     {
-        aGameObject->updateComponentId(aComponentType, aId);
+        aEntity->updateComponentId(aComponentType, aId);
     }
 }
 

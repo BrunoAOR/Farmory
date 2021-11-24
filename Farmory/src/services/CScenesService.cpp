@@ -15,8 +15,8 @@ namespace maz
 
 CScenesService::CScenesService()
     : mComponentsManager()
-    , mGameObjectsManager(mComponentsManager)
-    , mSystemsManager(mGameObjectsManager)
+    , mEntitiesManager(mComponentsManager)
+    , mSystemsManager(mEntitiesManager)
 { ; }
 
 
@@ -26,32 +26,32 @@ CScenesService::~CScenesService() { ; }
 void test()
 {
     CComponentsManager* lpComponentsManager = MAZ_NEW(CComponentsManager);
-    CGameObjectsManager* lpGameObjectsManager = MAZ_NEW(CGameObjectsManager, *lpComponentsManager);
+    CEntitiesManager* lpEntitiesManager = MAZ_NEW(CEntitiesManager, *lpComponentsManager);
     lpComponentsManager->RegisterComponent<CTransform2DComponent>();
-    CReference<CGameObject> lGameObject = lpGameObjectsManager->CreateGameObject("Timmy");
-    lpGameObjectsManager->RefreshGameObjects();
-    CReference<CTransform2DComponent> lTransform1 = lGameObject->AddComponent<CTransform2DComponent>();
-    bool lHasIt = lGameObject->HasComponent<CTransform2DComponent>();
-    CReference<CTransform2DComponent> lTransform2 = lGameObject->GetComponent<CTransform2DComponent>();
+    CReference<CEntity> lEntity = lpEntitiesManager->CreateEntity("Timmy");
+    lpEntitiesManager->RefreshEntities();
+    CReference<CTransform2DComponent> lTransform1 = lEntity->AddComponent<CTransform2DComponent>();
+    bool lHasIt = lEntity->HasComponent<CTransform2DComponent>();
+    CReference<CTransform2DComponent> lTransform2 = lEntity->GetComponent<CTransform2DComponent>();
     bool lIsSame = (lTransform1 == lTransform2);
     bool lIsValid1 = (bool)lTransform1;
     bool lIsValid2 = (bool)lTransform2;
     lpComponentsManager->RefreshComponents();
-    lHasIt = lGameObject->HasComponent<CTransform2DComponent>();
-    lTransform2 = lGameObject->GetComponent<CTransform2DComponent>();
+    lHasIt = lEntity->HasComponent<CTransform2DComponent>();
+    lTransform2 = lEntity->GetComponent<CTransform2DComponent>();
     lIsSame = (lTransform1 == lTransform2);
     lTransform2 = CReference<CTransform2DComponent>();
     lIsValid1 = (bool)lTransform1;
     lIsValid2 = (bool)lTransform2;
-    lGameObject->RemoveComponent<CTransform2DComponent>();
+    lEntity->RemoveComponent<CTransform2DComponent>();
     lIsValid1 = (bool)lTransform1;
     lIsValid2 = (bool)lTransform2;
     lpComponentsManager->RefreshComponents();
     lIsValid1 = (bool)lTransform1;
     lIsValid2 = (bool)lTransform2;
 
-    lpGameObjectsManager->RequestDestroyGameObject(lGameObject->GetId());
-    lpGameObjectsManager->RefreshGameObjects();
+    lpEntitiesManager->RequestDestroyEntity(lEntity->GetId());
+    lpEntitiesManager->RefreshEntities();
 
     MAZ_UNUSED_VAR(lHasIt);
     MAZ_UNUSED_VAR(lIsSame);
@@ -61,9 +61,9 @@ void test()
     MAZ_ASSERT(!lTransform1, "Transform should be invalid at this point");
     MAZ_ASSERT(!lTransform2, "Transform should be invalid at this point");
 
-    lpGameObjectsManager->Shutdown();
+    lpEntitiesManager->Shutdown();
     lpComponentsManager->Shutdown();
-    MAZ_DELETE(lpGameObjectsManager);
+    MAZ_DELETE(lpEntitiesManager);
     MAZ_DELETE(lpComponentsManager);
 }
 
@@ -81,7 +81,7 @@ void CScenesService::End()
 {
     mSystemsManager.Shutdown();
     mComponentsManager.Shutdown();
-    mGameObjectsManager.Shutdown();
+    mEntitiesManager.Shutdown();
 }
 
 
@@ -101,7 +101,7 @@ void CScenesService::Update()
     }
 
     // Update Scene loading
-    mGameObjectsManager.RefreshGameObjects();
+    mEntitiesManager.RefreshEntities();
     mComponentsManager.RefreshComponents();
     mSystemsManager.RefreshSystems();
 }
@@ -123,18 +123,18 @@ bool CScenesService::LoadTestScenes()
         MAZ_ASSERT(lOk, "WTF?!");
 
         // Load test scene
-        CReference<CGameObject> lGameObjectTA = mGameObjectsManager.CreateGameObject("GO-TA");
-        lGameObjectTA->AddComponent<CTransform2DComponent>();
-        lGameObjectTA->AddComponent<CTestComponentA>();
+        CReference<CEntity> lEntityTA = mEntitiesManager.CreateEntity("GO-TA");
+        lEntityTA->AddComponent<CTransform2DComponent>();
+        lEntityTA->AddComponent<CTestComponentA>();
 
-        CReference<CGameObject> lGameObjectTB = mGameObjectsManager.CreateGameObject("GO-TB");
-        lGameObjectTB->AddComponent<CTransform2DComponent>();
-        lGameObjectTB->AddComponent<CTestComponentB>();
+        CReference<CEntity> lEntityTB = mEntitiesManager.CreateEntity("GO-TB");
+        lEntityTB->AddComponent<CTransform2DComponent>();
+        lEntityTB->AddComponent<CTestComponentB>();
 
-        CReference<CGameObject> lGameObjectTAB = mGameObjectsManager.CreateGameObject("GO-TAB");
-        lGameObjectTAB->AddComponent<CTransform2DComponent>();
-        lGameObjectTAB->AddComponent<CTestComponentA>();
-        lGameObjectTAB->AddComponent<CTestComponentB>();
+        CReference<CEntity> lEntityTAB = mEntitiesManager.CreateEntity("GO-TAB");
+        lEntityTAB->AddComponent<CTransform2DComponent>();
+        lEntityTAB->AddComponent<CTestComponentA>();
+        lEntityTAB->AddComponent<CTestComponentB>();
     }
 
     bool lUuseComplexScene = true;
@@ -150,28 +150,28 @@ bool CScenesService::LoadTestScenes()
 
         // Load test scene
         {
-            CReference<CGameObject> lGameObject = mGameObjectsManager.CreateGameObject("Sprite +1");
-            lGameObject->AddComponent<CTransform2DComponent>();
-            lGameObject->AddComponent<CSpriteComponent>();
-            CReference<CTransform2DComponent> lTransform = lGameObject->GetComponent<CTransform2DComponent>();
+            CReference<CEntity> lEntity = mEntitiesManager.CreateEntity("Sprite +1");
+            lEntity->AddComponent<CTransform2DComponent>();
+            lEntity->AddComponent<CSpriteComponent>();
+            CReference<CTransform2DComponent> lTransform = lEntity->GetComponent<CTransform2DComponent>();
             lTransform->SetTranslation(TVec2(1.0f, 1.0f));
         }
         CReference<CTransform2DComponent> lParentTransform;
         {
-            CReference<CGameObject> lGameObject = mGameObjectsManager.CreateGameObject("Sprite 0");
-            lGameObject->AddComponent<CTransform2DComponent>();
-            lGameObject->AddComponent<CSpriteComponent>();
-            lGameObject->AddComponent<CTestComponentA>();
-            CReference<CTransform2DComponent> lTransform = lGameObject->GetComponent<CTransform2DComponent>();
+            CReference<CEntity> lEntity = mEntitiesManager.CreateEntity("Sprite 0");
+            lEntity->AddComponent<CTransform2DComponent>();
+            lEntity->AddComponent<CSpriteComponent>();
+            lEntity->AddComponent<CTestComponentA>();
+            CReference<CTransform2DComponent> lTransform = lEntity->GetComponent<CTransform2DComponent>();
             lTransform->SetTranslation(TVec2(0.0f, 0.0f));
             lTransform->SetScale(TVec2(0.5f, 2.0f));
             lParentTransform = lTransform;
         }
         {
-            CReference<CGameObject> lGameObject = mGameObjectsManager.CreateGameObject("Sprite -1");
-            lGameObject->AddComponent<CTransform2DComponent>();
-            lGameObject->AddComponent<CSpriteComponent>();
-            CReference<CTransform2DComponent> lTransform = lGameObject->GetComponent<CTransform2DComponent>();
+            CReference<CEntity> lEntity = mEntitiesManager.CreateEntity("Sprite -1");
+            lEntity->AddComponent<CTransform2DComponent>();
+            lEntity->AddComponent<CSpriteComponent>();
+            CReference<CTransform2DComponent> lTransform = lEntity->GetComponent<CTransform2DComponent>();
             lTransform->SetTranslation(TVec2(-1.0f, -1.0f));
             lTransform->SetParentTransform(lParentTransform);
         }

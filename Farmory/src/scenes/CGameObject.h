@@ -14,17 +14,17 @@
 namespace maz
 {
 
-class CGameObject final
+class CEntity final
 {
 private:
-    friend class CGameObjectsManager;
+    friend class CEntitiesManager;
     friend class CComponentsManager;
     
     void updateComponentId(EComponentType aComponentType, uint16 aComponentId);
 
 public:
-    CGameObject(uint16 aId, CComponentsManager& arComponentsManager, const CFixedString32& arName);
-    ~CGameObject();
+    CEntity(uint16 aId, CComponentsManager& arComponentsManager, const CFixedString32& arName);
+    ~CEntity();
 
     uint16 GetId() const;
     const CFixedString32& GetName() const;
@@ -46,7 +46,7 @@ public:
 private:
     const uint16_t mId;
     CComponentsManager& mrComponentsManager;
-    CReference<CGameObject> mThis;
+    CReference<CEntity> mThis;
 
     SComponentsSignature mPreviousSignature;
     SComponentsSignature mSignature;
@@ -59,15 +59,15 @@ private:
 
 
 template<typename COMPONENT_CLASS>
-inline CReference<COMPONENT_CLASS> CGameObject::AddComponent()
+inline CReference<COMPONENT_CLASS> CEntity::AddComponent()
 {
     CReference<COMPONENT_CLASS> lComponent;
     if (mComponents[EnumToNumber(COMPONENT_CLASS::GetType())] == kInvalidComponentId)
     {
         const uint16 lNewComponentId = mrComponentsManager.AddComponent<COMPONENT_CLASS>(mThis);
         MAZ_ASSERT(lNewComponentId != kInvalidComponentId, "Failed to add component of desired type!");
-        // Even though the lComponent has been created and we store its ID, the GameObject signature is NOT modified until the ComponentsManager is updated.
-        // This means that any systems that would now include this GameObject, will only do so in the next frame.
+        // Even though the lComponent has been created and we store its ID, the Entity signature is NOT modified until the ComponentsManager is updated.
+        // This means that any systems that would now include this Entity, will only do so in the next frame.
         mComponents[EnumToNumber(COMPONENT_CLASS::GetType())] = lNewComponentId;
         lComponent = mrComponentsManager.GetComponent<COMPONENT_CLASS>(lNewComponentId);
     }
@@ -77,27 +77,27 @@ inline CReference<COMPONENT_CLASS> CGameObject::AddComponent()
 
 
 template<typename COMPONENT_CLASS>
-inline bool CGameObject::RemoveComponent()
+inline bool CEntity::RemoveComponent()
 {
     bool lOk = true;
     const uint16 lComponentId = mComponents[EnumToNumber(COMPONENT_CLASS::GetType())];
     lOk = (lComponentId != kInvalidComponentId);
     lOk = lOk && mrComponentsManager.RemoveComponent<COMPONENT_CLASS>(lComponentId);
-    // Even though the lComponent has been flagged for removal (if it was present), its ID is NOT cleared from the gameObject until the ComponentsManager is updated
+    // Even though the lComponent has been flagged for removal (if it was present), its ID is NOT cleared from the Entity until the ComponentsManager is updated
 
     return lOk;
 }
 
 
 template<typename COMPONENT_CLASS>
-inline bool CGameObject::HasComponent() const
+inline bool CEntity::HasComponent() const
 {
     return (mComponents[EnumToNumber(COMPONENT_CLASS::GetType())] != kInvalidComponentId);
 }
 
 
 template<typename COMPONENT_CLASS>
-inline CReference<COMPONENT_CLASS> CGameObject::GetComponent()
+inline CReference<COMPONENT_CLASS> CEntity::GetComponent()
 {
     CReference<COMPONENT_CLASS> lComponent;
     const uint16 lComponentId = mComponents[EnumToNumber(COMPONENT_CLASS::GetType())];

@@ -9,14 +9,14 @@
 namespace maz
 {
 
-class CGameObject;
+class CEntity;
 
 
 class CTestComponentA
     : public CComponentBase<CTestComponentA>
 {
 public:
-    CTestComponentA(CReference<CGameObject>& aOwner) : CComponentBase(aOwner) { MAZ_LOGGER("Called"); }
+    CTestComponentA(CReference<CEntity>& aOwner) : CComponentBase(aOwner) { MAZ_LOGGER("Called"); }
     ~CTestComponentA() { MAZ_LOGGER("Called"); }
     static constexpr EComponentType GetType() { return EComponentType::TestCompA; }
 };
@@ -26,7 +26,7 @@ class CTestComponentB
     : public CComponentBase<CTestComponentB>
 {
 public:
-    CTestComponentB(CReference<CGameObject>& aOwner) : CComponentBase(aOwner) { MAZ_LOGGER("Called"); }
+    CTestComponentB(CReference<CEntity>& aOwner) : CComponentBase(aOwner) { MAZ_LOGGER("Called"); }
     ~CTestComponentB() { MAZ_LOGGER("Called"); }
     static constexpr EComponentType GetType() { return EComponentType::TestCompB; }
 };

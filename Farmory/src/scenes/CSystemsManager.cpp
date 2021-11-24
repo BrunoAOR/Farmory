@@ -6,8 +6,8 @@
 namespace maz
 {
 
-CSystemsManager::CSystemsManager(CGameObjectsManager& arGameObjectsManager)
-    : mrGameObjectsManager(arGameObjectsManager)
+CSystemsManager::CSystemsManager(CEntitiesManager& arEntitiesManager)
+    : mrEntitiesManager(arEntitiesManager)
     , mSystemsCount(0)
 {
     mSystems.fill(nullptr);
@@ -38,58 +38,58 @@ void CSystemsManager::Shutdown()
 
 void CSystemsManager::RefreshSystems()
 {
-    // Remove GameObjects from systems
+    // Remove Entities from systems
     for (uint16 i = 0; i < mSystemsCount; ++i)
     {
         ISystem* lpSystem = mSystems[i];
         const SComponentsSignature& lSystemSignature = lpSystem->GetSignature();
-        for (uint16 j = 0, jCount = static_cast<uint16>(lpSystem->mGameObjects.size()); j < jCount; ++j)
+        for (uint16 j = 0, jCount = static_cast<uint16>(lpSystem->mEntities.size()); j < jCount; ++j)
         {
-            CReference<CGameObject> lGameObject = lpSystem->mGameObjects[j];
-            if (!lGameObject)
+            CReference<CEntity> lEntity = lpSystem->mEntities[j];
+            if (!lEntity)
             {
-                // GameObject has been invalidated and shall be removed from the System
-                lpSystem->mGameObjects[j] = CReference<CGameObject>();
+                // Entity has been invalidated and shall be removed from the System
+                lpSystem->mEntities[j] = CReference<CEntity>();
             }
-            else if (lGameObject->IsSignatureDirty())
+            else if (lEntity->IsSignatureDirty())
             {
-                MAZ_ASSERT(lSystemSignature.IsSubsetOf(lGameObject->GetPreviousSignature()), "Somehow, a gameObject used by this system did not have a matching Signature in the frame!");
-                if (!lSystemSignature.IsSubsetOf(lGameObject->GetSignature()))
+                MAZ_ASSERT(lSystemSignature.IsSubsetOf(lEntity->GetPreviousSignature()), "Somehow, an Entity used by this system did not have a matching Signature in the frame!");
+                if (!lSystemSignature.IsSubsetOf(lEntity->GetSignature()))
                 {
-                    // So, the previous GameObject signature did match the System but the current one doesn't, we remove the gameobject
-                    lpSystem->mGameObjects[j] = CReference<CGameObject>();
+                    // So, the previous Entity signature did match the System but the current one doesn't, we remove the Entity
+                    lpSystem->mEntities[j] = CReference<CEntity>();
                 }
             }
         }
     }
 
-    // Add GameObjects to systems
-    CGameObjectsManager::CModifiedGameObjectsIterator lModifiedGameObjectsIterator = mrGameObjectsManager.GetModifiedGameObjectsIterator();
-    while (lModifiedGameObjectsIterator)
+    // Add Entities to systems
+    CEntitiesManager::CModifiedEntitiesIterator lModifiedEntitiesIterator = mrEntitiesManager.GetModifiedEntitiesIterator();
+    while (lModifiedEntitiesIterator)
     {
-        CReference<CGameObject> lGameObject = lModifiedGameObjectsIterator.Get();
-        MAZ_ASSERT(lGameObject->IsSignatureDirty(), "A gameobject contained in CGameObjectsManager::CModifiedGameObjectsIterator returns false when calling IsSignatureDirty!");
+        CReference<CEntity> lEntity = lModifiedEntitiesIterator.Get();
+        MAZ_ASSERT(lEntity->IsSignatureDirty(), "An Entity contained in CEntitiesManager::CModifiedEntitiesIterator returns false when calling IsSignatureDirty!");
         for (uint16 i = 0; i < mSystemsCount; ++i)
         {
             ISystem* lpSystem = mSystems[i];
             const SComponentsSignature& lrSystemSignature = lpSystem->GetSignature();
-            if (!lrSystemSignature.IsSubsetOf(lGameObject->GetPreviousSignature())
-                && lrSystemSignature.IsSubsetOf(lGameObject->GetSignature()))
+            if (!lrSystemSignature.IsSubsetOf(lEntity->GetPreviousSignature())
+                && lrSystemSignature.IsSubsetOf(lEntity->GetSignature()))
             {
-                // So, the previous GameObject signature did NOT match the System but the current one DOES, we add the gameobject in the first-most available slot
+                // So, the previous Entity signature did NOT match the System but the current one DOES, we add the Entity in the first-most available slot
                 bool lAdded = false;
-                for (uint16 j = 0, jCount = static_cast<uint16>(lpSystem->mGameObjects.size()); (j < jCount) && !lAdded; ++j)
+                for (uint16 j = 0, jCount = static_cast<uint16>(lpSystem->mEntities.size()); (j < jCount) && !lAdded; ++j)
                 {
-                    lAdded = !(lpSystem->mGameObjects[j]);
+                    lAdded = !(lpSystem->mEntities[j]);
                     if (lAdded)
                     {
-                        lpSystem->mGameObjects[j] = lGameObject;
+                        lpSystem->mEntities[j] = lEntity;
                     }
                 }
-                MAZ_ASSERT(lAdded, "Failed to add a GameObject with matching signature to one of the systems!");
+                MAZ_ASSERT(lAdded, "Failed to add an Entity with matching signature to one of the systems!");
             }
         }
-        ++lModifiedGameObjectsIterator;
+        ++lModifiedEntitiesIterator;
     }
 
     // Update systems

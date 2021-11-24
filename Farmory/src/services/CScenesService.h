@@ -28,7 +28,7 @@ private:
 
 private:
     CComponentsManager mComponentsManager;
-    CGameObjectsManager mGameObjectsManager;
+    CEntitiesManager mEntitiesManager;
     CSystemsManager mSystemsManager;
 };
 

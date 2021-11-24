@@ -5,7 +5,7 @@
 namespace maz
 {
 
-CTransform2DComponent::CTransform2DComponent(CReference<CGameObject>& arOwner)
+CTransform2DComponent::CTransform2DComponent(CReference<CEntity>& arOwner)
     : CComponentBase(arOwner)
     , mWorldTransformDirty(true)
     , mModelMatrix(1.0f)

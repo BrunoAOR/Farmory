@@ -5,7 +5,7 @@
 namespace maz
 {
 
-CGameObject::CGameObject(uint16 aId, CComponentsManager& arComponentsManager, const CFixedString32& arName)
+CEntity::CEntity(uint16 aId, CComponentsManager& arComponentsManager, const CFixedString32& arName)
     : mId(aId)
     , mrComponentsManager(arComponentsManager)
     , mIsSignatureDirty(false)
@@ -19,20 +19,20 @@ CGameObject::CGameObject(uint16 aId, CComponentsManager& arComponentsManager, co
 }
 
 
-CGameObject::~CGameObject()
+CEntity::~CEntity()
 {
     MAZ_LOGGER_VERBOSE("Called");
 #ifdef MAZ_DEBUG
-    // Verify no components are left in GameObject
+    // Verify no components are left in Entity
     for (uint16 i = 0, iCount = static_cast<uint16>(mComponents.max_size()); i < iCount; ++i)
     {
-        MAZ_ASSERT(mComponents[i] == kInvalidComponentId, "Component of type %hu has not been removed from GameObject with id %hu", i, GetId());
+        MAZ_ASSERT(mComponents[i] == kInvalidComponentId, "Component of type %hu has not been removed from Entity with id %hu", i, GetId());
     }
 #endif // MAZ_DEBUG
 }
 
 
-void CGameObject::updateComponentId(EComponentType aComponentType, uint16 aComponentId)
+void CEntity::updateComponentId(EComponentType aComponentType, uint16 aComponentId)
 {
     mComponents[EnumToNumber(aComponentType)] = aComponentId;
     if (aComponentId != kInvalidComponentId)
@@ -47,43 +47,43 @@ void CGameObject::updateComponentId(EComponentType aComponentType, uint16 aCompo
 }
 
 
-uint16 CGameObject::GetId() const
+uint16 CEntity::GetId() const
 {
     return mId;
 }
 
 
-const CFixedString32& CGameObject::GetName() const
+const CFixedString32& CEntity::GetName() const
 {
     return mName;
 }
 
 
-bool CGameObject::RemoveComponent(EComponentType aComponentType)
+bool CEntity::RemoveComponent(EComponentType aComponentType)
 {
     bool lOk = true;
     const uint16 lComponentId = mComponents[EnumToNumber(aComponentType)];
     lOk = (lComponentId != kInvalidComponentId);
     lOk = lOk && mrComponentsManager.RemoveComponent(aComponentType, lComponentId);
-    // Even though the component has been flagged for removal (if it was present), its ID is NOT cleared from the gameObject until the ComponentsManager is updated
+    // Even though the component has been flagged for removal (if it was present), its ID is NOT cleared from the entity until the ComponentsManager is updated
 
     return lOk;
 }
 
 
-bool CGameObject::IsSignatureDirty() const
+bool CEntity::IsSignatureDirty() const
 {
     return mIsSignatureDirty;
 }
 
 
-const SComponentsSignature& CGameObject::GetPreviousSignature() const
+const SComponentsSignature& CEntity::GetPreviousSignature() const
 {
     return mPreviousSignature;
 }
 
 
-const SComponentsSignature& CGameObject::GetSignature() const
+const SComponentsSignature& CEntity::GetSignature() const
 {
     return mSignature;
 }

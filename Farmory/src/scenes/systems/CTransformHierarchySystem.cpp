@@ -75,11 +75,11 @@ CTransformHierarchySystem::~CTransformHierarchySystem()
 
 void CTransformHierarchySystem::Update()
 {
-    for (CReference<CGameObject>& lrGameObject : mGameObjects)
+    for (CReference<CEntity>& lrEntity : mEntities)
     {
-        if (lrGameObject)
+        if (lrEntity)
         {
-            CReference<CTransform2DComponent> lHierarchyRootTransformComponent = lrGameObject->GetComponent<CTransform2DComponent>();
+            CReference<CTransform2DComponent> lHierarchyRootTransformComponent = lrEntity->GetComponent<CTransform2DComponent>();
 
             // Update top-down full hierarchy only for the origin of any hierarchy
 

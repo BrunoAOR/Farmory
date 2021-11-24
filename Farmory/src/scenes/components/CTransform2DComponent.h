@@ -8,7 +8,7 @@
 namespace maz
 {
 
-class CGameObject;
+class CEntity;
 
 
 struct STransform2D
@@ -50,7 +50,7 @@ class CTransform2DComponent
     : public CComponentBase<CTransform2DComponent>
 {
 public:
-    CTransform2DComponent(CReference<CGameObject>& arOwner);
+    CTransform2DComponent(CReference<CEntity>& arOwner);
     ~CTransform2DComponent();
 
     static constexpr EComponentType GetType()

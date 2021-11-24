@@ -11,14 +11,14 @@
 namespace maz
 {
 
-class CGameObject;
+class CEntity;
 class CComponentsManager
 {
 private:
     template<typename COMPONENT_CLASS>
     friend class CComponentManager;
     
-    void updateComponentIdForGameObject(CReference<CGameObject> aGameObject, EComponentType aComponentType, uint16 aId);
+    void updateComponentIdForEntity(CReference<CEntity> aEntity, EComponentType aComponentType, uint16 aId);
     
     
     template<typename COMPONENT_CLASS>
@@ -69,7 +69,7 @@ private:
 
             while (iterator)
             {
-                apComponentsManager->updateComponentIdForGameObject(iterator.Get()->GetOwner(), COMPONENT_CLASS::GetType(), kInvalidComponentId);
+                apComponentsManager->updateComponentIdForEntity(iterator.Get()->GetOwner(), COMPONENT_CLASS::GetType(), kInvalidComponentId);
                 ++iterator;
             }
             mComponentsBuffer.Clear();
@@ -84,12 +84,12 @@ private:
             {
                 if (lIt.HasIteratorFlag(CComponentBuffer::EIteratorFlags::PROCESS_ADD_PENDING))
                 {
-                    apComponentsManager->updateComponentIdForGameObject(lIt.Get()->GetOwner(), COMPONENT_CLASS::GetType(), lIt.GetId());
+                    apComponentsManager->updateComponentIdForEntity(lIt.Get()->GetOwner(), COMPONENT_CLASS::GetType(), lIt.GetId());
                     lIt.ClearIteratorFlag(CComponentBuffer::EIteratorFlags::PROCESS_ADD_PENDING);
                 }
                 else if (lIt.HasIteratorFlag(CComponentBuffer::EIteratorFlags::PROCESS_REMOVE_PENDING))
                 {
-                    apComponentsManager->updateComponentIdForGameObject(lIt.Get()->GetOwner(), COMPONENT_CLASS::GetType(), kInvalidComponentId);
+                    apComponentsManager->updateComponentIdForEntity(lIt.Get()->GetOwner(), COMPONENT_CLASS::GetType(), kInvalidComponentId);
                     bool lRemoved = lIt.RemoveElement();
                     MAZ_ASSERT(lRemoved, "Failed to remove component of type %hhu with id %hhu that was flagged for removal!", EnumToNumber(COMPONENT_CLASS::GetType()), lIt.GetId());
                     lIt.ClearIteratorFlag(CComponentBuffer::EIteratorFlags::PROCESS_REMOVE_PENDING);
@@ -99,7 +99,7 @@ private:
         }
 
 
-        uint16 AddComponent(CComponentsManager* apComponentsManager, CReference<CGameObject>& arOwner)
+        uint16 AddComponent(CComponentsManager* apComponentsManager, CReference<CEntity>& arOwner)
         {
             const uint16 lComponentId = mComponentsBuffer.AddElement(arOwner);
             CReference<COMPONENT_CLASS> lComponent = mComponentsBuffer.GetElement(lComponentId);
@@ -143,7 +143,7 @@ public:
 
 
     template<typename COMPONENT_CLASS>
-    uint16 AddComponent(CReference<CGameObject>& arOwner)
+    uint16 AddComponent(CReference<CEntity>& arOwner)
     {
         MAZ_ASSERT(mComponentManagers[EnumToNumber(COMPONENT_CLASS::GetType())] != nullptr
             , "Component of the desired type have not been registered!");

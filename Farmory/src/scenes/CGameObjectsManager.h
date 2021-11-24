@@ -1,5 +1,5 @@
-#ifndef _H_C_GAME_OBJECTS_MANAGER_
-#define _H_C_GAME_OBJECTS_MANAGER_
+#ifndef _H_C_ENTITIES_MANAGER_
+#define _H_C_ENTITIES_MANAGER_
 
 #include <maz/globals.h>
 #include <array>
@@ -10,41 +10,41 @@
 namespace maz
 {
 
-class CGameObjectsManager
+class CEntitiesManager
 {
-    using CGameObjectsBuffer = CReferenceBuffer<CGameObject, kMaxGameObjectsCount>;
+    using CEntitiesBuffer = CReferenceBuffer<CEntity, kMaxEntitiesCount>;
 
 public:
-    class CModifiedGameObjectsIterator
+    class CModifiedEntitiesIterator
     {
-        friend class CGameObjectsManager;
+        friend class CEntitiesManager;
     public:
         operator bool();
         void operator ++();
-        CReference<CGameObject> Get();
+        CReference<CEntity> Get();
 
     private:
-        CModifiedGameObjectsIterator(const CGameObjectsBuffer::CBufferIterator& arIterator);
+        CModifiedEntitiesIterator(const CEntitiesBuffer::CBufferIterator& arIterator);
 
     private:
-        CGameObjectsBuffer::CBufferIterator mInternalIterator;
+        CEntitiesBuffer::CBufferIterator mInternalIterator;
     };
 
 
 public:
-    CGameObjectsManager(CComponentsManager& arComponentsManager);
+    CEntitiesManager(CComponentsManager& arComponentsManager);
 
     void Shutdown();
-    void RefreshGameObjects();
-    CReference<CGameObject> CreateGameObject(const CFixedString32& arName);
-    bool RequestDestroyGameObject(const uint16 aGameObjectId);
-    CModifiedGameObjectsIterator GetModifiedGameObjectsIterator();
+    void RefreshEntities();
+    CReference<CEntity> CreateEntity(const CFixedString32& arName);
+    bool RequestDestroyEntity(const uint16 aEntityId);
+    CModifiedEntitiesIterator GetModifiedEntitiesIterator();
 
 private:
     CComponentsManager& mrComponentsManager;
-    CGameObjectsBuffer mGameObjectsBuffer;
+    CEntitiesBuffer mEntitiesBuffer;
 };
 
 } // maz
 
-#endif // !_H_C_GAME_OBJECTS_MANAGER_
+#endif // !_H_C_ENTITIES_MANAGER_

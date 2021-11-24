@@ -25,12 +25,12 @@ CSystemTransformA::~CSystemTransformA()
 
 void CSystemTransformA::Update()
 {
-    MAZ_LOGGER("START. Has %u GameObjects", mGameObjects.size());
-    for (CReference<CGameObject>& lrGameObject : mGameObjects)
+    MAZ_LOGGER("START. Has %u Entities", mEntities.size());
+    for (CReference<CEntity>& lrEntity : mEntities)
     {
-        if (lrGameObject)
+        if (lrEntity)
         {
-            MAZ_LOGGER("Sees GameOjbect named '%s'", lrGameObject->GetName().c_str());
+            MAZ_LOGGER("Sees Entity named '%s'", lrEntity->GetName().c_str());
         }
     }
     MAZ_LOGGER("END");
@@ -52,12 +52,12 @@ CSystemTransformB::~CSystemTransformB()
 
 void CSystemTransformB::Update()
 {
-    MAZ_LOGGER("START. Has %u GameObjects", mGameObjects.size());
-    for (CReference<CGameObject>& lrGameObject : mGameObjects)
+    MAZ_LOGGER("START. Has %u Entities", mEntities.size());
+    for (CReference<CEntity>& lrEntity : mEntities)
     {
-        if (lrGameObject)
+        if (lrEntity)
         {
-            MAZ_LOGGER("Sees GameOjbect named '%s'", lrGameObject->GetName().c_str());
+            MAZ_LOGGER("Sees Entity named '%s'", lrEntity->GetName().c_str());
         }
     }
     MAZ_LOGGER("END");
@@ -147,11 +147,11 @@ void CMotionSystemTest::Update()
 
     if (lChangesMade)
     {
-        for (CReference<CGameObject>& lrGameObject : mGameObjects)
+        for (CReference<CEntity>& lrEntity : mEntities)
         {
-            if (lrGameObject)
+            if (lrEntity)
             {
-                CReference<CTransform2DComponent> lTransform = lrGameObject->GetComponent<CTransform2DComponent>();
+                CReference<CTransform2DComponent> lTransform = lrEntity->GetComponent<CTransform2DComponent>();
                 lTransform->SetTranslation(lTransform->GetTranslation() + lMotion);
                 lTransform->SetRotation(lTransform->GetRotation() + lZRotation);
                 lTransform->SetScale(lTransform->GetScale() + lScale);

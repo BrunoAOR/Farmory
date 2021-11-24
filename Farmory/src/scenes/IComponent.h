@@ -8,18 +8,18 @@
 namespace maz
 {
 
-class CGameObject;
+class CEntity;
 class IComponent
 {
 public:
-    IComponent(CReference<CGameObject>& arOwner);
+    IComponent(CReference<CEntity>& arOwner);
     virtual ~IComponent();
 
-    const CReference<CGameObject> GetOwner() const;
-    CReference<CGameObject> GetOwner();
+    const CReference<CEntity> GetOwner() const;
+    CReference<CEntity> GetOwner();
 
 private:
-    CReference<CGameObject> mOwner;
+    CReference<CEntity> mOwner;
 };
 
 
@@ -32,7 +32,7 @@ class CComponentBase
     friend class CComponentManager;
 
 public:
-    CComponentBase(CReference<CGameObject>& arOwner);
+    CComponentBase(CReference<CEntity>& arOwner);
     virtual ~CComponentBase();
 
 protected:
@@ -44,7 +44,7 @@ private:
 
 
 template<typename COMPONENT_CLASS>
-inline CComponentBase<COMPONENT_CLASS>::CComponentBase(CReference<CGameObject>& arOwner)
+inline CComponentBase<COMPONENT_CLASS>::CComponentBase(CReference<CEntity>& arOwner)
     : IComponent(arOwner)
 {}
 
