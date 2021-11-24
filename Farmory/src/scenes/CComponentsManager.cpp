@@ -1,5 +1,5 @@
 #include "CComponentsManager.h"
-#include <scenes/CGameObject.h>
+#include <scenes/CEntity.h>
 
 
 namespace maz

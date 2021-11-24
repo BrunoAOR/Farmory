@@ -191,8 +191,8 @@
     <ClInclude Include="src\render\CMesh.h" />
     <ClInclude Include="src\render\CShaderProgram.h" />
     <ClInclude Include="src\render\CTexture2D.h" />
-    <ClInclude Include="src\scenes\CGameObject.h" />
-    <ClInclude Include="src\scenes\CGameObjectsManager.h" />
+    <ClInclude Include="src\scenes\CEntity.h" />
+    <ClInclude Include="src\scenes\CEntitiesManager.h" />
     <ClInclude Include="src\scenes\CComponentsManager.h" />
     <ClInclude Include="src\scenes\components\CSpriteComponent.h" />
     <ClInclude Include="src\scenes\CSystemsManager.h" />
@@ -235,8 +235,8 @@
     <ClCompile Include="src\render\CMesh.cpp" />
     <ClCompile Include="src\render\CShaderProgram.cpp" />
     <ClCompile Include="src\render\CTexture2D.cpp" />
-    <ClCompile Include="src\scenes\CGameObject.cpp" />
-    <ClCompile Include="src\scenes\CGameObjectsManager.cpp" />
+    <ClCompile Include="src\scenes\CEntity.cpp" />
+    <ClCompile Include="src\scenes\CEntitiesManager.cpp" />
     <ClCompile Include="src\scenes\CComponentsManager.cpp" />
     <ClCompile Include="src\scenes\components\CSpriteComponent.cpp" />
     <ClCompile Include="src\scenes\CSystemsManager.cpp" />

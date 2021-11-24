@@ -1,5 +1,5 @@
 #include "CSystemsManager.h"
-#include <scenes/CGameObjectsManager.h>
+#include <scenes/CEntitiesManager.h>
 #include <scenes/SComponentsSignature.h>
 
 

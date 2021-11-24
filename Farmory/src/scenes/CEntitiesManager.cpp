@@ -1,4 +1,4 @@
-#include "CGameObjectsManager.h"
+#include "CEntitiesManager.h"
 
 
 namespace maz

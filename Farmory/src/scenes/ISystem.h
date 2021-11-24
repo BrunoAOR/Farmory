@@ -3,7 +3,7 @@
 
 #include <maz/globals.h>
 #include <scenes/SComponentsSignature.h>
-#include <scenes/CGameObject.h>
+#include <scenes/CEntity.h>
 #include <maz/CReference.h>
 #include <array>
 

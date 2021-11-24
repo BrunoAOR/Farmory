@@ -1,5 +1,5 @@
 #define MAZ_LOG_VERBOSE
-#include "CGameObject.h"
+#include "CEntity.h"
 
 
 namespace maz

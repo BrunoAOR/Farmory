@@ -4,7 +4,7 @@
 #include <maz/globals.h>
 #include <array>
 #include <maz/CReferenceBuffer.h>
-#include <scenes/CGameObject.h>
+#include <scenes/CEntity.h>
 
 
 namespace maz

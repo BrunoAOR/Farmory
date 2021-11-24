@@ -3,7 +3,7 @@
 
 #include <services/IService.h>
 #include <scenes/CComponentsManager.h>
-#include <scenes/CGameObjectsManager.h>
+#include <scenes/CEntitiesManager.h>
 #include <scenes/CSystemsManager.h>
 
 

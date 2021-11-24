@@ -135,10 +135,10 @@
     <ClInclude Include="src\scenes\components\CTransform2DComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\scenes\CGameObject.h">
+    <ClInclude Include="src\scenes\CEntity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\scenes\CGameObjectsManager.h">
+    <ClInclude Include="src\scenes\CEntitiesManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\maz\enumHelpers.h">
@@ -251,7 +251,7 @@
     <ClCompile Include="src\services\CScenesService.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\scenes\CGameObject.cpp">
+    <ClCompile Include="src\scenes\CEntity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\scenes\IComponent.cpp">
@@ -263,7 +263,7 @@
     <ClCompile Include="src\scenes\components\CTransform2DComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\scenes\CGameObjectsManager.cpp">
+    <ClCompile Include="src\scenes\CEntitiesManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\scenes\CComponentsManager.cpp">
