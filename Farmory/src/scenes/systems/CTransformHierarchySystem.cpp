@@ -1,5 +1,4 @@
 #include "CTransformHierarchySystem.h"
-#include <scenes/components/CTransform2DComponent.h>
 #include <corecrt_math_defines.h>
 
 
@@ -63,14 +62,11 @@ TVec2 calculateWorldScale(const TVec2& aParentWorldScale, const TVec2& aLocalSca
 
 
 CTransformHierarchySystem::CTransformHierarchySystem()
-{
-    AddComponentToSignature(EComponentType::Transform);
-}
+{}
 
 
 CTransformHierarchySystem::~CTransformHierarchySystem()
-{
-}
+{}
 
 
 void CTransformHierarchySystem::Update()

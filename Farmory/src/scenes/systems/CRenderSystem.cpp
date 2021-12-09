@@ -1,6 +1,4 @@
 #include "CRenderSystem.h"
-#include <scenes/components/CTransform2DComponent.h>
-#include <scenes/components/CSpriteComponent.h>
 #include <render/CCamera.h>
 #include <services/CServicesManager.h>
 #include <test/CTestService.h>
@@ -10,10 +8,7 @@ namespace maz
 {
 
 CRenderSystem::CRenderSystem()
-{
-    AddComponentToSignature(EComponentType::Transform);
-    AddComponentToSignature(EComponentType::Sprite);
-}
+{}
 
 
 CRenderSystem::~CRenderSystem()

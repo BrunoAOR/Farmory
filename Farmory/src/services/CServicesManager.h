@@ -50,14 +50,6 @@ template< typename T >
 T* CServicesManager::GetService()
 {
     T* lpService = static_cast<T*>(GetService(T::GetSystemId()));
-
-    /*
-    for (size_t i = 0, iCount = mServices.size(); (i < iCount) && (nullptr == lpService); ++i)
-    {
-        MAZ_LOGGER("%hu", mServices[i]->GetId());
-        //lpService = dynamic_cast< T* >(mServices[i]);
-    }*/
-
     return lpService;
 }
 

@@ -2,13 +2,16 @@
 #define _H_C_TEST_SYSTEMS_
 
 #include <scenes/ISystem.h>
+#include <scenes/components/CTransform2DComponent.h>
+#include <scenes/components/CSpriteComponent.h>
+#include <scenes/test/CTestComponents.h>
 
 
 namespace maz
 {
 
 class CSystemTransformA
-    : public ISystem
+    : public CSystemBase<CTransform2DComponent, CTestComponentA>
 {
 public:
     CSystemTransformA();
@@ -18,7 +21,7 @@ public:
 
 
 class CSystemTransformB
-    : public ISystem
+    : public CSystemBase<CTransform2DComponent, CTestComponentB>
 {
 public:
     CSystemTransformB();
@@ -28,7 +31,7 @@ public:
 
 
 class CMotionSystemTest
-    : public ISystem
+    : public CSystemBase<CTransform2DComponent, CSpriteComponent, CTestComponentA>
 {
 public:
     CMotionSystemTest();

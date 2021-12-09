@@ -2,13 +2,14 @@
 #define _H_C_TRANSFORM_HIERARCHY_SYSTEM_
 
 #include <scenes/ISystem.h>
+#include <scenes/components/CTransform2DComponent.h>
 
 
 namespace maz
 {
 
 class CTransformHierarchySystem
-    : public ISystem
+    : public CSystemBase<CTransform2DComponent>
 {
 public:
     CTransformHierarchySystem();

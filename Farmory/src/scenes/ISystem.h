@@ -24,14 +24,24 @@ public:
     virtual void Shutdown() {}
 
 protected:
-    void AddComponentToSignature(EComponentType aComponentType);
-    void RemoveComponentFromSignature(EComponentType aComponentType);
+    ISystem(SComponentsSignature&& arrSignature);
 
 protected:
     std::array<CReference<CEntity>, kMaxEntitiesCount> mEntities;
 
 private:
     SComponentsSignature mSignature;
+};
+
+
+template<typename... COMPONENT_CLASSES>
+class CSystemBase
+    : public ISystem
+{
+public:
+    CSystemBase()
+        : ISystem(SComponentsSignature::Create<COMPONENT_CLASSES...>())
+    {}
 };
 
 } // maz

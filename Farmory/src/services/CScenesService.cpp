@@ -111,7 +111,7 @@ bool CScenesService::LoadTestScenes()
 {
     bool lOk = true;
 
-    bool lUseBaseScene = false;
+    const bool lUseBaseScene = false;
     if (lUseBaseScene)
     {
         //Register components and systems
@@ -137,8 +137,8 @@ bool CScenesService::LoadTestScenes()
         lEntityTAB->AddComponent<CTestComponentB>();
     }
 
-    bool lUuseComplexScene = true;
-    if (lUuseComplexScene)
+    const bool lUseComplexScene = !lUseBaseScene;
+    if (lUseComplexScene)
     {
         //Register components and systems
         lOk = lOk && mComponentsManager.RegisterComponent<CTransform2DComponent>();

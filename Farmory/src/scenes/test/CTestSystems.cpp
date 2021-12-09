@@ -11,16 +11,11 @@ namespace maz
 {
 
 CSystemTransformA::CSystemTransformA()
-{
-    AddComponentToSignature(EComponentType::Transform);
-    AddComponentToSignature(EComponentType::TestCompA);
-}
+{}
 
 
 CSystemTransformA::~CSystemTransformA()
-{
-
-}
+{}
 
 
 void CSystemTransformA::Update()
@@ -38,16 +33,11 @@ void CSystemTransformA::Update()
 
 
 CSystemTransformB::CSystemTransformB()
-{
-    AddComponentToSignature(EComponentType::Transform);
-    AddComponentToSignature(EComponentType::TestCompB);
-}
+{}
 
 
 CSystemTransformB::~CSystemTransformB()
-{
-
-}
+{}
 
 
 void CSystemTransformB::Update()
@@ -65,16 +55,11 @@ void CSystemTransformB::Update()
 
 
 CMotionSystemTest::CMotionSystemTest()
-{
-    AddComponentToSignature(EComponentType::Transform);
-    AddComponentToSignature(EComponentType::Sprite);
-    AddComponentToSignature(EComponentType::TestCompA);
-}
+{}
 
 
 CMotionSystemTest::~CMotionSystemTest()
-{
-}
+{}
 
 
 void CMotionSystemTest::Update()

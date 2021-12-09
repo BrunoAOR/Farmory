@@ -4,15 +4,6 @@
 namespace maz
 {
 
-SComponentsSignature::SComponentsSignature()
-{
-    for (uint8 i = 0; i < kSubSignaturesCount; ++i)
-    {
-        mSubSignatures[i] = 0;
-    }
-}
-
-
 void SComponentsSignature::AddComponent(EComponentType aComponentType)
 {
     const uint8 lComponentTypeNumber = EnumToNumber(aComponentType);

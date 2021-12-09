@@ -8,15 +8,8 @@ ISystem::ISystem()
 {}
 
 
-void ISystem::AddComponentToSignature(EComponentType aComponentType)
-{
-    mSignature.AddComponent(aComponentType);
-}
-
-
-void ISystem::RemoveComponentFromSignature(EComponentType aComponentType)
-{
-    mSignature.RemoveComponent(aComponentType);
-}
+ISystem::ISystem(SComponentsSignature&& arrSignature)
+    : mSignature(arrSignature)
+{}
 
 } // maz
